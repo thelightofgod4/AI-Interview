@@ -127,13 +127,14 @@ function InterviewHome({ params, searchParams }: Props) {
   }, [organization]);
 
   const seeInterviewPreviewPage = () => {
-    const protocol = base_url?.includes("localhost") ? "http" : "https";
+    // Production'da her zaman https kullan
+    const protocol = "https";
     if (interview?.url) {
       const url = interview?.readable_slug
         ? `${protocol}://${base_url}/call/${interview?.readable_slug}`
         : interview.url.startsWith("http")
           ? interview.url
-          : `https://${interview.url}`;
+          : `${protocol}://${interview.url}`;
       window.open(url, "_blank");
     } else {
       console.error("Interview URL is null or undefined.");

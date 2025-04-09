@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/select";
 import { CandidateStatus } from "@/lib/enum";
 import LoaderWithText from "@/components/loaders/loader-with-text/loaderWithText";
+import axios from "axios";
 
 interface Props {
   params: {
@@ -51,58 +52,62 @@ const base_url = process.env.NEXT_PUBLIC_LIVE_URL;
 
 function InterviewHome({ params, searchParams }: Props) {
   const [interview, setInterview] = useState<Interview>();
-  const [responses, setResponses] = useState<Response[]>();
-  const { getInterviewById } = useInterviews();
+  const [responses, setResponses] = useState<Response[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isActive, setIsActive] = useState(false);
+  const [isViewed, setIsViewed] = useState(false);
+  const [themeColor, setThemeColor] = useState("#4F46E5");
+  const [iconColor, seticonColor] = useState("#4F46E5");
+  const [currentPlan, setCurrentPlan] = useState<string>("");
+  const [filterStatus, setFilterStatus] = useState<CandidateStatus | "ALL">("ALL");
+  const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const { organization } = useOrganization();
   const [isSharePopupOpen, setIsSharePopupOpen] = useState(false);
   const router = useRouter();
-  const [isActive, setIsActive] = useState<boolean>(true);
-  const [currentPlan, setCurrentPlan] = useState<string>("");
-  const [isGeneratingInsights, setIsGeneratingInsights] =
-    useState<boolean>(false);
-  const [isViewed, setIsViewed] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
-  const [themeColor, setThemeColor] = useState<string>("#4F46E5");
-  const [iconColor, seticonColor] = useState<string>("#4F46E5");
-  const { organization } = useOrganization();
-  const [filterStatus, setFilterStatus] = useState<string>("ALL");
 
-  const seeInterviewPreviewPage = () => {
-    const protocol = base_url?.includes("localhost") ? "http" : "https";
-    if (interview?.url) {
-      const url = interview?.readable_slug
-        ? `${protocol}://${base_url}/call/${interview?.readable_slug}`
-        : interview.url.startsWith("http")
-          ? interview.url
-          : `https://${interview.url}`;
-      window.open(url, "_blank");
-    } else {
-      console.error("Interview URL is null or undefined.");
+  const getInterviewById = async (interviewId: string) => {
+    try {
+      const response = await InterviewService.getInterviewById(interviewId);
+      return response;
+    } catch (error) {
+      console.error("Error fetching interview:", error);
+      return null;
+    }
+  };
+
+  const fetchResponses = async (interviewId: string) => {
+    try {
+      const responses = await ResponseService.getAllResponses(interviewId);
+      setResponses(responses || []);
+    } catch (error) {
+      console.error("Error fetching responses:", error);
+      setResponses([]);
     }
   };
 
   useEffect(() => {
-    const fetchInterview = async () => {
+    const fetchInterviewData = async () => {
+      setLoading(true);
       try {
-        const response = await getInterviewById(params.interviewId);
-        setInterview(response);
-        setIsActive(response.is_active);
-        setIsViewed(response.is_viewed);
-        setThemeColor(response.theme_color ?? "#4F46E5");
-        seticonColor(response.theme_color ?? "#4F46E5");
-        setLoading(true);
+        const interviewData = await getInterviewById(params.interviewId);
+        if (interviewData) {
+          setInterview(interviewData);
+          setIsActive(interviewData.is_active);
+          setIsViewed(interviewData.is_viewed);
+          setThemeColor(interviewData.theme_color ?? "#4F46E5");
+          seticonColor(interviewData.theme_color ?? "#4F46E5");
+          await fetchResponses(params.interviewId);
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Error in fetchInterviewData:", error);
       } finally {
         setLoading(false);
       }
     };
-    if (!interview || !isGeneratingInsights) {
-      fetchInterview();
-    }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getInterviewById, params.interviewId, isGeneratingInsights]);
+    fetchInterviewData();
+  }, [params.interviewId]);
 
   useEffect(() => {
     const fetchOrganizationData = async () => {
@@ -120,24 +125,20 @@ function InterviewHome({ params, searchParams }: Props) {
 
     fetchOrganizationData();
   }, [organization]);
-  useEffect(() => {
-    const fetchResponses = async () => {
-      try {
-        const response = await ResponseService.getAllResponses(
-          params.interviewId,
-        );
-        setResponses(response);
-        setLoading(true);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchResponses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const seeInterviewPreviewPage = () => {
+    const protocol = base_url?.includes("localhost") ? "http" : "https";
+    if (interview?.url) {
+      const url = interview?.readable_slug
+        ? `${protocol}://${base_url}/call/${interview?.readable_slug}`
+        : interview.url.startsWith("http")
+          ? interview.url
+          : `https://${interview.url}`;
+      window.open(url, "_blank");
+    } else {
+      console.error("Interview URL is null or undefined.");
+    }
+  };
 
   const handleDeleteResponse = (deletedCallId: string) => {
     if (responses) {
@@ -407,7 +408,7 @@ function InterviewHome({ params, searchParams }: Props) {
               <div className="flex w-full justify-center py-2">
                 <Select
                   onValueChange={async (newValue: string) => {
-                    setFilterStatus(newValue);
+                    setFilterStatus(newValue as CandidateStatus | "ALL");
                   }}
                 >
                   <SelectTrigger className="w-[95%] bg-slate-100 rounded-lg">

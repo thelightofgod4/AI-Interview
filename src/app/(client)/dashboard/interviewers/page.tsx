@@ -1,7 +1,7 @@
 "use client";
 
 import { useInterviewers } from "@/contexts/interviewers.context";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import InterviewerCard from "@/components/dashboard/interviewer/interviewerCard";
@@ -9,6 +9,7 @@ import CreateInterviewerButton from "@/components/dashboard/interviewer/createIn
 
 function Interviewers() {
   const { interviewers, interviewersLoading } = useInterviewers();
+  const [mounted, setMounted] = useState(false);
 
   const slideLeft = () => {
     var slider = document.getElementById("slider");
@@ -36,6 +37,16 @@ function Interviewers() {
     );
   }
 
+  // Client-side only effect
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Prevent hydration issues
+  if (!mounted) {
+    return <InterviewersLoader />;
+  }
+
   return (
     <main className="p-8 pt-0 ml-12 mr-auto rounded-md">
       <div className="flex flex-col items-left">
@@ -44,18 +55,19 @@ function Interviewers() {
             <h2 className="mr-2 text-2xl font-semibold tracking-tight mt-3">
               Interviewers
             </h2>
-            <h3 className=" text-sm tracking-tight text-gray-600 font-medium ">
+            <h3 className="text-sm tracking-tight text-gray-600 font-medium">
               Get to know them by clicking the profile.
             </h3>
           </div>
         </div>
-        <div className="relative flex items-center mt-2 ">
+        <div className="relative flex items-center mt-2">
           <div
             id="slider"
-            className=" h-44 pt-2 overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide w-[40rem]"
+            className="h-44 pt-2 overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide w-[40rem]"
           >
-            {interviewers.length === 0 ? <CreateInterviewerButton /> : <></>}
-            {!interviewersLoading ? (
+            {interviewersLoading ? (
+              <InterviewersLoader />
+            ) : (
               <>
                 {interviewers.map((interviewer) => (
                   <InterviewerCard
@@ -63,9 +75,9 @@ function Interviewers() {
                     interviewer={interviewer}
                   />
                 ))}
+                {/* Her zaman sonda göster ama otomatik tetikleme */}
+                <CreateInterviewerButton />
               </>
-            ) : (
-              <InterviewersLoader />
             )}
           </div>
           {interviewers.length > 4 ? (
@@ -81,9 +93,7 @@ function Interviewers() {
                 onClick={() => slideLeft()}
               />
             </div>
-          ) : (
-            <></>
-          )}
+          ) : null}
         </div>
       </div>
     </main>

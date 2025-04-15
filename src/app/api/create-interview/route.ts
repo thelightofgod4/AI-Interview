@@ -26,20 +26,10 @@ export async function POST(req: Request) {
       );
     }
 
-    let readableSlug = null;
-    if (body.organizationName) {
-      const interviewNameSlug = payload.name?.toLowerCase().replace(/\s/g, "-");
-      const orgNameSlug = body.organizationName
-        ?.toLowerCase()
-        .replace(/\s/g, "-");
-      readableSlug = `${orgNameSlug}-${interviewNameSlug}`;
-    }
-
     const newInterview = await InterviewService.createInterview({
       ...payload,
       url: url,
       id: url_id,
-      readable_slug: readableSlug,
     });
 
     logger.info("Interview created successfully", { newInterview });

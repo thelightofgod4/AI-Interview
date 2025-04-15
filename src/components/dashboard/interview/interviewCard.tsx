@@ -74,9 +74,7 @@ function InterviewCard({ name, interviewerId, id, url, readableSlug }: Props) {
 
   const copyToClipboard = () => {
     navigator.clipboard
-      .writeText(
-        readableSlug ? `${base_url}/call/${readableSlug}` : (url as string),
-      )
+      .writeText(url)
       .then(
         () => {
           setCopied(true);

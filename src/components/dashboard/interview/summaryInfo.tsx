@@ -176,15 +176,15 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
         <div className="bg-slate-200 rounded-2xl min-h-[120px] p-2 ">
           <div className="flex flex-row gap-2 justify-between items-center mx-2">
             <div className="flex flex-row gap-2 items-center">
-              <p className="font-semibold my-2">Overall Analysis</p>
+              <p className="font-semibold my-2">Genel Değerlendirme</p>
             </div>
             <p className="text-sm">
-              Interviewer used:{" "}
+              Görüşmeci:{" "}
               <span className="font-medium">{interviewer?.name}</span>
             </p>
           </div>
           <p className="my-3 ml-2 text-sm">
-            Interview Description:{" "}
+            Görüşme Açıklaması:{" "}
             <span className="font-medium">{interview?.description}</span>
           </p>
           <div className="flex flex-col gap-1 my-2 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md">
@@ -196,8 +196,8 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
             <div className="flex flex-col">
               <div className="flex flex-col gap-1 my-2 mt-4 mx-2 p-3 rounded-2xl bg-slate-50 shadow-md max-w-[400px]">
                 <div className="flex flex-row items-center justify-center gap-1 font-semibold mb-1 text-[15px]">
-                  Average Duration
-                  <InfoTooltip content="Average time users took to complete an interview" />
+                  Ortalama Süre
+                  <InfoTooltip content="Kullanıcıların görüşmeyi tamamlama süresi ortalaması" />
                 </div>
                 <div className="flex items-center justify-center">
                   <p className="text-2xl font-semibold text-indigo-600 w-fit p-1 px-2 bg-indigo-100 rounded-md">
@@ -207,8 +207,8 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
               </div>
               <div className="flex flex-col items-center justify-center gap-1 mx-2 p-3 rounded-2xl bg-slate-50 shadow-md max-w-[360px]">
                 <div className="flex flex-row gap-1 font-semibold mb-1 text-[15px] mx-auto text-center">
-                  Interview Completion Rate
-                  <InfoTooltip content="Percentage of interviews completed successfully" />
+                  Görüşme Tamamlama Oranı
+                  <InfoTooltip content="Başarıyla tamamlanan görüşmelerin yüzdesi" />
                 </div>
                 <p className="w-fit text-2xl font-semibold text-indigo-600  p-1 px-2 bg-indigo-100 rounded-md">
                   {Math.round(
@@ -221,8 +221,8 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
             <div className="flex flex-col gap-1 my-2 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md max-w-[360px]">
               <div className="flex flex-row gap-2 text-[15px] font-bold mb-3 mx-auto">
                 <SmileIcon />
-                Candidate Sentiment
-                <InfoTooltip content="Distribution of user sentiments during interviews" />
+                Aday Duygu Durumu
+                <InfoTooltip content="Görüşmelerdeki aday duygu durumu dağılımı" />
               </div>
               <PieChart
                 sx={{
@@ -236,19 +236,19 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
                       {
                         id: 0,
                         value: sentimentCount.positive,
-                        label: `Positive (${sentimentCount.positive})`,
+                        label: `Olumlu (${sentimentCount.positive})`,
                         color: "#22c55e",
                       },
                       {
                         id: 1,
                         value: sentimentCount.neutral,
-                        label: `Neutral (${sentimentCount.neutral})`,
+                        label: `Nötr (${sentimentCount.neutral})`,
                         color: "#eab308",
                       },
                       {
                         id: 2,
                         value: sentimentCount.negative,
-                        label: `Negative (${sentimentCount.negative})`,
+                        label: `Olumsuz (${sentimentCount.negative})`,
                         color: "#eb4444",
                       },
                     ],
@@ -267,11 +267,11 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
             <div className="flex flex-col gap-1 my-2 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md">
               <div className="flex flex-row gap-2 text-[15px] font-bold mx-auto mb-1">
                 <UserCircleIcon />
-                Candidate Status
-                <InfoTooltip content="Breakdown of the candidate selection status" />
+                Aday Durumu
+                <InfoTooltip content="Aday seçim durumu dağılımı" />
               </div>
               <div className="text-sm text-center mb-1">
-                Total Responses: {totalResponses}
+                Toplam Yanıt: {totalResponses}
               </div>
               <PieChart
                 sx={{
@@ -285,26 +285,26 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
                       {
                         id: 0,
                         value: candidateStatusCount[CandidateStatus.SELECTED],
-                        label: `Selected (${candidateStatusCount[CandidateStatus.SELECTED]})`,
+                        label: `Seçildi (${candidateStatusCount[CandidateStatus.SELECTED]})`,
                         color: "#22c55e",
                       },
                       {
                         id: 1,
                         value: candidateStatusCount[CandidateStatus.POTENTIAL],
-                        label: `Potential (${candidateStatusCount[CandidateStatus.POTENTIAL]})`,
+                        label: `Potansiyel (${candidateStatusCount[CandidateStatus.POTENTIAL]})`,
                         color: "#eab308",
                       },
                       {
                         id: 2,
                         value:
                           candidateStatusCount[CandidateStatus.NOT_SELECTED],
-                        label: `Not Selected (${candidateStatusCount[CandidateStatus.NOT_SELECTED]})`,
+                        label: `Seçilmedi (${candidateStatusCount[CandidateStatus.NOT_SELECTED]})`,
                         color: "#eb4444",
                       },
                       {
                         id: 3,
                         value: candidateStatusCount[CandidateStatus.NO_STATUS],
-                        label: `No Status (${candidateStatusCount[CandidateStatus.NO_STATUS]})`,
+                        label: `Durum Yok (${candidateStatusCount[CandidateStatus.NO_STATUS]})`,
                         color: "#9ca3af",
                       },
                     ],
@@ -346,7 +346,7 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
               className="object-contain"
             />
             <p className="text-center text-sm mt-4">
-              Please share with your intended respondents
+              Lütfen görüşme bağlantısını adaylarla paylaşın
             </p>
           </div>
         </div>

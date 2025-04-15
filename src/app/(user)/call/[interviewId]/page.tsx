@@ -143,14 +143,15 @@ function InterviewInterface({ params }: Props) {
             Lütfen görüşmeye katılmak için bir bilgisayar kullanın. Oluşan rahatsızlık için özür dileriz.{" "}
           </p>
         </div>
-        <div className="text-center text-md font-semibold mr-2 my-5">
-          Destekleyen{" "}
+        <div className="text-center text-sm text-gray-600 mt-2">
+          Powered by{" "}
           <a
-            className="font-bold underline"
-            href="www.folo-up.co"
+            href="https://ozaltinlabs.com"
             target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold hover:text-indigo-600 transition-colors"
           >
-            Folo<span className="text-indigo-600">Up</span>
+            Özaltın Labs
           </a>
         </div>
       </div>

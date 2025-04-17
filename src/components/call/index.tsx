@@ -265,7 +265,18 @@ function Call({ interview }: InterviewProps) {
             error: registerError,
             response: registerError.response?.data
           });
-          toast.error(registerError.response?.data?.error || "Görüşme kaydı başarısız oldu. Lütfen tekrar deneyin.");
+          
+          // Daha detaylı hata mesajı göster
+          const errorMessage = registerError.response?.data?.error || 
+                              registerError.response?.data?.details || 
+                              "Görüşme kaydı başarısız oldu. Lütfen tekrar deneyin.";
+          
+          toast.error(errorMessage);
+          
+          // Hata detaylarını logla
+          if (registerError.response?.data) {
+            console.error("API Error Details:", registerError.response.data);
+          }
         }
       }
     } catch (error: any) {

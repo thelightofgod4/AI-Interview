@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
   try {
     logger.info("Creating LLM model...");
     const newModel = await retellClient.llm.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       general_prompt: RETELL_AGENT_GENERAL_PROMPT,
       general_tools: [
         {

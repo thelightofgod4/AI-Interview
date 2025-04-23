@@ -15,10 +15,10 @@ export async function POST(req: Request) {
     }
 
     // Mark the response as queued for analysis
-    await ResponseService.updateResponse(callId, {
+    await ResponseService.updateResponse({
       is_analysed: false,
       analysis_status: "queued"
-    });
+    }, callId);
 
     // Trigger the analysis process
     await ResponseService.triggerAnalysis(callId);

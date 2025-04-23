@@ -28,7 +28,7 @@ export class ResponseService {
     return data;
   }
 
-  static async updateResponse(call_id: string, payload: any) {
+  static async updateResponse(payload: any, call_id: string) {
     const { data, error } = await supabase
       .from("response")
       .update(payload)
@@ -99,18 +99,18 @@ export class ResponseService {
       });
 
       // Update the response with analytics
-      await this.updateResponse(callId, {
+      await this.updateResponse({
         analytics: result.analytics,
         is_analysed: true,
         analysis_status: "completed"
-      });
+      }, callId);
 
       return result;
     } catch (error) {
       // If analysis fails, mark it as failed
-      await this.updateResponse(callId, {
+      await this.updateResponse({
         analysis_status: "failed"
-      });
+      }, callId);
       throw error;
     }
   }

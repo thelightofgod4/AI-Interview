@@ -45,9 +45,9 @@ export async function POST(req: Request, res: Response) {
   );
 
   // Queue the analysis
-  await ResponseService.updateResponse(body.id, {
+  await ResponseService.updateResponse({
     analysis_status: "queued"
-  });
+  }, body.id);
 
   // Return immediately without waiting for analysis
   return NextResponse.json(

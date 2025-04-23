@@ -1,5 +1,4 @@
 import { logger } from "@/lib/logger";
-import { generateInterviewAnalytics } from "@/services/analytics.service";
 import { ResponseService } from "@/services/responses.service";
 import { Response } from "@/types/response";
 import { NextResponse } from "next/server";
@@ -17,6 +16,7 @@ export async function POST(req: Request, res: Response) {
     body.id,
   );
   let callResponse = callDetails.details;
+  
   if (callDetails.is_analysed) {
     return NextResponse.json(
       {
@@ -26,6 +26,7 @@ export async function POST(req: Request, res: Response) {
       { status: 200 },
     );
   }
+
   const callOutput = await retell.call.retrieve(body.id);
   const interviewId = callDetails?.interview_id;
   callResponse = callOutput;
@@ -33,31 +34,27 @@ export async function POST(req: Request, res: Response) {
     callResponse.end_timestamp / 1000 - callResponse.start_timestamp / 1000,
   );
 
-  const payload = {
-    callId: body.id,
-    interviewId: interviewId,
-    transcript: callResponse.transcript,
-  };
-  const result = await generateInterviewAnalytics(payload);
-
-  const analytics = result.analytics;
-
+  // Save the call details first
   await ResponseService.saveResponse(
     {
       details: callResponse,
-      is_analysed: true,
+      is_ended: true,
       duration: duration,
-      analytics: analytics,
     },
     body.id,
   );
 
-  logger.info("Call analysed successfully");
+  // Queue the analysis
+  await ResponseService.updateResponse(body.id, {
+    analysis_status: "queued"
+  });
 
+  // Return immediately without waiting for analysis
   return NextResponse.json(
     {
       callResponse,
-      analytics,
+      analytics: null,
+      message: "Analysis queued, please check back later"
     },
     { status: 200 },
   );

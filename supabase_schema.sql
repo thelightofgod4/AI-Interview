@@ -71,7 +71,8 @@ CREATE TABLE response (
     is_analysed BOOLEAN DEFAULT false,
     is_ended BOOLEAN DEFAULT false,
     is_viewed BOOLEAN DEFAULT false,
-    tab_switch_count INTEGER
+    tab_switch_count INTEGER,
+    analysis_status TEXT DEFAULT 'pending'
 );
 
 CREATE TABLE feedback (

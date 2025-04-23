@@ -1,38 +1,44 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { supabase } from "@/lib/supabase";
+import { Response } from "@/types/response";
+import { generateInterviewAnalytics } from "./analytics.service";
 
-const supabase = createClientComponentClient();
+export class ResponseService {
+  static async createResponse(payload: any) {
+    const { data, error } = await supabase
+      .from("response")
+      .insert([payload])
+      .select();
 
-const createResponse = async (payload: any) => {
-  const { error, data } = await supabase
-    .from("response")
-    .insert({ ...payload })
-    .select("id");
+    if (error) throw error;
 
-  if (error) {
-    console.log(error);
-
-    return [];
+    return data[0];
   }
 
-  return data[0]?.id;
-};
+  static async saveResponse(payload: any, call_id: string) {
+    const { data, error } = await supabase
+      .from("response")
+      .update(payload)
+      .eq("call_id", call_id)
+      .select();
 
-const saveResponse = async (payload: any, call_id: string) => {
-  const { error, data } = await supabase
-    .from("response")
-    .update({ ...payload })
-    .eq("call_id", call_id);
-  if (error) {
-    console.log(error);
+    if (error) throw error;
 
-    return [];
+    return data;
   }
 
-  return data;
-};
+  static async updateResponse(call_id: string, payload: any) {
+    const { data, error } = await supabase
+      .from("response")
+      .update(payload)
+      .eq("call_id", call_id)
+      .select();
 
-const getAllResponses = async (interviewId: string) => {
-  try {
+    if (error) throw error;
+
+    return data;
+  }
+
+  static async getAllResponses(interviewId: string) {
     const { data, error } = await supabase
       .from("response")
       .select(`*`)
@@ -41,78 +47,69 @@ const getAllResponses = async (interviewId: string) => {
       .eq("is_ended", true)
       .order("created_at", { ascending: false });
 
-    return data || [];
-  } catch (error) {
-    console.log(error);
-
-    return [];
-  }
-};
-
-const getAllEmailAddressesForInterview = async (interviewId: string) => {
-  try {
-    const { data, error } = await supabase
-      .from("response")
-      .select(`email`)
-      .eq("interview_id", interviewId);
+    if (error) throw error;
 
     return data || [];
-  } catch (error) {
-    console.log(error);
-
-    return [];
   }
-};
 
-const getResponseByCallId = async (id: string) => {
-  try {
+  static async getResponseByCallId(id: string) {
     const { data, error } = await supabase
       .from("response")
       .select(`*`)
-      .filter("call_id", "eq", id);
+      .eq("call_id", id)
+      .single();
 
-    return data ? data[0] : null;
-  } catch (error) {
-    console.log(error);
+    if (error) throw error;
 
-    return [];
-  }
-};
-
-const deleteResponse = async (id: string) => {
-  const { error, data } = await supabase
-    .from("response")
-    .delete()
-    .eq("call_id", id);
-  if (error) {
-    console.log(error);
-
-    return [];
+    return data;
   }
 
-  return data;
-};
+  static async deleteResponse(id: string) {
+    const { error } = await supabase
+      .from("response")
+      .delete()
+      .eq("call_id", id);
 
-const updateResponse = async (payload: any, call_id: string) => {
-  const { error, data } = await supabase
-    .from("response")
-    .update({ ...payload })
-    .eq("call_id", call_id);
-  if (error) {
-    console.log(error);
-
-    return [];
+    if (error) throw error;
   }
 
-  return data;
-};
+  static async getAllEmails(interviewId: string) {
+    const { data, error } = await supabase
+      .from("response")
+      .select("email")
+      .eq("interview_id", interviewId);
 
-export const ResponseService = {
-  createResponse,
-  saveResponse,
-  updateResponse,
-  getAllResponses,
-  getResponseByCallId,
-  deleteResponse,
-  getAllEmails: getAllEmailAddressesForInterview,
-};
+    if (error) throw error;
+
+    return data || [];
+  }
+
+  static async triggerAnalysis(callId: string) {
+    try {
+      // Get the response details
+      const response = await this.getResponseByCallId(callId);
+      
+      // Generate analytics
+      const result = await generateInterviewAnalytics({
+        callId: response.call_id,
+        interviewId: response.interview_id,
+        transcript: response.details?.transcript
+      });
+
+      // Update the response with analytics
+      await this.updateResponse(callId, {
+        analytics: result.analytics,
+        is_analysed: true,
+        analysis_status: "completed"
+      });
+
+      return result;
+    } catch (error) {
+      // If analysis fails, mark it as failed
+      await this.updateResponse(callId, {
+        analysis_status: "failed"
+      });
+      throw error;
+    }
+  }
+}

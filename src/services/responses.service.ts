@@ -1,6 +1,8 @@
-import { supabase } from "@/lib/supabase";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Response } from "@/types/response";
 import { generateInterviewAnalytics } from "./analytics.service";
+
+const supabase = createClientComponentClient();
 
 export class ResponseService {
   static async createResponse(payload: any) {

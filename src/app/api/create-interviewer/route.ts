@@ -85,7 +85,7 @@ export async function GET(req: NextRequest) {
     logger.info("Creating Ahmet agent...");
     const newFourthAgent = await retellClient.agent.create({
       response_engine: { llm_id: newModel.llm_id, type: "retell-llm" },
-      voice_id: "custom_voice_9f9fa5457fc93c34e53c76396c",
+      voice_id: "custom_voice_b2dc0bc778e4c9c93e615959bf",
       agent_name: "Ahmet",
       language: "tr-TR",
     });

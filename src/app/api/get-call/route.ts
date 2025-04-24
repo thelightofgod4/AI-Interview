@@ -3,7 +3,7 @@ import { ResponseService } from "@/services/responses.service";
 import { Response } from "@/types/response";
 import { NextResponse } from "next/server";
 import Retell from "retell-sdk";
-import axios from "axios";
+import { generateInterviewAnalytics } from "@/services/analytics.service";
 
 const retell = new Retell({
   apiKey: process.env.RETELL_API_KEY || "",
@@ -61,17 +61,47 @@ export async function POST(req: Request, res: Response) {
 
   // Start analysis in background
   try {
-    await axios.post("/api/queue-analysis", { callId: body.id });
-  } catch (error) {
-    logger.error("Failed to queue analysis", { error: error instanceof Error ? error.message : String(error) });
-  }
+    // Mark as processing
+    await ResponseService.updateResponse({
+      analysis_status: "processing"
+    }, body.id);
 
-  return NextResponse.json(
-    {
-      callResponse,
-      analytics: null,
-      status: "processing"
-    },
-    { status: 200 },
-  );
+    // Start analysis process
+    generateInterviewAnalytics({
+      callId: body.id,
+      interviewId: interviewId,
+      transcript: callResponse.transcript,
+    }).then(async (result) => {
+      // Update with results
+      await ResponseService.updateResponse({
+        analytics: result.analytics,
+        is_analysed: true,
+        analysis_status: "completed"
+      }, body.id);
+    }).catch(async (error) => {
+      logger.error("Analysis failed", { error: error instanceof Error ? error.message : String(error) });
+      await ResponseService.updateResponse({
+        analysis_status: "failed"
+      }, body.id);
+    });
+
+    return NextResponse.json(
+      {
+        callResponse,
+        analytics: null,
+        status: "processing"
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    logger.error("Failed to start analysis", { error: error instanceof Error ? error.message : String(error) });
+    return NextResponse.json(
+      {
+        callResponse,
+        analytics: null,
+        status: "failed"
+      },
+      { status: 500 },
+    );
+  }
 }

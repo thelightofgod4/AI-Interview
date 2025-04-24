@@ -70,7 +70,30 @@ function CallInfo({
       try {
         const response = await axios.post("/api/get-call", { id: call_id });
         setCall(response.data.callResponse);
-        setAnalytics(response.data.analytics);
+        
+        if (response.data.status === "processing") {
+          // Start polling if analysis is in progress
+          const pollInterval = setInterval(async () => {
+            try {
+              const pollResponse = await axios.post("/api/get-call", { id: call_id });
+              if (pollResponse.data.status === "completed") {
+                setAnalytics(pollResponse.data.analytics);
+                clearInterval(pollInterval);
+              } else if (pollResponse.data.status === "failed") {
+                clearInterval(pollInterval);
+                toast.error("Analysis failed. Please try again later.");
+              }
+            } catch (error) {
+              console.error("Polling error:", error);
+              clearInterval(pollInterval);
+            }
+          }, 5000); // Poll every 5 seconds
+
+          // Cleanup interval on unmount
+          return () => clearInterval(pollInterval);
+        } else {
+          setAnalytics(response.data.analytics);
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -79,7 +102,6 @@ function CallInfo({
     };
 
     fetchResponses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [call_id]);
 
   useEffect(() => {

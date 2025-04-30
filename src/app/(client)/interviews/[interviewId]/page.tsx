@@ -432,7 +432,7 @@ function InterviewHome({ params, searchParams }: Props) {
         closeOnOutsideClick={false}
         onClose={applyColorChange}
       >
-        <div className="w-[250px] p-3">
+        <div className="w-full max-w-[250px] p-3">
           <h3 className="text-lg font-semibold mb-4 text-center">
             Tema Rengi Seç
           </h3>

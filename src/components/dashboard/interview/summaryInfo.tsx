@@ -174,8 +174,8 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
     <div className="h-screen z-[10] mx-2">
       {responses.length > 0 ? (
         <div className="bg-slate-200 rounded-2xl min-h-[120px] p-4">
-          <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mx-2">
-            <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4 justify-between items-start mx-2">
+            <div className="flex flex-col gap-2 w-full">
               <div className="flex flex-row gap-2 items-center">
                 <p className="font-semibold">Genel Değerlendirme</p>
               </div>
@@ -189,7 +189,7 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
             </div>
           </div>
           <div className="flex flex-col gap-4 mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <h3 className="text-sm font-medium mb-2">Yanıt İstatistikleri</h3>
                 <div className="flex flex-row justify-between items-center">
@@ -235,7 +235,7 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
               </div>
             </div>
             <div className="flex flex-col gap-1 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md">
-              <ScrollArea className="h-[250px]">
+              <ScrollArea className="h-[250px] w-full">
                 <DataTable data={tableData} interviewId={interview?.id || ""} />
               </ScrollArea>
             </div>

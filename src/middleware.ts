@@ -11,7 +11,8 @@ export default authMiddleware({
     "/sign-up(.*)",
     "/_clerk/(.*)",
     "/api/clerk(.*)",
-    "/call/(.*)"
+    "/call/(.*)",
+    "/api/register-call(.*)"
   ],
   afterAuth(auth, req: NextRequest) {
     // If not signed in and trying to access protected route, redirect to sign-in

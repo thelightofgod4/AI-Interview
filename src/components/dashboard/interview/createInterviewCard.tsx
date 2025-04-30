@@ -32,7 +32,6 @@ function CreateInterviewCard() {
         onClose={() => {
           setOpen(false);
         }}
-        size="large"
       >
         <CreateInterviewModal open={open} setOpen={setOpen} />
       </Modal>

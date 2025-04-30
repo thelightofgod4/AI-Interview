@@ -6,6 +6,7 @@ interface ModalProps {
   onClose: () => void;
   children: ReactNode;
   closeOnOutsideClick?: boolean;
+  size?: "default" | "large";
 }
 
 export default function Modal({
@@ -13,7 +14,13 @@ export default function Modal({
   onClose,
   closeOnOutsideClick = true,
   children,
+  size = "default",
 }: ModalProps) {
+  const sizeClasses = {
+    default: "max-w-lg",
+    large: "max-w-4xl"
+  };
+
   return (
     <div
       className={`fixed z-50 inset-0 flex justify-center items-center transition-colors overflow-y-auto px-4 py-6 sm:px-6
@@ -22,7 +29,7 @@ export default function Modal({
       onClick={closeOnOutsideClick ? onClose : () => {}}
     >
       <div
-        className={`bg-white rounded-xl shadow p-4 sm:p-6 transition-all w-full max-w-lg mx-auto relative
+        className={`bg-white rounded-xl shadow p-4 sm:p-6 transition-all w-full ${sizeClasses[size]} mx-auto relative
         ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}
         `}
         onClick={(e) => e.stopPropagation()}

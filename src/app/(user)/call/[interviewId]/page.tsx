@@ -113,7 +113,7 @@ function InterviewInterface({ params }: Props) {
 
   return (
     <div>
-      <div className="hidden md:block p-8 mx-auto form-container">
+      <div className="p-8 mx-auto form-container">
         {!interview ? (
           interviewNotFound ? (
             <PopUpMessage
@@ -133,27 +133,6 @@ function InterviewInterface({ params }: Props) {
         ) : (
           <Call interview={interview} />
         )}
-      </div>
-      <div className=" md:hidden flex flex-col items-center md:h-[0px] justify-center  my-auto">
-        <div className="mt-48 px-3">
-          <p className="text-center my-5 text-md font-semibold">
-            {interview?.name}
-          </p>
-          <p className="text-center text-gray-600 my-5">
-            Lütfen görüşmeye katılmak için bir bilgisayar kullanın. Oluşan rahatsızlık için özür dileriz.{" "}
-          </p>
-        </div>
-        <div className="text-center text-sm text-gray-600 mt-2">
-          Powered by{" "}
-          <a
-            href="https://ozaltinlabs.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold hover:text-indigo-600 transition-colors"
-          >
-            Özaltın Labs
-          </a>
-        </div>
       </div>
     </div>
   );

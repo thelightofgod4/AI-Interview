@@ -66,8 +66,12 @@ export default function RootLayout({
                 !pathname.includes("/sign-up") && <Navbar />}
               <div className="flex flex-row flex-1">
                 {!pathname.includes("/sign-in") &&
-                  !pathname.includes("/sign-up") && <SideMenu />}
-                <div className="ml-[200px] pt-[64px] flex-1 overflow-y-auto">
+                  !pathname.includes("/sign-up") && (
+                    <div className="hidden md:block">
+                      <SideMenu />
+                    </div>
+                  )}
+                <div className="md:ml-[200px] pt-[64px] flex-1 overflow-y-auto">
                   {children}
                 </div>
               </div>

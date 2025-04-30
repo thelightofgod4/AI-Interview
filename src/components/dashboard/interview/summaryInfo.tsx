@@ -173,182 +173,77 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
   return (
     <div className="h-screen z-[10] mx-2">
       {responses.length > 0 ? (
-        <div className="bg-slate-200 rounded-2xl min-h-[120px] p-2 ">
-          <div className="flex flex-row gap-2 justify-between items-center mx-2">
-            <div className="flex flex-row gap-2 items-center">
-              <p className="font-semibold my-2">Genel Değerlendirme</p>
+        <div className="bg-slate-200 rounded-2xl min-h-[120px] p-4">
+          <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mx-2">
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-row gap-2 items-center">
+                <p className="font-semibold">Genel Değerlendirme</p>
+              </div>
+              <p className="text-sm">
+                Görüşmeci: <span className="font-medium">{interviewer?.name}</span>
+              </p>
+              <p className="text-sm">
+                Görüşme Açıklaması:{" "}
+                <span className="font-medium">{interview?.description}</span>
+              </p>
             </div>
-            <p className="text-sm">
-              Görüşmeci:{" "}
-              <span className="font-medium">{interviewer?.name}</span>
-            </p>
           </div>
-          <p className="my-3 ml-2 text-sm">
-            Görüşme Açıklaması:{" "}
-            <span className="font-medium">{interview?.description}</span>
-          </p>
-          <div className="flex flex-col gap-1 my-2 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md">
-            <ScrollArea className="h-[250px]">
-              <DataTable data={tableData} interviewId={interview?.id || ""} />
-            </ScrollArea>
-          </div>
-          <div className="flex flex-row gap-1 my-2 justify-center">
-            <div className="flex flex-col">
-              <div className="flex flex-col gap-1 my-2 mt-4 mx-2 p-3 rounded-2xl bg-slate-50 shadow-md max-w-[400px]">
-                <div className="flex flex-row items-center justify-center gap-1 font-semibold mb-1 text-[15px]">
-                  Ortalama Süre
-                  <InfoTooltip content="Kullanıcıların görüşmeyi tamamlama süresi ortalaması" />
-                </div>
-                <div className="flex items-center justify-center">
-                  <p className="text-2xl font-semibold text-indigo-600 w-fit p-1 px-2 bg-indigo-100 rounded-md">
-                    {convertSecondstoMMSS(totalDuration / responses.length)}
-                  </p>
+          <div className="flex flex-col gap-4 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <h3 className="text-sm font-medium mb-2">Yanıt İstatistikleri</h3>
+                <div className="flex flex-row justify-between items-center">
+                  <div>
+                    <p className="text-2xl font-bold">{responses.length}</p>
+                    <p className="text-sm text-gray-600">Toplam Yanıt</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{completedInterviews}</p>
+                    <p className="text-sm text-gray-600">Tamamlanan</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col items-center justify-center gap-1 mx-2 p-3 rounded-2xl bg-slate-50 shadow-md max-w-[360px]">
-                <div className="flex flex-row gap-1 font-semibold mb-1 text-[15px] mx-auto text-center">
-                  Görüşme Tamamlama Oranı
-                  <InfoTooltip content="Başarıyla tamamlanan görüşmelerin yüzdesi" />
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <h3 className="text-sm font-medium mb-2">Aday Durumu</h3>
+                <div className="flex flex-row justify-between items-center">
+                  <div>
+                    <p className="text-2xl font-bold text-green-500">
+                      {candidateStatusCount.SELECTED}
+                    </p>
+                    <p className="text-sm text-gray-600">Seçildi</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-yellow-500">
+                      {candidateStatusCount.POTENTIAL}
+                    </p>
+                    <p className="text-sm text-gray-600">Potansiyel</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-red-500">
+                      {candidateStatusCount.NOT_SELECTED}
+                    </p>
+                    <p className="text-sm text-gray-600">Seçilmedi</p>
+                  </div>
                 </div>
-                <p className="w-fit text-2xl font-semibold text-indigo-600  p-1 px-2 bg-indigo-100 rounded-md">
-                  {Math.round(
-                    (completedInterviews / responses.length) * 10000,
-                  ) / 100}
-                  %
+              </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <h3 className="text-sm font-medium mb-2">Ortalama Süre</h3>
+                <p className="text-2xl font-bold">
+                  {convertSecondstoMMSS(totalDuration / responses.length)}
                 </p>
+                <p className="text-sm text-gray-600">Dakika</p>
               </div>
             </div>
-            <div className="flex flex-col gap-1 my-2 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md max-w-[360px]">
-              <div className="flex flex-row gap-2 text-[15px] font-bold mb-3 mx-auto">
-                <SmileIcon />
-                Aday Duygu Durumu
-                <InfoTooltip content="Görüşmelerdeki aday duygu durumu dağılımı" />
-              </div>
-              <PieChart
-                sx={{
-                  "& .MuiChartsLegend-series text": {
-                    fontSize: "0.8rem !important",
-                  },
-                }}
-                series={[
-                  {
-                    data: [
-                      {
-                        id: 0,
-                        value: sentimentCount.positive,
-                        label: `Olumlu (${sentimentCount.positive})`,
-                        color: "#22c55e",
-                      },
-                      {
-                        id: 1,
-                        value: sentimentCount.neutral,
-                        label: `Nötr (${sentimentCount.neutral})`,
-                        color: "#eab308",
-                      },
-                      {
-                        id: 2,
-                        value: sentimentCount.negative,
-                        label: `Olumsuz (${sentimentCount.negative})`,
-                        color: "#eb4444",
-                      },
-                    ],
-                    highlightScope: { faded: "global", highlighted: "item" },
-                    faded: {
-                      innerRadius: 10,
-                      additionalRadius: -10,
-                      color: "gray",
-                    },
-                  },
-                ]}
-                width={360}
-                height={120}
-              />
-            </div>
-            <div className="flex flex-col gap-1 my-2 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md">
-              <div className="flex flex-row gap-2 text-[15px] font-bold mx-auto mb-1">
-                <UserCircleIcon />
-                Aday Durumu
-                <InfoTooltip content="Aday seçim durumu dağılımı" />
-              </div>
-              <div className="text-sm text-center mb-1">
-                Toplam Yanıt: {totalResponses}
-              </div>
-              <PieChart
-                sx={{
-                  "& .MuiChartsLegend-series text": {
-                    fontSize: "0.8rem !important",
-                  },
-                }}
-                series={[
-                  {
-                    data: [
-                      {
-                        id: 0,
-                        value: candidateStatusCount[CandidateStatus.SELECTED],
-                        label: `Seçildi (${candidateStatusCount[CandidateStatus.SELECTED]})`,
-                        color: "#22c55e",
-                      },
-                      {
-                        id: 1,
-                        value: candidateStatusCount[CandidateStatus.POTENTIAL],
-                        label: `Potansiyel (${candidateStatusCount[CandidateStatus.POTENTIAL]})`,
-                        color: "#eab308",
-                      },
-                      {
-                        id: 2,
-                        value:
-                          candidateStatusCount[CandidateStatus.NOT_SELECTED],
-                        label: `Seçilmedi (${candidateStatusCount[CandidateStatus.NOT_SELECTED]})`,
-                        color: "#eb4444",
-                      },
-                      {
-                        id: 3,
-                        value: candidateStatusCount[CandidateStatus.NO_STATUS],
-                        label: `Durum Yok (${candidateStatusCount[CandidateStatus.NO_STATUS]})`,
-                        color: "#9ca3af",
-                      },
-                    ],
-                    highlightScope: { faded: "global", highlighted: "item" },
-                    faded: {
-                      innerRadius: 10,
-                      additionalRadius: -10,
-                      color: "gray",
-                    },
-                  },
-                ]}
-                width={360}
-                height={120}
-                slotProps={{
-                  legend: {
-                    direction: "column",
-                    position: { vertical: "middle", horizontal: "right" },
-                    padding: 0,
-                    itemMarkWidth: 10,
-                    itemMarkHeight: 10,
-                    markGap: 5,
-                    itemGap: 5,
-                  },
-                }}
-              />
+            <div className="flex flex-col gap-1 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md">
+              <ScrollArea className="h-[250px]">
+                <DataTable data={tableData} interviewId={interview?.id || ""} />
+              </ScrollArea>
             </div>
           </div>
         </div>
       ) : (
-        <div className="w-[85%] h-[60%] flex flex-col items-center justify-center">
-          <div className="flex flex-col items-center">
-            <Image
-              src="/No-Responses.png"
-              alt="No Responses"
-              width={270}
-              height={270}
-              priority
-              unoptimized
-              className="object-contain"
-            />
-            <p className="text-center text-sm mt-4">
-              Lütfen görüşme bağlantısını adaylarla paylaşın
-            </p>
-          </div>
+        <div className="flex flex-col items-center justify-center h-full">
+          <p className="text-gray-500">Henüz yanıt yok</p>
         </div>
       )}
     </div>

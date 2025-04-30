@@ -259,208 +259,119 @@ function InterviewHome({ params, searchParams }: Props) {
         </div>
       ) : (
         <>
-          <div className="flex flex-row p-3 pt-4 justify-center gap-6 items-center sticky top-2 bg-white">
-            <div className="font-bold text-md">{interview?.name}</div>
-
-            <div
-              className="w-5 h-5 rounded-full border-2 border-white shadow"
-              style={{ backgroundColor: iconColor }}
-            />
-
-            <div className="flex flex-row gap-3 my-auto">
-              <UserIcon className="my-auto" size={16} />:{" "}
-              {String(responses?.length)}
-            </div>
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
+          <div className="flex flex-col md:flex-row gap-4 w-full">
+            <div className="w-full md:w-[15%] bg-slate-200 rounded-md p-4">
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-row md:flex-col gap-2">
                   <Button
-                    className={
-                      "bg-transparent shadow-none relative text-xs text-indigo-600 px-1 h-7 hover:scale-110 hover:bg-transparent"
-                    }
-                    variant={"secondary"}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      openSharePopup();
+                    className={`w-full text-sm flex items-center justify-start gap-2 ${
+                      !searchParams.call && !searchParams.edit
+                        ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                        : ""
+                    }`}
+                    variant={"ghost"}
+                    onClick={() => {
+                      router.push(`/interviews/${params.interviewId}`);
                     }}
                   >
-                    <Share2 size={16} />
+                    <UserIcon className="h-4 w-4" />
+                    Özet
                   </Button>
-                </TooltipTrigger>
-                <TooltipContent
-                  className="bg-zinc-300"
-                  side="bottom"
-                  sideOffset={4}
-                >
-                  <span className="text-black flex flex-row gap-4">Share</span>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
                   <Button
-                    className="bg-transparent shadow-none text-xs text-indigo-600 px-0 h-7 hover:scale-110 relative"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      seeInterviewPreviewPage();
-                    }}
+                    className="w-full text-sm flex items-center justify-start gap-2"
+                    variant={"ghost"}
+                    onClick={openSharePopup}
                   >
-                    <Eye />
+                    <Share2 className="h-4 w-4" />
+                    Paylaş
                   </Button>
-                </TooltipTrigger>
-                <TooltipContent
-                  className="bg-zinc-300"
-                  side="bottom"
-                  sideOffset={4}
-                >
-                  <span className="text-black flex flex-row gap-4">
-                    Preview
-                  </span>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
                   <Button
-                    className="bg-transparent shadow-none text-xs text-indigo-600 px-0 h-7 hover:scale-110 relative"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setShowColorPicker(!showColorPicker);
-                    }}
-                  >
-                    <Palette size={19} />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent
-                  className="bg-zinc-300"
-                  side="bottom"
-                  sideOffset={4}
-                >
-                  <span className="text-black flex flex-row gap-4">
-                    Theme Color
-                  </span>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    className="bg-transparent shadow-none text-xs text-indigo-600 px-0 h-7 hover:scale-110 relative"
-                    onClick={(event) => {
+                    className={`w-full text-sm flex items-center justify-start gap-2 ${
+                      searchParams.edit
+                        ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                        : ""
+                    }`}
+                    variant={"ghost"}
+                    onClick={() => {
                       router.push(
                         `/interviews/${params.interviewId}?edit=true`,
                       );
                     }}
                   >
-                    <Pencil size={16} />
+                    <Pencil className="h-4 w-4" />
+                    Düzenle
                   </Button>
-                </TooltipTrigger>
-                <TooltipContent
-                  className="bg-zinc-300"
-                  side="bottom"
-                  sideOffset={4}
-                >
-                  <span className="text-black flex flex-row gap-4">Edit</span>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            <label className="inline-flex cursor-pointer">
-              {currentPlan == "free_trial_over" ? (
-                <>
-                  <span className="ms-3 my-auto text-sm">Inactive</span>
+                </div>
+                <div className="flex flex-row md:flex-col items-center gap-2 mt-2">
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={isActive}
+                      onCheckedChange={handleToggle}
+                    />
+                    <p className="text-sm">
+                      {isActive ? "Active" : "Inactive"}
+                    </p>
+                  </div>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipContent
-                        className="bg-zinc-300"
-                        side="bottom"
-                        sideOffset={4}
-                      >
-                        Upgrade your plan to reactivate
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="w-full text-sm flex items-center justify-start gap-2"
+                          onClick={() => setShowColorPicker(true)}
+                        >
+                          <Palette
+                            className="h-4 w-4"
+                            style={{ color: iconColor }}
+                          />
+                          Tema
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Change theme color</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                </>
-              ) : (
-                <>
-                  <span className="ms-3 my-auto text-sm">Active</span>
-                  <Switch
-                    checked={isActive}
-                    className={`ms-3 my-auto ${
-                      isActive ? "bg-indigo-600" : "bg-[#E6E7EB]"
-                    }`}
-                    onCheckedChange={handleToggle}
-                  />
-                </>
-              )}
-            </label>
-          </div>
-          <div className="flex flex-row w-full p-2 h-[85%] gap-1 ">
-            <div className="w-[20%] flex flex-col p-2 divide-y-2 rounded-sm border-2 border-slate-100">
-              <div className="flex w-full justify-center py-2">
-                <Select
-                  onValueChange={async (newValue: string) => {
-                    setFilterStatus(newValue as CandidateStatus | "ALL");
-                  }}
-                >
-                  <SelectTrigger className="w-[95%] bg-slate-100 rounded-lg">
-                    <Filter size={18} className=" text-slate-400" />
-                    <SelectValue placeholder="Filter By" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={CandidateStatus.NO_STATUS}>
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 bg-gray-400 rounded-full mr-2" />
-                        No Status
-                      </div>
-                    </SelectItem>
-                    <SelectItem value={CandidateStatus.NOT_SELECTED}>
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 bg-red-500 rounded-full mr-2" />
-                        Not Selected
-                      </div>
-                    </SelectItem>
-                    <SelectItem value={CandidateStatus.POTENTIAL}>
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2" />
-                        Potential
-                      </div>
-                    </SelectItem>
-                    <SelectItem value={CandidateStatus.SELECTED}>
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 bg-green-500 rounded-full mr-2" />
-                        Selected
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="ALL">
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 border-2 border-gray-300 rounded-full mr-2" />
-                        All
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <ScrollArea className="h-full p-1 rounded-md border-none">
-                {filterResponses().length > 0 ? (
-                  filterResponses().map((response) => (
+                </div>
+                <div className="flex flex-col gap-2 mt-4">
+                  <p className="text-sm font-medium">Filtrele</p>
+                  <Select
+                    value={filterStatus}
+                    onValueChange={(value: CandidateStatus | "ALL") =>
+                      setFilterStatus(value)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ALL">Tümü</SelectItem>
+                      <SelectItem value="NOT_SELECTED">
+                        Seçilmedi
+                      </SelectItem>
+                      <SelectItem value="POTENTIAL">
+                        Potansiyel
+                      </SelectItem>
+                      <SelectItem value="SELECTED">Seçildi</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <ScrollArea className="h-[400px] mt-4">
+                  {filterResponses().map((response) => (
                     <div
-                      className={`p-2 rounded-md hover:bg-indigo-100 border-2 my-1 text-left text-xs ${
-                        searchParams.call == response.call_id
-                          ? "bg-indigo-200"
-                          : "border-indigo-100"
-                      } flex flex-row justify-between cursor-pointer w-full`}
-                      key={response?.id}
+                      key={response.call_id}
+                      className={`flex flex-row gap-1 items-center w-full p-2 rounded-md mb-2 cursor-pointer hover:bg-slate-300 ${
+                        searchParams.call === response.call_id
+                          ? "bg-slate-300"
+                          : "bg-slate-100"
+                      }`}
                       onClick={() => {
+                        if (!response.is_viewed) {
+                          handleResponseClick(response);
+                        }
                         router.push(
                           `/interviews/${params.interviewId}?call=${response.call_id}`,
                         );
-                        handleResponseClick(response);
                       }}
                     >
                       <div className="flex flex-row gap-1 items-center w-full">
@@ -475,12 +386,12 @@ function InterviewHome({ params, searchParams }: Props) {
                         )}
                         <div className="flex items-center justify-between w-full">
                           <div className="flex flex-col my-auto">
-                            <p className="font-medium mb-[2px]">
+                            <p className="font-medium mb-[2px] text-sm">
                               {response?.name
                                 ? `${response?.name}'s Response`
                                 : "Anonymous"}
                             </p>
-                            <p className="">
+                            <p className="text-xs text-gray-600">
                               {formatTimestampToDateHHMM(
                                 String(response?.created_at),
                               )}
@@ -488,56 +399,18 @@ function InterviewHome({ params, searchParams }: Props) {
                           </div>
                           <div className="flex flex-col items-center justify-center ml-auto flex-shrink-0">
                             {!response.is_viewed && (
-                              <div className="w-4 h-4 flex items-center justify-center mb-1">
-                                <div className="text-indigo-500 text-xl leading-none">
-                                  ●
-                                </div>
-                              </div>
+                              <div className="w-2 h-2 rounded-full bg-indigo-500" />
                             )}
-                            <div
-                              className={`w-6 h-6 flex items-center justify-center ${
-                                response.is_viewed ? "h-full" : ""
-                              }`}
-                            >
-                              {response.analytics &&
-                                response.analytics.overallScore !==
-                                  undefined && (
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <div className="w-6 h-6 rounded-full bg-white border-2 border-indigo-500 flex items-center justify-center">
-                                          <span className="text-indigo-500 text-xs font-semibold">
-                                            {response?.analytics?.overallScore}
-                                          </span>
-                                        </div>
-                                      </TooltipTrigger>
-                                      <TooltipContent
-                                        className="bg-gray-500"
-                                        side="bottom"
-                                        sideOffset={4}
-                                      >
-                                        <span className="text-white font-normal flex flex-row gap-4">
-                                          Overall Score
-                                        </span>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                )}
-                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <p className="text-center text-gray-500">
-                    No responses to display
-                  </p>
-                )}
-              </ScrollArea>
+                  ))}
+                </ScrollArea>
+              </div>
             </div>
             {responses && (
-              <div className="w-[85%] rounded-md ">
+              <div className="w-full md:w-[85%] rounded-md">
                 {searchParams.call ? (
                   <CallInfo
                     call_id={searchParams.call}
@@ -561,7 +434,7 @@ function InterviewHome({ params, searchParams }: Props) {
       >
         <div className="w-[250px] p-3">
           <h3 className="text-lg font-semibold mb-4 text-center">
-            Choose a Theme Color
+            Tema Rengi Seç
           </h3>
           <ChromePicker
             disableAlpha={true}

@@ -146,7 +146,7 @@ function DetailsPopup({
 
   return (
     <>
-      <div className="w-full max-w-3xl px-4 sm:px-6 mx-auto">
+      <div className="w-full max-w-2xl px-4 sm:px-6 mx-auto">
         <h1 className="text-xl font-semibold mb-6 text-center">Görüşme Oluştur</h1>
         <div className="space-y-8">
           {/* Görüşme Adı */}

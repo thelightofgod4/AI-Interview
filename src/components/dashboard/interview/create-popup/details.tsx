@@ -146,18 +146,18 @@ function DetailsPopup({
 
   return (
     <>
-      <div className="w-full max-w-2xl px-4 sm:px-6 mx-auto">
-        <h1 className="text-xl font-semibold mb-6 text-center">Görüşme Oluştur</h1>
-        <div className="space-y-8">
+      <div className="w-full max-w-2xl mx-auto">
+        <h1 className="text-lg font-semibold mb-4 text-center">Görüşme Oluştur</h1>
+        <div className="space-y-4">
           {/* Görüşme Adı */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label htmlFor="interview-name" className="text-sm font-medium block">
               Görüşme Adı:
             </label>
             <input
               id="interview-name"
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="örn. Görüşmenin Adı"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -166,14 +166,14 @@ function DetailsPopup({
           </div>
 
           {/* Görüşmeci Seçimi */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label className="text-sm font-medium block">
               Görüşmeci Seçin:
             </label>
             <div className="relative flex flex-col items-center">
               <div
                 id="slider-3"
-                className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide justify-center"
+                className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide justify-center"
               >
                 {interviewers.map((item) => (
                   <div
@@ -188,10 +188,10 @@ function DetailsPopup({
                         setOpenInterviewerDetails(true);
                       }}
                     >
-                      <Info size={18} color="#4f46e5" strokeWidth={2.2} />
+                      <Info size={16} color="#4f46e5" strokeWidth={2.2} />
                     </button>
                     <div
-                      className={`w-24 h-24 rounded-full overflow-hidden cursor-pointer transition-all ${
+                      className={`w-20 h-20 rounded-full overflow-hidden cursor-pointer transition-all ${
                         selectedInterviewer === item.id
                           ? "ring-4 ring-indigo-600"
                           : "hover:ring-2 hover:ring-indigo-400"
@@ -201,12 +201,12 @@ function DetailsPopup({
                       <Image
                         src={item.image}
                         alt={`${item.name} avatar`}
-                        width={96}
-                        height={96}
+                        width={80}
+                        height={80}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="mt-3 text-sm text-center">{item.name}</p>
+                    <p className="mt-2 text-sm text-center">{item.name}</p>
                   </div>
                 ))}
               </div>
@@ -214,13 +214,13 @@ function DetailsPopup({
           </div>
 
           {/* Amaç */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label htmlFor="objective" className="text-sm font-medium block">
               Amaç:
             </label>
             <Textarea
               id="objective"
-              className="w-full min-h-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full min-h-[80px] px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="örn. Adayların teknik becerilerini ve önceki projelerini değerlendirin."
               value={objective}
               onChange={(e) => setObjective(e.target.value)}
@@ -229,7 +229,7 @@ function DetailsPopup({
           </div>
 
           {/* Dosya Yükleme */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label className="text-sm font-medium block">
               Görüşmeyle ilgili belgeleri yükleyin:
             </label>
@@ -243,8 +243,8 @@ function DetailsPopup({
           </div>
 
           {/* Anonim Seçeneği */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-3">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
               <label htmlFor="anonymous" className="text-sm font-medium">
                 Yanıtlar anonim olsun mu?
               </label>
@@ -260,8 +260,8 @@ function DetailsPopup({
           </div>
 
           {/* Soru Sayısı ve Süre */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
               <label htmlFor="question-count" className="text-sm font-medium block">
                 Soru Sayısı:
               </label>
@@ -269,13 +269,13 @@ function DetailsPopup({
                 id="question-count"
                 type="number"
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 placeholder="örn. 5"
                 value={numQuestions}
                 onChange={(e) => setNumQuestions(e.target.value)}
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label htmlFor="duration" className="text-sm font-medium block">
                 Süre (dk):
               </label>
@@ -283,7 +283,7 @@ function DetailsPopup({
                 id="duration"
                 type="number"
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 placeholder="örn. 30"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
@@ -292,7 +292,7 @@ function DetailsPopup({
           </div>
 
           {/* Butonlar */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+          <div className="flex flex-col sm:flex-row gap-2 justify-center pt-3">
             <Button
               className="w-full sm:w-auto bg-indigo-600 text-white hover:bg-indigo-700"
               disabled={

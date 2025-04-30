@@ -28,10 +28,10 @@ export default function Modal({
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute -top-2 -right-2 p-1.5 rounded-full text-gray-400 bg-white hover:text-gray-600 z-10 shadow-md"
+          className="absolute -top-3 -right-3 p-2 rounded-full text-gray-600 bg-white hover:text-gray-800 z-10 shadow-lg border border-gray-100"
           onClick={onClose}
         >
-          <X size={18} />
+          <X size={20} strokeWidth={2.5} />
         </button>
         {children}
       </div>

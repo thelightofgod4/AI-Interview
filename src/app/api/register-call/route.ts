@@ -3,13 +3,6 @@ import { InterviewerService } from "@/services/interviewers.service";
 import { NextResponse } from "next/server";
 import Retell from "retell-sdk";
 
-// Disable middleware for this route
-export const config = {
-  api: {
-    bodyParser: true,
-  },
-};
-
 // Force dynamic to prevent caching
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';

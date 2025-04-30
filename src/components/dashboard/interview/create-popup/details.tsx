@@ -146,90 +146,93 @@ function DetailsPopup({
 
   return (
     <>
-      <div className="text-center w-[38rem]">
-        <h1 className="text-xl font-semibold">Görüşme Oluştur</h1>
-        <div className="flex flex-col justify-center items-start mt-4 ml-10 mr-8">
-          <div className="flex flex-row justify-center items-center">
-            <h3 className="text-sm font-medium">Görüşme Adı:</h3>
+      <div className="w-full max-w-3xl px-4 sm:px-6">
+        <h1 className="text-xl font-semibold mb-6 text-center">Görüşme Oluştur</h1>
+        <div className="space-y-6">
+          {/* Görüşme Adı */}
+          <div className="space-y-2">
+            <label htmlFor="interview-name" className="text-sm font-medium block">
+              Görüşme Adı:
+            </label>
             <input
+              id="interview-name"
               type="text"
-              className="border-b-2 focus:outline-none border-gray-500 px-2 w-96 py-0.5 ml-3"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="örn. Görüşmenin Adı"
               value={name}
               onChange={(e) => setName(e.target.value)}
               onBlur={(e) => setName(e.target.value.trim())}
             />
           </div>
-          <h3 className="text-sm mt-3 font-medium">Görüşmeci Seçin:</h3>
-          <div className="relative flex items-center mt-1">
-            <div
-              id="slider-3"
-              className=" h-36 pt-1 overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide w-[27.5rem]"
-            >
-              {interviewers.map((item, key) => (
-                <div
-                  className=" p-0 inline-block cursor-pointer ml-1 mr-5 rounded-xl shrink-0 overflow-hidden"
-                  key={item.id}
-                >
-                  <button
-                    className="absolute ml-9"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setInterviewerDetails(item);
-                      setOpenInterviewerDetails(true);
-                    }}
-                  >
-                    <Info size={18} color="#4f46e5" strokeWidth={2.2} />
-                  </button>
+
+          {/* Görüşmeci Seçimi */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium block">
+              Görüşmeci Seçin:
+            </label>
+            <div className="relative">
+              <div
+                id="slider-3"
+                className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"
+              >
+                {interviewers.map((item) => (
                   <div
-                    className={`w-[96px] overflow-hidden rounded-full ${
-                      selectedInterviewer === item.id
-                        ? "border-4 border-indigo-600"
-                        : ""
-                    }`}
-                    onClick={() => setSelectedInterviewer(item.id)}
+                    key={item.id}
+                    className="flex-shrink-0 relative"
                   >
-                    <Image
-                      src={item.image}
-                      alt="Görüşmecinin fotoğrafı"
-                      width={70}
-                      height={70}
-                      className="w-full h-full object-cover"
-                    />
+                    <button
+                      className="absolute -top-1 right-0 z-10"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setInterviewerDetails(item);
+                        setOpenInterviewerDetails(true);
+                      }}
+                    >
+                      <Info size={18} color="#4f46e5" strokeWidth={2.2} />
+                    </button>
+                    <div
+                      className={`w-24 h-24 rounded-full overflow-hidden cursor-pointer transition-all ${
+                        selectedInterviewer === item.id
+                          ? "ring-4 ring-indigo-600"
+                          : "hover:ring-2 hover:ring-indigo-400"
+                      }`}
+                      onClick={() => setSelectedInterviewer(item.id)}
+                    >
+                      <Image
+                        src={item.image}
+                        alt={`${item.name} avatar`}
+                        width={96}
+                        height={96}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="mt-2 text-sm text-center">{item.name}</p>
                   </div>
-                  <CardTitle className="mt-0 text-xs text-center">
-                    {item.name}
-                  </CardTitle>
-                </div>
-              ))}
-            </div>
-            {interviewers.length > 4 && (
-              <div className="flex flex-row justify-center items-center space-x-3">
-                <ChevronLeft
-                  className="opacity-50 cursor-pointer hover:opacity-100"
-                  size={20}
-                  onClick={() => slideLeft("slider-3", 190)}
-                />
-                <ChevronRight
-                  className="opacity-50 cursor-pointer hover:opacity-100"
-                  size={20}
-                  onClick={() => slideRight("slider-3", 190)}
-                />
+                ))}
               </div>
-            )}
+            </div>
           </div>
-          <div className="flex flex-row justify-center items-center mt-3">
-            <h3 className="text-sm font-medium">Amaç:</h3>
+
+          {/* Amaç */}
+          <div className="space-y-2">
+            <label htmlFor="objective" className="text-sm font-medium block">
+              Amaç:
+            </label>
             <Textarea
-              className="border-2 focus:outline-none border-gray-500 px-2 w-96 py-0.5 ml-3 h-24"
+              id="objective"
+              className="w-full min-h-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="örn. Adayların teknik becerilerini ve önceki projelerini değerlendirin."
               value={objective}
               onChange={(e) => setObjective(e.target.value)}
               onBlur={(e) => setObjective(e.target.value.trim())}
             />
           </div>
-          <div className="mt-3">
-            <h3 className="text-sm font-medium mb-1">Görüşmeyle ilgili belgeleri yükleyin:</h3>
+
+          {/* Dosya Yükleme */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium block">
+              Görüşmeyle ilgili belgeleri yükleyin:
+            </label>
             <FileUpload
               isUploaded={isUploaded}
               setIsUploaded={setIsUploaded}
@@ -238,39 +241,60 @@ function DetailsPopup({
               setUploadedDocumentContext={setUploadedDocumentContext}
             />
           </div>
-          <div className="flex flex-row justify-center items-center mt-3">
-            <h3 className="text-sm font-medium">Yanıtlar anonim olsun mu?</h3>
-            <div className="ml-3">
+
+          {/* Anonim Seçeneği */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <label htmlFor="anonymous" className="text-sm font-medium">
+                Yanıtlar anonim olsun mu?
+              </label>
               <Switch
+                id="anonymous"
                 checked={isAnonymous}
                 onCheckedChange={setIsAnonymous}
               />
             </div>
-            <p className="text-xs text-gray-500 ml-2">
+            <p className="text-xs text-gray-500">
               Not: Eğer anonim ise, görüşmecinin e-posta ve adı toplanmayacak.
             </p>
           </div>
-          <div className="flex flex-row justify-center items-center mt-3">
-            <h3 className="text-sm font-medium">Soru Sayısı:</h3>
-            <input
-              type="number"
-              className="border-b-2 focus:outline-none border-gray-500 px-2 w-20 py-0.5 ml-3"
-              placeholder="örn. 5"
-              value={numQuestions}
-              onChange={(e) => setNumQuestions(e.target.value)}
-            />
-            <h3 className="text-sm font-medium ml-8">Süre (dk):</h3>
-            <input
-              type="number"
-              className="border-b-2 focus:outline-none border-gray-500 px-2 w-20 py-0.5 ml-3"
-              placeholder="örn. 30"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-            />
+
+          {/* Soru Sayısı ve Süre */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="question-count" className="text-sm font-medium block">
+                Soru Sayısı:
+              </label>
+              <input
+                id="question-count"
+                type="number"
+                min="1"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="örn. 5"
+                value={numQuestions}
+                onChange={(e) => setNumQuestions(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="duration" className="text-sm font-medium block">
+                Süre (dk):
+              </label>
+              <input
+                id="duration"
+                type="number"
+                min="1"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="örn. 30"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+              />
+            </div>
           </div>
-          <div className="flex flex-row justify-center items-center mt-8 mb-4 space-x-4">
+
+          {/* Butonlar */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
             <Button
-              className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+              className="w-full sm:w-auto bg-indigo-600 text-white hover:bg-indigo-700"
               disabled={
                 !name ||
                 selectedInterviewer === BigInt(0) ||
@@ -289,7 +313,7 @@ function DetailsPopup({
               Soruları Oluştur
             </Button>
             <Button
-              className="bg-indigo-100 text-indigo-600 px-4 py-2 rounded-md hover:bg-indigo-200"
+              className="w-full sm:w-auto bg-indigo-100 text-indigo-600 hover:bg-indigo-200"
               disabled={
                 !name ||
                 selectedInterviewer === BigInt(0) ||
@@ -310,6 +334,7 @@ function DetailsPopup({
           </div>
         </div>
       </div>
+
       {openInterviewerDetails && interviewerDetails && (
         <Modal
           open={openInterviewerDetails}

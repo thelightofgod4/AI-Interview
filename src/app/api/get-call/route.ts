@@ -13,93 +13,120 @@ export async function POST(req: Request, res: Response) {
   logger.info("get-call request received");
   const body = await req.json();
 
-  const callDetails: Response = await ResponseService.getResponseByCallId(
-    body.id,
-  );
-  let callResponse = callDetails.details;
-  
-  // If analysis is completed, return results
-  if (callDetails.is_analysed) {
-    return NextResponse.json(
-      {
-        callResponse,
-        analytics: callDetails.analytics,
-        status: "completed"
-      },
-      { status: 200 },
-    );
-  }
-
-  // If analysis is in progress, return status
-  if (callDetails.analysis_status === "processing") {
-    return NextResponse.json(
-      {
-        callResponse,
-        analytics: null,
-        status: "processing"
-      },
-      { status: 200 },
-    );
-  }
-
-  const callOutput = await retell.call.retrieve(body.id);
-  const interviewId = callDetails?.interview_id;
-  callResponse = callOutput;
-  const duration = Math.round(
-    callResponse.end_timestamp / 1000 - callResponse.start_timestamp / 1000,
-  );
-
-  // Save call details
-  await ResponseService.saveResponse(
-    {
-      details: callResponse,
-      is_ended: true,
-      duration: duration,
-    },
-    body.id,
-  );
-
-  // Start analysis in background
   try {
-    // Mark as processing
-    await ResponseService.updateResponse({
-      analysis_status: "processing"
-    }, body.id);
+    const callDetails: Response = await ResponseService.getResponseByCallId(
+      body.id,
+    );
+    let callResponse = callDetails.details;
+    
+    // If analysis is completed, return results
+    if (callDetails.is_analysed) {
+      return NextResponse.json(
+        {
+          callResponse,
+          analytics: callDetails.analytics,
+          status: "completed"
+        },
+        { status: 200 },
+      );
+    }
 
-    // Start analysis process
-    generateInterviewAnalytics({
-      callId: body.id,
-      interviewId: interviewId,
-      transcript: callResponse.transcript,
-    }).then(async (result) => {
-      // Update with results
+    // If analysis is in progress, return status
+    if (callDetails.analysis_status === "processing") {
+      return NextResponse.json(
+        {
+          callResponse,
+          analytics: null,
+          status: "processing"
+        },
+        { status: 200 },
+      );
+    }
+
+    const callOutput = await retell.call.retrieve(body.id);
+    const interviewId = callDetails?.interview_id;
+    callResponse = callOutput;
+    const duration = Math.round(
+      callResponse.end_timestamp / 1000 - callResponse.start_timestamp / 1000,
+    );
+
+    // Save call details
+    await ResponseService.saveResponse(
+      {
+        details: callResponse,
+        is_ended: true,
+        duration: duration,
+      },
+      body.id,
+    );
+
+    // Start analysis synchronously
+    try {
+      // Mark as processing
+      await ResponseService.updateResponse({
+        analysis_status: "processing"
+      }, body.id);
+
+      logger.info("Starting interview analytics generation", { callId: body.id });
+      
+      // Wait for analysis to complete
+      const result = await generateInterviewAnalytics({
+        callId: body.id,
+        interviewId: interviewId,
+        transcript: callResponse.transcript,
+      });
+
+      logger.info("Analytics generation completed", { callId: body.id });
+
+      // Update with results immediately
       await ResponseService.updateResponse({
         analytics: result.analytics,
         is_analysed: true,
         analysis_status: "completed"
       }, body.id);
-    }).catch(async (error) => {
-      logger.error("Analysis failed", { error: error instanceof Error ? error.message : String(error) });
+
+      // Return completed status with analytics
+      return NextResponse.json(
+        {
+          callResponse,
+          analytics: result.analytics,
+          status: "completed"
+        },
+        { status: 200 },
+      );
+
+    } catch (analysisError) {
+      logger.error("Analysis failed", { 
+        error: analysisError instanceof Error ? analysisError.message : String(analysisError),
+        callId: body.id,
+        stack: analysisError instanceof Error ? analysisError.stack : undefined
+      });
+
       await ResponseService.updateResponse({
         analysis_status: "failed"
       }, body.id);
+
+      return NextResponse.json(
+        {
+          callResponse,
+          analytics: null,
+          status: "failed",
+          error: "Analysis failed"
+        },
+        { status: 500 },
+      );
+    }
+  } catch (error) {
+    logger.error("Request failed", { 
+      error: error instanceof Error ? error.message : String(error),
+      callId: body.id,
+      stack: error instanceof Error ? error.stack : undefined
     });
 
     return NextResponse.json(
       {
-        callResponse,
-        analytics: null,
-        status: "processing"
-      },
-      { status: 200 },
-    );
-  } catch (error) {
-    logger.error("Failed to start analysis", { error: error instanceof Error ? error.message : String(error) });
-    return NextResponse.json(
-      {
-        callResponse,
-        analytics: null,
-        status: "failed"
+        error: "Request failed",
+        details: error instanceof Error ? error.message : "Unknown error"
       },
       { status: 500 },
     );

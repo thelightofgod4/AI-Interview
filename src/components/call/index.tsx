@@ -210,19 +210,12 @@ function Call({ interview }: InterviewProps) {
       
       setLoading(true);
 
-      const oldUserEmails: string[] = (
-        await ResponseService.getAllEmails(interview.id)
-      ).map((item) => item.email);
-      
-      // Check if user has already responded
-      const hasResponded = oldUserEmails.includes(email);
-      
-      // Check if there's a restricted respondents list and if user is not in it
+      // Only check if user is in the allowed respondents list (if it exists)
       const isNotAllowed = Array.isArray(interview?.respondents) && 
                           interview.respondents.length > 0 && 
                           !interview.respondents.includes(email);
 
-      if (hasResponded || isNotAllowed) {
+      if (isNotAllowed) {
         setIsOldUser(true);
       } else {
         try {
@@ -266,14 +259,12 @@ function Call({ interview }: InterviewProps) {
             response: registerError.response?.data
           });
           
-          // Daha detaylı hata mesajı göster
           const errorMessage = registerError.response?.data?.error || 
                               registerError.response?.data?.details || 
                               "Görüşme kaydı başarısız oldu. Lütfen tekrar deneyin.";
           
           toast.error(errorMessage);
           
-          // Hata detaylarını logla
           if (registerError.response?.data) {
             console.error("API Error Details:", registerError.response.data);
           }

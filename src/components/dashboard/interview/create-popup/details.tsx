@@ -146,9 +146,9 @@ function DetailsPopup({
 
   return (
     <>
-      <div className="w-full max-w-3xl px-4 sm:px-6">
+      <div className="w-full max-w-3xl px-4 sm:px-6 mx-auto">
         <h1 className="text-xl font-semibold mb-6 text-center">Görüşme Oluştur</h1>
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Görüşme Adı */}
           <div className="space-y-2">
             <label htmlFor="interview-name" className="text-sm font-medium block">
@@ -170,10 +170,10 @@ function DetailsPopup({
             <label className="text-sm font-medium block">
               Görüşmeci Seçin:
             </label>
-            <div className="relative">
+            <div className="relative flex flex-col items-center">
               <div
                 id="slider-3"
-                className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide"
+                className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide justify-center"
               >
                 {interviewers.map((item) => (
                   <div
@@ -206,7 +206,7 @@ function DetailsPopup({
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="mt-2 text-sm text-center">{item.name}</p>
+                    <p className="mt-3 text-sm text-center">{item.name}</p>
                   </div>
                 ))}
               </div>

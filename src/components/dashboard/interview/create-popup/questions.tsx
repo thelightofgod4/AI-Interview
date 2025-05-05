@@ -21,6 +21,8 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
   const { user } = useClerk();
   const { organization } = useOrganization();
   const [isClicked, setIsClicked] = useState(false);
+  const [addingQuestion, setAddingQuestion] = useState(false);
+  const [newQuestionText, setNewQuestionText] = useState("");
 
   const [questions, setQuestions] = useState<Question[]>(
     interviewData.questions,
@@ -56,13 +58,25 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
     setQuestions(questions.filter((question) => question.id !== id));
   };
 
-  const handleAddQuestion = () => {
-    if (questions.length < interviewData.question_count) {
+  const handleAddQuestionClick = () => {
+    setAddingQuestion(true);
+    setNewQuestionText("");
+  };
+
+  const handleSaveNewQuestion = () => {
+    if (newQuestionText.trim() !== "") {
       setQuestions([
         ...questions,
-        { id: uuidv4(), question: "", follow_up_count: 1 },
+        { id: uuidv4(), question: newQuestionText.trim(), follow_up_count: 1 },
       ]);
+      setAddingQuestion(false);
+      setNewQuestionText("");
     }
+  };
+
+  const handleCancelNewQuestion = () => {
+    setAddingQuestion(false);
+    setNewQuestionText("");
   };
 
   const onSave = async () => {
@@ -176,19 +190,39 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
           ))}
           <div ref={endOfListRef} />
         </ScrollArea>
-        {questions.length < interviewData.question_count ? (
-          <div
-            className="border-indigo-600 opacity-75 hover:opacity-100 w-fit  rounded-full"
-            onClick={handleAddQuestion}
+        {!addingQuestion && (
+          <Button
+            className="bg-indigo-600 text-white hover:bg-indigo-700 mt-4"
+            onClick={handleAddQuestionClick}
           >
-            <Plus
-              size={45}
-              strokeWidth={2.2}
-              className="text-indigo-600  cursor-pointer"
+            Soru Ekle
+          </Button>
+        )}
+        {addingQuestion && (
+          <div className="flex flex-col items-center w-full mt-4">
+            <textarea
+              className="border-2 rounded-md w-3/4 px-2 py-2 border-gray-400 mb-2"
+              placeholder="Yeni soru girin..."
+              value={newQuestionText}
+              onChange={(e) => setNewQuestionText(e.target.value)}
+              rows={3}
             />
+            <div className="flex gap-2">
+              <Button
+                className="bg-indigo-600 text-white hover:bg-indigo-700"
+                onClick={handleSaveNewQuestion}
+                disabled={newQuestionText.trim() === ""}
+              >
+                Soru Ekle
+              </Button>
+              <Button
+                className="bg-gray-200 text-gray-700 hover:bg-gray-300"
+                onClick={handleCancelNewQuestion}
+              >
+                İptal
+              </Button>
+            </div>
           </div>
-        ) : (
-          <></>
         )}
       </div>
       <p className="mt-3 mb-1 ml-2 font-medium">

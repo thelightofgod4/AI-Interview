@@ -173,7 +173,7 @@ function DetailsPopup({
             <div className="relative flex flex-col items-center">
               <div
                 id="slider-3"
-                className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide justify-center"
+                className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide justify-center mt-2"
               >
                 {interviewers.map((item) => (
                   <div
@@ -228,37 +228,6 @@ function DetailsPopup({
             />
           </div>
 
-          {/* Dosya Yükleme */}
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium block">
-              Görüşmeyle ilgili belgeleri yükleyin:
-            </label>
-            <FileUpload
-              isUploaded={isUploaded}
-              setIsUploaded={setIsUploaded}
-              fileName={fileName}
-              setFileName={setFileName}
-              setUploadedDocumentContext={setUploadedDocumentContext}
-            />
-          </div>
-
-          {/* Anonim Seçeneği */}
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <label htmlFor="anonymous" className="text-sm font-medium">
-                Yanıtlar anonim olsun mu?
-              </label>
-              <Switch
-                id="anonymous"
-                checked={isAnonymous}
-                onCheckedChange={setIsAnonymous}
-              />
-            </div>
-            <p className="text-xs text-gray-500">
-              Not: Eğer anonim ise, görüşmecinin e-posta ve adı toplanmayacak.
-            </p>
-          </div>
-
           {/* Soru Sayısı ve Süre */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
@@ -269,10 +238,16 @@ function DetailsPopup({
                 id="question-count"
                 type="number"
                 min="1"
+                max="5"
                 className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                placeholder="örn. 5"
+                placeholder="max 5"
                 value={numQuestions}
-                onChange={(e) => setNumQuestions(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (!value || (Number(value) >= 1 && Number(value) <= 5)) {
+                    setNumQuestions(value);
+                  }
+                }}
               />
             </div>
             <div className="space-y-1.5">
@@ -283,10 +258,16 @@ function DetailsPopup({
                 id="duration"
                 type="number"
                 min="1"
+                max="10"
                 className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                placeholder="örn. 30"
+                placeholder="max 10"
                 value={duration}
-                onChange={(e) => setDuration(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (!value || (Number(value) >= 1 && Number(value) <= 10)) {
+                    setDuration(value);
+                  }
+                }}
               />
             </div>
           </div>

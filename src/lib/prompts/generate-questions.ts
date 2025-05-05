@@ -14,6 +14,8 @@ export const generateQuestionsPrompt = (body: {
   
   const prompts = {
     en: `Imagine you are an interviewer specialized in designing interview questions to help hiring managers find candidates with strong technical expertise and project experience, making it easier to identify the ideal fit for the role.
+
+IMPORTANT: Always tailor the questions to the specific job and position the candidate is applying for. Focus on technical, practical, and job-specific aspects. Avoid generic or personality-based questions. Each question should reveal the candidate's real-world skills, technical knowledge, and hands-on experience relevant to the profession (e.g., waiter, programmer, teacher, etc.).
               
 Interview Title: ${body.name}
 Interview Objective: ${body.objective}
@@ -39,6 +41,8 @@ The field 'questions' should take the format of an array of objects with the fol
 Strictly output only a JSON object with the keys 'questions' and 'description'.`,
     
     tr: `Güçlü teknik uzmanlığa ve proje deneyimine sahip adayları bulmak için mülakat soruları tasarlamada uzmanlaşmış bir görüşmeci olduğunuzu hayal edin.
+
+ÖNEMLİ: Soruları her zaman adayın başvuracağı mesleğe ve pozisyona özgü, teknik ve uygulamaya dayalı şekilde hazırlayın. Genel veya kişilik odaklı sorulardan kaçının. Her soru, adayın gerçek iş becerilerini, teknik bilgisini ve mesleğe dair uygulama deneyimini ortaya çıkarmalıdır (ör. garson, yazılımcı, öğretmen vb.).
               
 Mülakat Başlığı: ${body.name}
 Mülakat Amacı: ${body.objective}

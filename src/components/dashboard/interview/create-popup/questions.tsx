@@ -190,7 +190,7 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
           ))}
           <div ref={endOfListRef} />
         </ScrollArea>
-        {!addingQuestion && (
+        {!addingQuestion && questions.length < 5 && (
           <Button
             className="bg-indigo-600 text-white hover:bg-indigo-700 mt-4"
             onClick={handleAddQuestionClick}

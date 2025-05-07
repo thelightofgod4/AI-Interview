@@ -338,12 +338,12 @@ function CallInfo({
                       formatOptions={{ signDisplay: "never" }}
                     />
                     <p className="font-medium my-auto text-xl">
-                      Overall Hiring Score
+                      Genel Puan
                     </p>
                   </div>
                   <div className="">
                     <div className="font-medium ">
-                      <span className="font-normal">Feedback: </span>
+                      <span className="font-normal">Geri Bildirim: </span>
                       {analytics?.overallFeedback === undefined ? (
                         <Skeleton className="w-[200px] h-[20px]" />
                       ) : (
@@ -376,11 +376,11 @@ function CallInfo({
                       }
                       formatOptions={{ signDisplay: "never" }}
                     />
-                    <p className="font-medium my-auto text-xl">Communication</p>
+                    <p className="font-medium my-auto text-xl">İletişim</p>
                   </div>
                   <div className="">
                     <div className="font-medium ">
-                      <span className="font-normal">Feedback: </span>
+                      <span className="font-normal">Geri Bildirim: </span>
                       {analytics?.communication.feedback === undefined ? (
                         <Skeleton className="w-[200px] h-[20px]" />
                       ) : (
@@ -392,7 +392,7 @@ function CallInfo({
               )}
               <div className="flex flex-col gap-3 text-sm p-4 rounded-2xl bg-slate-50">
                 <div className="flex flex-row gap-2  align-middle">
-                  <p className="my-auto">User Sentiment: </p>
+                  <p className="my-auto">Kullanıcı Duygusu: </p>
                   <p className="font-medium my-auto">
                     {call?.call_analysis?.user_sentiment === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
@@ -417,7 +417,7 @@ function CallInfo({
                 </div>
                 <div className="">
                   <div className="font-medium  ">
-                    <span className="font-normal">Call Summary: </span>
+                    <span className="font-normal">Görüşme Özeti: </span>
                     {call?.call_analysis?.call_summary === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
                     ) : (

@@ -171,44 +171,44 @@ function DetailsPopup({
               Görüşmeci Seçin:
             </label>
             <div className="relative flex flex-col items-center">
-              <div
-                id="slider-3"
+            <div
+              id="slider-3"
                 className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide justify-center mt-2"
-              >
+            >
                 {interviewers.map((item) => (
-                  <div
-                    key={item.id}
+                <div
+                  key={item.id}
                     className="flex-shrink-0 relative"
-                  >
-                    <button
+                >
+                  <button
                       className="absolute -top-1 right-0 z-10"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setInterviewerDetails(item);
-                        setOpenInterviewerDetails(true);
-                      }}
-                    >
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setInterviewerDetails(item);
+                      setOpenInterviewerDetails(true);
+                    }}
+                  >
                       <Info size={16} color="#4f46e5" strokeWidth={2.2} />
-                    </button>
-                    <div
+                  </button>
+                  <div
                       className={`w-20 h-20 rounded-full overflow-hidden cursor-pointer transition-all ${
-                        selectedInterviewer === item.id
+                      selectedInterviewer === item.id
                           ? "ring-4 ring-indigo-600"
                           : "hover:ring-2 hover:ring-indigo-400"
-                      }`}
-                      onClick={() => setSelectedInterviewer(item.id)}
-                    >
-                      <Image
-                        src={item.image}
+                    }`}
+                    onClick={() => setSelectedInterviewer(item.id)}
+                  >
+                    <Image
+                      src={item.image}
                         alt={`${item.name} avatar`}
                         width={80}
                         height={80}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <p className="mt-2 text-sm text-center">{item.name}</p>
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                ))}
+                    <p className="mt-2 text-sm text-center">{item.name}</p>
+                </div>
+              ))}
               </div>
             </div>
           </div>
@@ -254,21 +254,21 @@ function DetailsPopup({
               <label htmlFor="duration" className="text-sm font-medium block">
                 Süre (dk):
               </label>
-              <input
+            <input
                 id="duration"
-                type="number"
+              type="number"
                 min="1"
                 max="10"
                 className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 placeholder="max 10"
-                value={duration}
+              value={duration}
                 onChange={(e) => {
                   const value = e.target.value;
                   if (!value || (Number(value) >= 1 && Number(value) <= 10)) {
                     setDuration(value);
                   }
                 }}
-              />
+            />
             </div>
           </div>
 

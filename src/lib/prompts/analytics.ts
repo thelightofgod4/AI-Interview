@@ -1,73 +1,72 @@
 export const SYSTEM_PROMPT =
-  "You are an expert in analyzing interview transcripts, specializing in comprehensive behavioral and technical assessment. You must only use the main questions provided and not generate or infer additional questions. Provide detailed, actionable insights while maintaining objectivity.";
+  "Sen mülakat transkriptlerini analiz etmede uzman bir değerlendirme uzmanısın. Sadece verilen ana soruları kullanmalı, ek veya türetilmiş soru üretmemelisin. Detaylı, uygulanabilir ve nesnel analizler sunmalısın.";
 
 export const getInterviewAnalyticsPrompt = (
   interviewTranscript: string,
   mainInterviewQuestions: string,
-) => `Analyse the following interview transcript and provide structured feedback:
+) => `Aşağıdaki mülakat transkriptini analiz et ve yapılandırılmış bir değerlendirme sun:
 
 ###
-Transcript: ${interviewTranscript}
+Transkript: ${interviewTranscript}
 
-Main Interview Questions:
+Ana Mülakat Soruları:
 ${mainInterviewQuestions}
 
+Bu transkript ve verilen ana sorulara dayanarak aşağıdaki analizleri JSON formatında üret:
+1. Genel Puan (0-100) ve Genel Geri Bildirim (120 kelime) - aşağıdaki faktörleri dikkate al:
+   - İletişim Becerileri: Dil kullanımı, gramer, kelime dağarcığı ve karmaşık fikirleri ifade etme yeteneği.
+   - Yanıt Kalitesi: Cevapların derinliği, ilgililiği ve yapısı, mümkünse STAR yöntemi kullanımı.
+   - Profesyonellik: Görüşme adabı, nezaket ve profesyonel tutum.
+   - Teknik Yeterlilik: Teknik bilgi ve karmaşık kavramları açıklama becerisi.
+   - Eleştirel Düşünme: Problem çözme yaklaşımı, analitik beceriler ve mantıksal akıl yürütme.
+   - Deneyim Aktarımı: Geçmiş deneyimlerin pozisyon gereklilikleriyle ilişkilendirilmesi.
+   - Kurumsal Uyum: Kurum kültürüne ve değerlerine uyum.
+   - Liderlik Potansiyeli: Liderlik ve yönetim becerileri (varsa).
+   - Uyumluluk: Farklı durumlara esneklik ve uyum sağlama.
+   - Yenilikçilik: Yaratıcı düşünme ve yeni çözümler sunabilme.
+   - Stres Yönetimi: Baskı altında soğukkanlılık ve performans.
+   - Gelişim Odaklılık: Yeni zorluklara öğrenme ve uyum sağlama isteği.
 
-Based on this transcript and the provided main interview questions, generate the following analytics in JSON format:
-1. Overall Score (0-100) and Overall Feedback (120 words) - take into account the following factors:
-   - Communication Skills: Evaluate the use of language, grammar, vocabulary, and ability to articulate complex ideas.
-   - Response Quality: Assess the depth, relevance, and structure of answers, including use of STAR method where applicable.
-   - Professional Demeanor: Evaluate professionalism, courtesy, and interview etiquette.
-   - Technical Competency: Assess technical knowledge and ability to explain complex concepts clearly.
-   - Critical Thinking: Evaluate problem-solving approach, analytical skills, and logical reasoning.
-   - Experience Articulation: Assess ability to relate past experiences to the role requirements.
-   - Cultural Fit: Evaluate alignment with organizational values and work culture.
-   - Leadership Potential: Assess leadership qualities and management capabilities where relevant.
-   - Adaptability: Evaluate flexibility in thinking and approach to different scenarios.
-   - Innovation: Assess creative thinking and ability to propose novel solutions.
-   - Stress Management: Evaluate composure and performance under pressure.
-   - Growth Mindset: Assess willingness to learn and adapt to new challenges.
+2. İletişim Becerileri: Puan (0-10) ve Geri Bildirim (100 kelime). İletişim becerileri için puanlama sistemi:
+    - 10: Mükemmel Türkçe, zengin kelime dağarcığı, kusursuz gramer, karmaşık fikirleri mükemmel ifade etme.
+    - 09: Çok iyi Türkçe, nadiren hata, gelişmiş dil kullanımı, karmaşık konuları rahatça ele alma.
+    - 08: Çok iyi, ara sıra küçük hatalar, teknik terimleri etkili kullanma.
+    - 07: İyi, bazı hatalar var ama genel olarak etkili iletişim.
+    - 06: Yeterli, ara sıra hata ama genelde anlaşılır.
+    - 05: Orta, belirgin hatalar ama temel iletişim sağlanıyor.
+    - 04: Temel, sık hata ve karmaşık fikirleri ifade etmekte zorlanma.
+    - 03: Sınırlı, ciddi iletişim engelleri.
+    - 02: Çok sınırlı, büyük zorluklar.
+    - 01: Etkili iletişim yok denecek kadar az.
 
-2. Communication Skills: Score (0-10) and Feedback (100 words). Rating system and guidelines for communication skills is as following:
-    - 10: Exceptional command of English with sophisticated vocabulary, perfect grammar, and excellent articulation of complex ideas.
-    - 09: Excellent command with rare inaccuracies, sophisticated language use, and strong ability to handle complex discussions.
-    - 08: Very good command with occasional minor errors, clear articulation, and effective handling of technical terminology.
-    - 07: Good command with some inaccuracies but maintains effective communication throughout.
-    - 06: Competent command with occasional errors but generally effective communication.
-    - 05: Moderate command with noticeable errors but maintains basic communication.
-    - 04: Basic command with frequent errors and difficulty expressing complex ideas.
-    - 03: Limited command with significant communication barriers.
-    - 02: Very limited command with major difficulties in expression.
-    - 01: Minimal to no effective communication.
+3. Her ana mülakat sorusu için detaylı analiz: ${mainInterviewQuestions}
+   - SADECE verilen ana soruları kullan, transcriptte olmasa bile tüm soruları sırala.
+   - Her soru için şunları ver:
+      a) Soru Durumu: "Sorulmadı", "Cevaplanmadı" veya "Cevaplandı"
+      b) Yanıt Kalitesi (0-10, eğer cevaplandıysa)
+      c) Detaylı Özet (100 kelime):
+         - Cevabın ana noktaları
+         - Verilen örnekler veya senaryolar
+         - Gösterilen teknik bilgi
+         - Cevabın geliştirilebileceği alanlar
+      d) Temel Bulgular (madde madde)
+      e) Gelişim Alanları (madde madde)
 
-3. Detailed Analysis for each main interview question: ${mainInterviewQuestions}
-   - Use ONLY the main questions provided, output all questions with numbers even if not found in transcript.
-   - For each question, provide:
-      a) Question Status: "Not Asked", "Not Answered", or "Answered"
-      b) Response Quality (0-10) if answered
-      c) Detailed Summary (100 words) including:
-         - Main points of the answer
-         - Specific examples or scenarios mentioned
-         - Technical knowledge demonstrated
-         - Areas where the response could be improved
-      d) Key Insights (bullet points)
-      e) Areas for Improvement (bullet points)
+4. Kapsamlı Yumuşak Beceriler Değerlendirmesi (150 kelime):
+   - Liderlik Özellikleri: Karar alma, delege etme, ekip yönetimi
+   - Duygusal Zeka: Öz farkındalık, empati, ilişki yönetimi
+   - Problem Çözme: Analitik düşünme, yaratıcılık, çözüm yaklaşımı
+   - Uyumluluk: Esneklik, öğrenme isteği, değişime uyum
+   - İletişim Tarzı: Açıklık, ikna kabiliyeti, aktif dinleme
+   - Profesyonel Olgunluk: Öz disiplin, sorumluluk, iş ahlakı
 
-4. Comprehensive Soft Skills Assessment (150 words) analyzing:
-   - Leadership Qualities: Decision-making, delegation, team management
-   - Emotional Intelligence: Self-awareness, empathy, relationship management
-   - Problem-Solving: Analytical thinking, creativity, resolution approach
-   - Adaptability: Flexibility, learning agility, change management
-   - Communication Style: Clarity, persuasiveness, active listening
-   - Professional Maturity: Self-regulation, accountability, work ethic
+5. Teknik Beceriler Değerlendirmesi (varsa):
+   - Teknik Bilgi Puanı (0-10)
+   - Güçlü Yönler (madde madde)
+   - Gelişim Alanları (madde madde)
+   - Teknik İletişim Becerisi (0-10)
 
-5. Technical Skills Assessment (if applicable):
-   - Technical Knowledge Score (0-10)
-   - Areas of Strength (bullet points)
-   - Areas for Development (bullet points)
-   - Technical Communication Ability (0-10)
-
-Ensure the output is in valid JSON format with the following structure:
+Çıktı aşağıdaki JSON formatında olmalı:
 {
   "overallScore": number,
   "overallFeedback": string,
@@ -98,4 +97,4 @@ Ensure the output is in valid JSON format with the following structure:
   }
 }
 
-IMPORTANT: Only use the main questions provided. Do not generate or infer additional questions such as follow-up questions.`;
+ÖNEMLİ: Sadece verilen ana soruları kullan. Ek veya türetilmiş soru üretme.`;

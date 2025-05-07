@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/select";
 import { CandidateStatus } from "@/lib/enum";
 import { ArrowLeft } from "lucide-react";
+import { OpenAI } from "openai";
 
 type CallProps = {
   call_id: string;
@@ -59,6 +60,7 @@ function CallInfo({
   const [candidateStatus, setCandidateStatus] = useState<string>("");
   const [interviewId, setInterviewId] = useState<string>("");
   const [tabSwitchCount, setTabSwitchCount] = useState<number>();
+  const [translatedSummary, setTranslatedSummary] = useState<string>("");
 
   useEffect(() => {
     const fetchResponses = async () => {
@@ -145,6 +147,34 @@ function CallInfo({
       setTranscript(replaceAgentAndUser(call?.transcript as string, name));
     }
   }, [call, name]);
+
+  useEffect(() => {
+    const translateSummary = async () => {
+      if (call?.call_analysis?.call_summary) {
+        // Basit bir İngilizce kontrolü: Türkçe karakter yoksa çevir
+        const summary = call.call_analysis.call_summary;
+        const hasTurkish = /[çğıöşüÇĞİÖŞÜ]/.test(summary);
+        if (!hasTurkish) {
+          try {
+            const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+            const completion = await openai.chat.completions.create({
+              model: "gpt-4o-mini",
+              messages: [
+                { role: "system", content: "You are a professional translator. Translate the following text to Turkish. Only output the translation." },
+                { role: "user", content: summary },
+              ],
+            });
+            setTranslatedSummary(completion.choices[0]?.message?.content || summary);
+          } catch (e) {
+            setTranslatedSummary(summary);
+          }
+        } else {
+          setTranslatedSummary(summary);
+        }
+      }
+    };
+    translateSummary();
+  }, [call?.call_analysis?.call_summary]);
 
   const onDeleteResponseClick = async () => {
     try {
@@ -421,7 +451,7 @@ function CallInfo({
                     {call?.call_analysis?.call_summary === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
                     ) : (
-                      call?.call_analysis?.call_summary
+                      translatedSummary || call?.call_analysis?.call_summary
                     )}
                   </div>
                 </div>

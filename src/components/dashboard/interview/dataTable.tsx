@@ -186,19 +186,8 @@ function DataTable({ data, interviewId }: DataTableProps) {
         const summary = row.getValue("callSummary") as string;
 
         return (
-          <div className="text-xs text-justify pr-4">
-            <div
-              className={`
-                overflow-hidden transition-all duration-300 ease-in-out
-                ${
-                  hoveredRowId === row.id
-                    ? "max-h-[1000px] opacity-100"
-                    : "max-h-[2.6em] line-clamp-2 opacity-90"
-                }
-              `}
-            >
-              {summary}
-            </div>
+          <div className="text-xs text-justify pr-4 whitespace-pre-line break-words">
+            {summary}
           </div>
         );
       },

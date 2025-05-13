@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import React, { useState, useEffect } from "react";
 import { useOrganization } from "@clerk/nextjs";
 import { useInterviews } from "@/contexts/interviews.context";
-import { Share2, Filter, Pencil, UserIcon, Eye, Palette } from "lucide-react";
+import { Share2, Filter, Pencil, UserIcon, Eye } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
 import { ResponseService } from "@/services/responses.service";
@@ -19,7 +19,6 @@ import { InterviewService } from "@/services/interviews.service";
 import EditInterview from "@/components/dashboard/interview/editInterview";
 import Modal from "@/components/dashboard/Modal";
 import { toast } from "sonner";
-import { ChromePicker } from "react-color";
 import SharePopup from "@/components/dashboard/interview/sharePopup";
 import {
   Tooltip,
@@ -199,6 +198,8 @@ function InterviewHome({ params, searchParams }: Props) {
         position: "bottom-right",
         duration: 3000,
       });
+      setThemeColor(newColor);
+      seticonColor(newColor);
     } catch (error) {
       console.error(error);
       toast.error("Error", {
@@ -231,10 +232,7 @@ function InterviewHome({ params, searchParams }: Props) {
   };
 
   const applyColorChange = () => {
-    if (themeColor !== iconColor) {
-      seticonColor(themeColor);
-      handleThemeColorChange(themeColor);
-    }
+    handleThemeColorChange(themeColor);
     setShowColorPicker(false);
   };
 
@@ -312,26 +310,6 @@ function InterviewHome({ params, searchParams }: Props) {
                       {isActive ? "Active" : "Inactive"}
                     </p>
                   </div>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="w-full text-sm flex items-center justify-start gap-2"
-                          onClick={() => setShowColorPicker(true)}
-                        >
-                          <Palette
-                            className="h-4 w-4"
-                            style={{ color: iconColor }}
-                          />
-                          Tema
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Change theme color</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
                 </div>
                 <div className="flex flex-col gap-2 mt-4">
                   <p className="text-sm font-medium">Filtrele</p>
@@ -427,27 +405,6 @@ function InterviewHome({ params, searchParams }: Props) {
           </div>
         </>
       )}
-      <Modal
-        open={showColorPicker}
-        closeOnOutsideClick={false}
-        onClose={applyColorChange}
-      >
-        <div className="w-full max-w-[250px] p-3">
-          <h3 className="text-lg font-semibold mb-4 text-center">
-            Tema Rengi Seç
-          </h3>
-          <ChromePicker
-            disableAlpha={true}
-            color={themeColor}
-            styles={{
-              default: {
-                picker: { width: "100%" },
-              },
-            }}
-            onChange={handleColorChange}
-          />
-        </div>
-      </Modal>
       {isSharePopupOpen && (
         <SharePopup
           open={isSharePopupOpen}

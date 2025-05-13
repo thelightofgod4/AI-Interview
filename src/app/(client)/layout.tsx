@@ -15,12 +15,12 @@ import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 const metadata = {
-  title: "AI Video Interview",
+  title: "AI Interview",
   description: "AI-powered Video Interviews",
   openGraph: {
-    title: "AI Video Interview",
+    title: "AI Interview",
     description: "AI-powered Video Interviews",
-    siteName: "AI Video Interview",
+    siteName: "AI Interview",
     images: [
       {
         url: "/foloup.png",
@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>AI Video Interview</title>
+        <title>AI Interview</title>
         <meta name="description" content="AI-powered Video Interviews" />
         <link rel="icon" href="/browser-client-icon.ico" />
       </head>
@@ -71,7 +71,7 @@ export default function RootLayout({
                       <SideMenu />
                     </div>
                   )}
-                <div className="md:ml-[200px] pt-[64px] flex-1 overflow-y-auto">
+                <div className="pt-[64px] flex-1 overflow-y-auto ml-0 md:ml-[200px]">
                   {children}
                 </div>
               </div>

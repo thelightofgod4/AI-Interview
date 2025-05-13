@@ -146,7 +146,7 @@ function DetailsPopup({
 
   return (
     <>
-      <div className="w-full max-w-2xl mx-auto">
+      <div className="w-full max-w-4xl mx-auto">
         <h1 className="text-lg font-semibold mb-4 text-center">Görüşme Oluştur</h1>
         <div className="space-y-4">
           {/* Görüşme Adı */}
@@ -170,45 +170,45 @@ function DetailsPopup({
             <label className="text-sm font-medium block">
               Görüşmeci Seçin:
             </label>
-            <div className="relative flex flex-col items-center">
-            <div
-              id="slider-3"
-                className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide justify-center mt-2"
-            >
+            <div className="w-full flex justify-center min-h-[90px]">
+              <div
+                id="slider-3"
+                className="flex flex-nowrap gap-1 sm:gap-2 justify-center px-2 w-full"
+              >
                 {interviewers.map((item) => (
-                <div
-                  key={item.id}
-                    className="flex-shrink-0 relative"
-                >
-                  <button
-                      className="absolute -top-1 right-0 z-10"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setInterviewerDetails(item);
-                      setOpenInterviewerDetails(true);
-                    }}
-                  >
-                      <Info size={16} color="#4f46e5" strokeWidth={2.2} />
-                  </button>
                   <div
-                      className={`w-20 h-20 rounded-full overflow-hidden cursor-pointer transition-all ${
-                      selectedInterviewer === item.id
+                    key={item.id}
+                    className="flex-shrink-0 relative"
+                  >
+                    <button
+                      className="absolute -top-1 right-0 z-10"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setInterviewerDetails(item);
+                        setOpenInterviewerDetails(true);
+                      }}
+                    >
+                      <Info size={16} color="#4f46e5" strokeWidth={2.2} />
+                    </button>
+                    <div
+                      className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden cursor-pointer transition-all ${
+                        selectedInterviewer === item.id
                           ? "ring-4 ring-indigo-600"
                           : "hover:ring-2 hover:ring-indigo-400"
-                    }`}
-                    onClick={() => setSelectedInterviewer(item.id)}
-                  >
-                    <Image
-                      src={item.image}
+                      }`}
+                      onClick={() => setSelectedInterviewer(item.id)}
+                    >
+                      <Image
+                        src={item.image}
                         alt={`${item.name} avatar`}
-                        width={80}
-                        height={80}
-                      className="w-full h-full object-cover"
-                    />
+                        width={64}
+                        height={64}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="mt-2 text-xs sm:text-sm text-center">{item.name}</p>
                   </div>
-                    <p className="mt-2 text-sm text-center">{item.name}</p>
-                </div>
-              ))}
+                ))}
               </div>
             </div>
           </div>

@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/select";
 import { CandidateStatus } from "@/lib/enum";
 import { ArrowLeft } from "lucide-react";
-import { OpenAI } from "openai";
+import OpenAI from "openai";
 
 type CallProps = {
   call_id: string;
@@ -60,7 +60,33 @@ function CallInfo({
   const [candidateStatus, setCandidateStatus] = useState<string>("");
   const [interviewId, setInterviewId] = useState<string>("");
   const [tabSwitchCount, setTabSwitchCount] = useState<number>();
-  const [translatedSummary, setTranslatedSummary] = useState<string>("");
+  const [translatedSummary, setTranslatedSummary] = useState<string | null>(null);
+
+  function detectEnglish(text: string) {
+    const commonEnglishWords = [
+      "the", "and", "was", "for", "with", "that", "this", "from", "user", "agent", "call", "interview", "position", "requested", "concluded", "acknowledged", "immediately", "conversation", "politely"
+    ];
+    let count = 0;
+    for (const word of commonEnglishWords) {
+      if (text.toLowerCase().includes(word)) count++;
+    }
+    return count > 2;
+  }
+
+  async function translateToTurkish(text: string) {
+    const openai = new OpenAI({
+      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true,
+    });
+    const translationCompletion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "Aşağıdaki metni Türkçeye çevir. Sadece çeviriyi döndür." },
+        { role: "user", content: text },
+      ],
+    });
+    return translationCompletion.choices[0]?.message?.content || text;
+  }
 
   useEffect(() => {
     const fetchResponses = async () => {
@@ -149,31 +175,15 @@ function CallInfo({
   }, [call, name]);
 
   useEffect(() => {
-    const translateSummary = async () => {
-      if (call?.call_analysis?.call_summary) {
-        // Basit bir İngilizce kontrolü: Türkçe karakter yoksa çevir
-        const summary = call.call_analysis.call_summary;
-        const hasTurkish = /[çğıöşüÇĞİÖŞÜ]/.test(summary);
-        if (!hasTurkish) {
-          try {
-            const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-            const completion = await openai.chat.completions.create({
-              model: "gpt-4o-mini",
-              messages: [
-                { role: "system", content: "You are a professional translator. Translate the following text to Turkish. Only output the translation." },
-                { role: "user", content: summary },
-              ],
-            });
-            setTranslatedSummary(completion.choices[0]?.message?.content || summary);
-          } catch (e) {
-            setTranslatedSummary(summary);
-          }
-        } else {
-          setTranslatedSummary(summary);
-        }
+    async function handleTranslation() {
+      if (call?.call_analysis?.call_summary && detectEnglish(call.call_analysis.call_summary)) {
+        const translated = await translateToTurkish(call.call_analysis.call_summary);
+        setTranslatedSummary(translated);
+      } else {
+        setTranslatedSummary(null);
       }
-    };
-    translateSummary();
+    }
+    handleTranslation();
   }, [call?.call_analysis?.call_summary]);
 
   const onDeleteResponseClick = async () => {

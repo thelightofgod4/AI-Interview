@@ -1,10 +1,15 @@
 export const SYSTEM_PROMPT =
-  "Sen mülakat transkriptlerini analiz etmede uzman bir değerlendirme uzmanısın. Sadece verilen ana soruları kullanmalı, ek veya türetilmiş soru üretmemelisin. Detaylı, uygulanabilir ve nesnel analizler sunmalısın.";
+  "Sen mülakat transkriptlerini analiz etmede uzman bir değerlendirme uzmanısın. Sadece verilen ana soruları kullanmalı, ek veya türetilmiş soru üretmemelisin. Detaylı, uygulanabilir ve nesnel analizler sunmalısın. ÇIKTI SADECE TÜRKÇE OLMALI.";
 
 export const getInterviewAnalyticsPrompt = (
   interviewTranscript: string,
-  mainInterviewQuestions: string,
-) => `Aşağıdaki mülakat transkriptini analiz et ve yapılandırılmış bir değerlendirme sun:
+  mainInterviewQuestions: string
+) => {
+  const summaryInstruction =
+    "Detaylı özet kısmını mutlaka Türkçe ve akıcı bir dille yaz. ÇIKTI SADECE TÜRKÇE OLMALI.";
+
+  return `ÇIKTI DİLİ: TÜRKÇE
+Aşağıdaki mülakat transkriptini analiz et ve yapılandırılmış bir değerlendirme sun:
 
 ###
 Transkript: ${interviewTranscript}
@@ -44,7 +49,7 @@ Bu transkript ve verilen ana sorulara dayanarak aşağıdaki analizleri JSON for
    - Her soru için şunları ver:
       a) Soru Durumu: "Sorulmadı", "Cevaplanmadı" veya "Cevaplandı"
       b) Yanıt Kalitesi (0-10, eğer cevaplandıysa)
-      c) Detaylı Özet (100 kelime):
+      c) Detaylı Özet (100 kelime): ${summaryInstruction}
          - Cevabın ana noktaları
          - Verilen örnekler veya senaryolar
          - Gösterilen teknik bilgi
@@ -97,4 +102,5 @@ Bu transkript ve verilen ana sorulara dayanarak aşağıdaki analizleri JSON for
   }
 }
 
-ÖNEMLİ: Sadece verilen ana soruları kullan. Ek veya türetilmiş soru üretme.`;
+ÖNEMLİ: Sadece verilen ana soruları kullan. Ek veya türetilmiş soru üretme. ÇIKTI SADECE TÜRKÇE OLMALI.`;
+}

@@ -10,6 +10,29 @@ import {
   SYSTEM_PROMPT,
 } from "@/lib/prompts/analytics";
 
+// Fonksiyonları dosya seviyesine taşı
+async function detectEnglish(text: string) {
+  const commonEnglishWords = [
+    "the", "and", "was", "for", "with", "that", "this", "from", "user", "agent", "call", "interview", "position", "requested", "concluded", "acknowledged", "immediately", "conversation", "politely"
+  ];
+  let count = 0;
+  for (const word of commonEnglishWords) {
+    if (text.toLowerCase().includes(word)) count++;
+  }
+  return count > 2;
+}
+
+async function translateToTurkish(text: string, openai: OpenAI) {
+  const translationCompletion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      { role: "system", content: "Aşağıdaki metni Türkçeye çevir. Sadece çeviriyi döndür." },
+      { role: "user", content: text },
+    ],
+  });
+  return translationCompletion.choices[0]?.message?.content || text;
+}
+
 export const generateInterviewAnalytics = async (payload: {
   callId: string;
   interviewId: string;
@@ -31,16 +54,16 @@ export const generateInterviewAnalytics = async (payload: {
       .map((q: Question, index: number) => `${index + 1}. ${q.question}`)
       .join("\n");
 
+    const prompt = getInterviewAnalyticsPrompt(
+      interviewTranscript,
+      mainInterviewQuestions
+    );
+
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
       maxRetries: 5,
       dangerouslyAllowBrowser: true,
     });
-
-    const prompt = getInterviewAnalyticsPrompt(
-      interviewTranscript,
-      mainInterviewQuestions,
-    );
 
     const baseCompletion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -64,6 +87,36 @@ export const generateInterviewAnalytics = async (payload: {
     analyticsResponse.mainInterviewQuestions = questions.map(
       (q: Question) => q.question,
     );
+
+    // questionAnalysis içindeki summary'leri çevir
+    if (analyticsResponse.questionAnalysis && Array.isArray(analyticsResponse.questionAnalysis)) {
+      for (let i = 0; i < analyticsResponse.questionAnalysis.length; i++) {
+        const item = analyticsResponse.questionAnalysis[i];
+        if (item.summary && await detectEnglish(item.summary)) {
+          console.log("[ÇEVİRİ] questionAnalysis.summary İngilizce, çeviriliyor...");
+          analyticsResponse.questionAnalysis[i].summary = await translateToTurkish(item.summary, openai);
+        }
+      }
+    }
+
+    // softSkillSummary varsa onu da çevir
+    if (analyticsResponse.softSkillSummary) {
+      console.log("[DEBUG] softSkillSummary orijinal:", analyticsResponse.softSkillSummary);
+      const isEnglish = await detectEnglish(analyticsResponse.softSkillSummary);
+      console.log("[DEBUG] softSkillSummary İngilizce algılandı mı?", isEnglish);
+      if (isEnglish) {
+        console.log("[ÇEVİRİ] softSkillSummary İngilizce, çeviriliyor...");
+        const translated = await translateToTurkish(analyticsResponse.softSkillSummary, openai);
+        console.log("[ÇEVİRİ] softSkillSummary çeviri sonucu:", translated);
+        analyticsResponse.softSkillSummary = translated;
+      }
+    }
+
+    // overallFeedback varsa onu da çevir
+    if (analyticsResponse.overallFeedback && await detectEnglish(analyticsResponse.overallFeedback)) {
+      console.log("[ÇEVİRİ] overallFeedback İngilizce, çeviriliyor...");
+      analyticsResponse.overallFeedback = await translateToTurkish(analyticsResponse.overallFeedback, openai);
+    }
 
     return { analytics: analyticsResponse, status: 200 };
   } catch (error) {

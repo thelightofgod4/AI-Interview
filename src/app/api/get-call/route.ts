@@ -4,6 +4,7 @@ import { Response } from "@/types/response";
 import { NextResponse } from "next/server";
 import Retell from "retell-sdk";
 import { generateInterviewAnalytics } from "@/services/analytics.service";
+import { OpenAI } from "openai";
 
 const retell = new Retell({
   apiKey: process.env.RETELL_API_KEY || "",
@@ -49,6 +50,23 @@ export async function POST(req: Request, res: Response) {
     const duration = Math.round(
       callResponse.end_timestamp / 1000 - callResponse.start_timestamp / 1000,
     );
+
+    // call_summary Türkçeye çevrilsin
+    if (callResponse.call_analysis?.call_summary) {
+      const summary = callResponse.call_analysis.call_summary;
+      const isEnglish = /the|and|was|for|with|that|this|from|user|agent|call|interview|position|requested|concluded|acknowledged|immediately|conversation|politely/i.test(summary);
+      if (isEnglish) {
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+        const completion = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: "Aşağıdaki metni Türkçeye çevir. Sadece çeviriyi döndür." },
+            { role: "user", content: summary },
+          ],
+        });
+        callResponse.call_analysis.call_summary = completion.choices[0]?.message?.content || summary;
+      }
+    }
 
     // Save call details
     await ResponseService.saveResponse(

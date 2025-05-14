@@ -127,7 +127,7 @@ function Interviews() {
           ) : (
             <CreateInterviewCard />
           )}
-          {interviewsLoading || loading ? (
+          {(interviewsLoading || loading) && interviews.length === 0 ? (
             <InterviewsLoader />
           ) : (
             <>

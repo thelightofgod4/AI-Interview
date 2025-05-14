@@ -11,7 +11,8 @@ function LoaderWithLogo() {
         height={200}
         className="object-cover object-center mx-auto mb-4"
         priority
-        unoptimized
+        loading="eager"
+        quality={75}
       />
       <div className="flex flex-row items-center mx-auto">
         {/* <p>Let us take a .....</p> */}

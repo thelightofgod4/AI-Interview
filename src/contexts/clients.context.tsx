@@ -21,57 +21,38 @@ export function ClientProvider({ children }: ClientProviderProps) {
   const [client, setClient] = useState<User>();
   const { user } = useClerk();
   const { organization } = useOrganization();
-
   const [clientLoading, setClientLoading] = useState(true);
 
-  const fetchClient = async () => {
-    try {
-      setClientLoading(true);
-      const response = await ClientService.getClientById(
-        user?.id as string,
-        user?.emailAddresses[0]?.emailAddress as string,
-        organization?.id as string,
-      );
-      setClient(response);
-    } catch (error) {
-      console.error(error);
-    }
-    setClientLoading(false);
-  };
-
-  const fetchOrganization = async () => {
-    try {
-      setClientLoading(true);
-      const response = await ClientService.getOrganizationById(
-        organization?.id as string,
-        organization?.name as string,
-      );
-    } catch (error) {
-      console.error(error);
-    }
-    setClientLoading(false);
-  };
-
   useEffect(() => {
-    if (user?.id) {
-      fetchClient();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+    const fetchData = async () => {
+      if (!user?.id || !organization?.id) return;
+      
+      try {
+        setClientLoading(true);
+        const [clientResponse, orgResponse] = await Promise.all([
+          ClientService.getClientById(
+            user.id,
+            user.emailAddresses[0]?.emailAddress as string,
+            organization.id
+          ),
+          ClientService.getOrganizationById(
+            organization.id,
+            organization.name as string
+          )
+        ]);
+        setClient(clientResponse);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setClientLoading(false);
+      }
+    };
 
-  useEffect(() => {
-    if (organization?.id) {
-      fetchOrganization();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [organization?.id]);
+    fetchData();
+  }, [user?.id, organization?.id]);
 
   return (
-    <ClientContext.Provider
-      value={{
-        client,
-      }}
-    >
+    <ClientContext.Provider value={{ client }}>
       {children}
     </ClientContext.Provider>
   );

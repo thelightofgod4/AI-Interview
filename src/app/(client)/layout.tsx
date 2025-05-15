@@ -64,14 +64,12 @@ export default function RootLayout({
             <Suspense fallback={null}>
               {!pathname.includes("/sign-in") &&
                 !pathname.includes("/sign-up") && <Navbar />}
-              <div className="flex flex-row flex-1">
+              <div className="flex flex-row flex-1 h-full min-h-0">
                 {!pathname.includes("/sign-in") &&
                   !pathname.includes("/sign-up") && (
-                    <div className="hidden md:block">
-                      <SideMenu />
-                    </div>
+                    <SideMenu />
                   )}
-                <div className="pt-[64px] flex-1 overflow-y-auto ml-0 md:ml-[200px]">
+                <div className="pt-[64px] flex-1 overflow-y-auto">
                   {children}
                 </div>
               </div>

@@ -120,7 +120,7 @@ function CallInfo({
           // Cleanup interval on unmount
           return () => clearInterval(pollInterval);
         } else {
-          setAnalytics(response.data.analytics);
+        setAnalytics(response.data.analytics);
         }
       } catch (error) {
         console.error(error);

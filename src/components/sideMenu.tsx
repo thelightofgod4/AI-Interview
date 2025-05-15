@@ -11,14 +11,17 @@ function SideMenu() {
 
   return (
     <div
-      className={`z-[10] bg-slate-100 p-2 fixed top-[64px] left-0 h-full transition-all duration-200 
-        hidden md:block
-        ${isOpen ? "w-[200px]" : "w-[60px]"}`}
+      className="z-[1] bg-slate-100 p-2 h-[calc(100vh-64px)] transition-all duration-200"
+      style={{
+        width: isOpen ? 200 : 60,
+        minWidth: isOpen ? 200 : 60,
+        maxWidth: isOpen ? 200 : 60,
+      }}
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
     >
       <div className="flex flex-col gap-1 h-full">
-        <div className="flex flex-col justify-between gap-2 mt-2">
+        <div className="flex flex-col justify-between gap-2 mt-20 mb-4">
           <div
             className={`flex items-center p-3 rounded-md hover:bg-slate-200 cursor-pointer transition-all ${
               pathname.endsWith("/dashboard") ||

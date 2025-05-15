@@ -11,7 +11,7 @@ function Navbar() {
           <Link href={"/dashboard"} className="flex items-center gap-2">
             <Video className="w-6 h-6 text-indigo-600" />
             <p className="px-2 py-1 text-lg md:text-2xl font-bold text-black">
-              AI Interview <span className="text-[8px]">Beta</span>
+              AI Interview
             </p>
           </Link>
           <p className="my-auto text-xl hidden md:block">/</p>

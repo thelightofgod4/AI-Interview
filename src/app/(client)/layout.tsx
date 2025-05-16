@@ -64,7 +64,7 @@ export default function RootLayout({
             <Suspense fallback={null}>
               {!pathname.includes("/sign-in") &&
                 !pathname.includes("/sign-up") && <Navbar />}
-              <div className="flex flex-row flex-1 h-full min-h-0">
+              <div className="flex flex-row flex-1 min-h-screen items-stretch">
                 {!pathname.includes("/sign-in") &&
                   !pathname.includes("/sign-up") && (
                     <SideMenu />

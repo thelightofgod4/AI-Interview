@@ -11,7 +11,7 @@ function SideMenu() {
 
   return (
     <div
-      className="z-[1] bg-slate-100 p-2 h-[calc(100vh-64px)] transition-all duration-200"
+      className="bg-slate-100 p-2 h-auto min-h-screen transition-all duration-200"
       style={{
         width: isOpen ? 200 : 60,
         minWidth: isOpen ? 200 : 60,

@@ -49,6 +49,27 @@ export const generateInterviewAnalytics = async (payload: {
     }
 
     const interviewTranscript = transcript || response.details?.transcript;
+    const transcriptObject = response.details?.transcript_object || [];
+
+    // ADAYDAN HİÇ CEVAP YOKSA ANALİZİ 0 VE UYARI OLARAK DÖN
+    const hasUserResponse = Array.isArray(transcriptObject)
+      ? transcriptObject.some(t => t.role === "user" && t.content && t.content.trim().length > 0)
+      : (interviewTranscript && interviewTranscript.includes("User:"));
+
+    if (!hasUserResponse) {
+      return {
+        analytics: {
+          overallScore: 0,
+          overallFeedback: "Adaydan yanıt alınamadı.",
+          communication: { score: 0, feedback: "Adaydan yanıt alınamadı." },
+          generalIntelligence: "Adaydan yanıt alınamadı.",
+          softSkillSummary: "Adaydan yanıt alınamadı.",
+          questionSummaries: [],
+        },
+        status: 200
+      };
+    }
+
     const questions = interview?.questions || [];
     const mainInterviewQuestions = questions
       .map((q: Question, index: number) => `${index + 1}. ${q.question}`)

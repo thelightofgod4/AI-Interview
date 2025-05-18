@@ -8,6 +8,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface QuestionCardProps {
   questionNumber: number;
@@ -16,12 +28,14 @@ interface QuestionCardProps {
   onDelete: (id: string) => void;
 }
 
-const questionCard = ({
+const QuestionCard = ({
   questionNumber,
   questionData,
   onQuestionChange,
   onDelete,
 }: QuestionCardProps) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <>
       <Card className=" shadow-md mb-5 pb-3 ">
@@ -110,7 +124,7 @@ const questionCard = ({
             <textarea
               value={questionData?.question}
               className="h-fit mt-3 pt-1 border-2 rounded-md w-full px-2 border-gray-400"
-              placeholder="e.g. Can you tell me about a challenging project you’ve worked on?"
+              placeholder="e.g. Can you tell me about a challenging project you've worked on?"
               rows={3}
               onChange={(e) =>
                 onQuestionChange(questionData.id, {
@@ -125,16 +139,41 @@ const questionCard = ({
                 })
               }
             />
-            <Trash2
-              className="cursor-pointer ml-3"
-              color="red"
-              size={24}
-              onClick={() => onDelete(questionData.id)}
-            />
+            <AlertDialog open={open} onOpenChange={setOpen}>
+              <AlertDialogTrigger asChild>
+                <Trash2
+                  className="cursor-pointer ml-3"
+                  color="red"
+                  size={24}
+                  onClick={() => setOpen(true)}
+                />
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Bu soruyu silmek istediğinize emin misiniz?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Bu işlem geri alınamaz. Soru kalıcı olarak silinecek.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Vazgeç</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-red-600 hover:bg-red-700"
+                    onClick={() => {
+                      onDelete(questionData.id);
+                      setOpen(false);
+                    }}
+                  >
+                    Sil
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </CardContent>
       </Card>
     </>
   );
 };
-export default questionCard;
+
+export default QuestionCard;

@@ -238,7 +238,7 @@ function CallInfo({
                     }}
                   >
                     <ArrowLeft className="mr-2" />
-                    <p className="text-sm font-semibold">Back to Summary</p>
+                    <p className="text-sm font-semibold">Özete Dön</p>
                   </div>
                   {tabSwitchCount && tabSwitchCount > 0 && (
                     <p className="text-sm font-semibold text-red-500 bg-red-200 rounded-sm px-2 py-1">
@@ -339,7 +339,7 @@ function CallInfo({
                   </div>
                 </div>
                 <div className="flex flex-col mt-3">
-                  <p className="font-semibold">Interview Recording</p>
+                  <p className="font-semibold">Görüşme Kaydı</p>
                   <div className="flex flex-row gap-3 mt-2">
                     {call?.recording_url && (
                       <ReactAudioPlayer src={call?.recording_url} controls />
@@ -359,7 +359,7 @@ function CallInfo({
             {/* <div>{call.}</div> */}
           </div>
           <div className="bg-slate-200 rounded-2xl min-h-[120px] p-4 px-5 my-3">
-            <p className="font-semibold my-2">General Summary</p>
+            <p className="font-semibold my-2">Genel Özet</p>
 
             <div className="grid grid-cols-3 gap-4 my-2 mt-4 ">
               {analytics?.overallScore !== undefined && (
@@ -475,7 +475,7 @@ function CallInfo({
             analytics.questionSummaries &&
             analytics.questionSummaries.length > 0 && (
               <div className="bg-slate-200 rounded-2xl min-h-[120px] p-4 px-5 my-3">
-                <p className="font-semibold my-2 mb-4">Question Summary</p>
+                <p className="font-semibold my-2 mb-4">Soru Özeti</p>
                 <ScrollArea className="rounded-md h-72 text-sm mt-3 py-3 leading-6 overflow-y-scroll whitespace-pre-line px-2">
                   {analytics?.questionSummaries.map((qs, index) => (
                     <QuestionAnswerCard
@@ -489,7 +489,7 @@ function CallInfo({
               </div>
             )}
           <div className="bg-slate-200 rounded-2xl min-h-[150px] max-h-[500px] p-4 px-5 mb-[150px]">
-            <p className="font-semibold my-2 mb-4">Transcript</p>
+            <p className="font-semibold my-2 mb-4">Transkript</p>
             <ScrollArea className="rounded-2xl text-sm h-96  overflow-y-auto whitespace-pre-line px-2">
               <div
                 className="text-sm p-4 rounded-2xl leading-5 bg-slate-50"

@@ -41,9 +41,9 @@ const QuestionCard = ({
       <Card className=" shadow-md mb-5 pb-3 ">
         <CardContent className="p-2 mx-5">
           <div className="flex flex-row justify-between mt-3 items-baseline ">
-            <CardTitle className="text-lg">Question {questionNumber}</CardTitle>
+            <CardTitle className="text-lg">Soru {questionNumber}</CardTitle>
             <div className="flex flex-row items-start space-x-1">
-              <h3 className="text-base font-semibold mr-2">Depth Level: </h3>
+              <h3 className="text-base font-semibold mr-2">Derinlik Seviyesi: </h3>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -60,11 +60,11 @@ const QuestionCard = ({
                         })
                       }
                     >
-                      Low
+                      Düşük
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="bg-zinc-200">
-                    <p className="text-zinc-800">Brief follow-up</p>
+                    <p className="text-zinc-800">Kısa takip sorusu</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -85,11 +85,11 @@ const QuestionCard = ({
                         })
                       }
                     >
-                      Medium
+                      Orta
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="bg-zinc-200">
-                    <p className="text-zinc-800">Moderate follow-up</p>
+                    <p className="text-zinc-800">Orta seviye takip</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -110,11 +110,11 @@ const QuestionCard = ({
                         })
                       }
                     >
-                      High
+                      Yüksek
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="bg-zinc-200">
-                    <p className="text-zinc-800">In-depth follow-up</p>
+                    <p className="text-zinc-800">Derinlemesine takip</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

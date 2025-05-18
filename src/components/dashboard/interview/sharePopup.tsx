@@ -77,7 +77,7 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
   return (
     <Modal open={open} closeOnOutsideClick={false} onClose={onClose}>
       <div className="w-[28rem] flex flex-col">
-        <p className="text-lg font-semibold mb-4">Share via:</p>
+        <p className="text-lg font-semibold mb-4">Paylaşım Yöntemi:</p>
         <div className="h-auto rounded-xl">
           <Tabs
             value={activeTab}
@@ -87,8 +87,8 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
             <div className="w-auto">
               <TabsList>
                 {/* <TabsTrigger value="mail">Mail</TabsTrigger> */}
-                <TabsTrigger value="copy">URL</TabsTrigger>
-                <TabsTrigger value="embed">Embed</TabsTrigger>
+                <TabsTrigger value="copy">Bağlantı</TabsTrigger>
+                <TabsTrigger value="embed">Göm</TabsTrigger>
               </TabsList>
             </div>
             <div>
@@ -107,7 +107,7 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
                   onClick={copyLinkToClipboard}
                 >
                   <Copy size={16} className="mr-2" />
-                  {copiedLink ? "Copied" : "Copy URL"}
+                  {copiedLink ? "Kopyalandı" : "Bağlantıyı Kopyala"}
                 </Button>
               </TabsContent>
               <TabsContent value="embed" className="w-full">
@@ -122,7 +122,7 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
                 <div className="flex space-x-4 mb-4">
                   <div className="flex flex-col w-1/2">
                     <label htmlFor="width" className="mb-1">
-                      Width (px)
+                      Genişlik (px)
                     </label>
                     <input
                       id="width"
@@ -140,7 +140,7 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
                   </div>
                   <div className="flex flex-col w-1/2">
                     <label htmlFor="height" className="mb-1">
-                      Height (px)
+                      Yükseklik (px)
                     </label>
                     <input
                       id="height"
@@ -162,7 +162,7 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
                   onClick={copyEmbedToClipboard}
                 >
                   <Copy size={16} className="mr-2" />
-                  {copiedEmbed ? "Copied" : "Copy Embed Code"}
+                  {copiedEmbed ? "Kopyalandı" : "Gömme Kodunu Kopyala"}
                 </Button>
               </TabsContent>
             </div>

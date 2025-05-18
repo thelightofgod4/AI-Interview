@@ -53,10 +53,10 @@ function Interviewers() {
         <div className="flex flex-row mt-5">
           <div>
             <h2 className="mr-2 text-2xl font-semibold tracking-tight mt-3">
-              Interviewers
+              Görüşmeciler
             </h2>
             <h3 className="text-sm tracking-tight text-gray-600 font-medium">
-              Get to know them by clicking the profile.
+              Profillerine tıklayarak onları tanıyabilirsiniz.
             </h3>
           </div>
         </div>

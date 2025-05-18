@@ -172,11 +172,10 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
               setProceed(false);
             }}
           />
-          <h1 className="text-2xl font-semibold">Create Interview</h1>
+          <h1 className="text-2xl font-semibold">Görüşme Oluştur</h1>
         </div>
         <div className="my-3 text-left w-[96%] text-sm">
-          We will be using these questions during the interviews. Please make
-          sure they are ok.
+          Bu soruları görüşmelerde kullanacağız. Lütfen soruların uygun olduğundan emin olun.
         </div>
         <ScrollArea className="flex flex-col justify-center items-center w-full mt-3">
           {questions.map((question, index) => (
@@ -226,18 +225,18 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
         )}
       </div>
       <p className="mt-3 mb-1 ml-2 font-medium">
-        Interview Description{" "}
+        Görüşme Açıklaması {" "}
         <span
           style={{ fontSize: "0.7rem", lineHeight: "0.66rem" }}
           className="font-light text-xs italic w-full text-left block"
         >
-          Note: Interviewees will see this description.
+          Not: Görüşmeye katılanlar bu açıklamayı görecektir.
         </span>
       </p>
       <textarea
         value={description}
         className="h-fit mt-3 mx-2 py-2 border-2 rounded-md px-2 w-full border-gray-400"
-        placeholder="Enter your interview description."
+        placeholder="Görüşme açıklamasını buraya girin."
         rows={3}
         onChange={(e) => {
           setDescription(e.target.value);
@@ -265,7 +264,7 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
             });
           }}
         >
-          Save
+          Kaydet
         </Button>
       </div>
     </div>

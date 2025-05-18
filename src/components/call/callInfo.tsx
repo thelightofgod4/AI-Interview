@@ -37,6 +37,7 @@ import {
 import { CandidateStatus } from "@/lib/enum";
 import { ArrowLeft } from "lucide-react";
 import OpenAI from "openai";
+import { useTranslation } from 'react-i18next';
 
 type CallProps = {
   call_id: string;
@@ -61,6 +62,7 @@ function CallInfo({
   const [interviewId, setInterviewId] = useState<string>("");
   const [tabSwitchCount, setTabSwitchCount] = useState<number>();
   const [translatedSummary, setTranslatedSummary] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   function detectEnglish(text: string) {
     const commonEnglishWords = [
@@ -238,9 +240,9 @@ function CallInfo({
                     }}
                   >
                     <ArrowLeft className="mr-2" />
-                    <p className="text-sm font-semibold">Özete Dön</p>
+                    <p className="text-sm font-semibold">{t('backToSummary')}</p>
                   </div>
-                  {tabSwitchCount && tabSwitchCount > 0 && (
+                  {typeof tabSwitchCount === 'number' && tabSwitchCount > 0 && (
                     <p className="text-sm font-semibold text-red-500 bg-red-200 rounded-sm px-2 py-1">
                       Tab Switching Detected
                     </p>
@@ -339,7 +341,7 @@ function CallInfo({
                   </div>
                 </div>
                 <div className="flex flex-col mt-3">
-                  <p className="font-semibold">Görüşme Kaydı</p>
+                  <p className="font-semibold">{t('recording')}</p>
                   <div className="flex flex-row gap-3 mt-2">
                     {call?.recording_url && (
                       <ReactAudioPlayer src={call?.recording_url} controls />
@@ -359,7 +361,7 @@ function CallInfo({
             {/* <div>{call.}</div> */}
           </div>
           <div className="bg-slate-200 rounded-2xl min-h-[120px] p-4 px-5 my-3">
-            <p className="font-semibold my-2">Genel Özet</p>
+            <p className="font-semibold my-2">{t('generalSummary')}</p>
 
             <div className="grid grid-cols-3 gap-4 my-2 mt-4 ">
               {analytics?.overallScore !== undefined && (
@@ -378,12 +380,12 @@ function CallInfo({
                       formatOptions={{ signDisplay: "never" }}
                     />
                     <p className="font-medium my-auto text-xl">
-                      Genel Puan
+                      {t('generalScore')}
                     </p>
                   </div>
                   <div className="">
                     <div className="font-medium ">
-                      <span className="font-normal">Geri Bildirim: </span>
+                      <span className="font-normal">{t('feedback')}: </span>
                       {analytics?.overallFeedback === undefined ? (
                         <Skeleton className="w-[200px] h-[20px]" />
                       ) : (
@@ -416,11 +418,11 @@ function CallInfo({
                       }
                       formatOptions={{ signDisplay: "never" }}
                     />
-                    <p className="font-medium my-auto text-xl">İletişim</p>
+                    <p className="font-medium my-auto text-xl">{t('communication')}</p>
                   </div>
                   <div className="">
                     <div className="font-medium ">
-                      <span className="font-normal">Geri Bildirim: </span>
+                      <span className="font-normal">{t('feedback')}: </span>
                       {analytics?.communication.feedback === undefined ? (
                         <Skeleton className="w-[200px] h-[20px]" />
                       ) : (
@@ -432,7 +434,7 @@ function CallInfo({
               )}
               <div className="flex flex-col gap-3 text-sm p-4 rounded-2xl bg-slate-50">
                 <div className="flex flex-row gap-2  align-middle">
-                  <p className="my-auto">Kullanıcı Duygusu: </p>
+                  <p className="my-auto">{t('userSentiment')}: </p>
                   <p className="font-medium my-auto">
                     {call?.call_analysis?.user_sentiment === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
@@ -457,7 +459,7 @@ function CallInfo({
                 </div>
                 <div className="">
                   <div className="font-medium  ">
-                    <span className="font-normal">Görüşme Özeti: </span>
+                    <span className="font-normal">{t('interviewSummary')}: </span>
                     {call?.call_analysis?.call_summary === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
                     ) : (
@@ -475,7 +477,7 @@ function CallInfo({
             analytics.questionSummaries &&
             analytics.questionSummaries.length > 0 && (
               <div className="bg-slate-200 rounded-2xl min-h-[120px] p-4 px-5 my-3">
-                <p className="font-semibold my-2 mb-4">Soru Özeti</p>
+                <p className="font-semibold my-2 mb-4">{t('questionSummary')}</p>
                 <ScrollArea className="rounded-md h-72 text-sm mt-3 py-3 leading-6 overflow-y-scroll whitespace-pre-line px-2">
                   {analytics?.questionSummaries.map((qs, index) => (
                     <QuestionAnswerCard
@@ -489,7 +491,7 @@ function CallInfo({
               </div>
             )}
           <div className="bg-slate-200 rounded-2xl min-h-[150px] max-h-[500px] p-4 px-5 mb-[150px]">
-            <p className="font-semibold my-2 mb-4">Transkript</p>
+            <p className="font-semibold my-2 mb-4">{t('transcript')}</p>
             <ScrollArea className="rounded-2xl text-sm h-96  overflow-y-auto whitespace-pre-line px-2">
               <div
                 className="text-sm p-4 rounded-2xl leading-5 bg-slate-50"

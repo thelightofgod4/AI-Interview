@@ -20,6 +20,7 @@ import DataTable, {
   TableData,
 } from "@/components/dashboard/interview/dataTable";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslation } from "react-i18next";
 
 type SummaryProps = {
   responses: Response[];
@@ -46,6 +47,7 @@ function InfoTooltip({ content }: { content: string }) {
 
 function SummaryInfo({ responses, interview }: SummaryProps) {
   const { interviewers } = useInterviewers();
+  const { t } = useTranslation();
   const [interviewer, setInterviewer] = useState<Interviewer>();
   const [totalDuration, setTotalDuration] = useState<number>(0);
   const [completedInterviews, setCompletedInterviews] = useState<number>(0);
@@ -177,13 +179,13 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
           <div className="flex flex-col gap-4 justify-between items-start mx-2">
             <div className="flex flex-col gap-2 w-full">
               <div className="flex flex-row gap-2 items-center">
-                <p className="font-semibold">Genel Değerlendirme</p>
+                <p className="font-semibold">{t('generalEvaluation')}</p>
               </div>
               <p className="text-sm">
-                Görüşmeci: <span className="font-medium">{interviewer?.name}</span>
+                {t('interviewer')}: <span className="font-medium">{interviewer?.name}</span>
               </p>
               <p className="text-sm">
-                Görüşme Açıklaması:{" "}
+                {t('interviewDescription')}: {" "}
                 <span className="font-medium">{interview?.description}</span>
               </p>
             </div>
@@ -191,47 +193,47 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
           <div className="flex flex-col gap-4 mt-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="bg-white p-4 rounded-lg shadow-sm">
-                <h3 className="text-sm font-medium mb-2">Yanıt İstatistikleri</h3>
+                <h3 className="text-sm font-medium mb-2">{t('responseStats')}</h3>
                 <div className="flex flex-row justify-between items-center">
                   <div>
                     <p className="text-2xl font-bold">{responses.length}</p>
-                    <p className="text-sm text-gray-600">Toplam Yanıt</p>
+                    <p className="text-sm text-gray-600">{t('totalResponses')}</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold">{completedInterviews}</p>
-                    <p className="text-sm text-gray-600">Tamamlanan</p>
+                    <p className="text-sm text-gray-600">{t('completed')}</p>
                   </div>
                 </div>
               </div>
               <div className="bg-white p-4 rounded-lg shadow-sm">
-                <h3 className="text-sm font-medium mb-2">Aday Durumu</h3>
+                <h3 className="text-sm font-medium mb-2">{t('candidateStatus')}</h3>
                 <div className="flex flex-row justify-between items-center">
                   <div>
                     <p className="text-2xl font-bold text-green-500">
                       {candidateStatusCount.SELECTED}
                     </p>
-                    <p className="text-sm text-gray-600">Seçildi</p>
+                    <p className="text-sm text-gray-600">{t('selected')}</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-yellow-500">
                       {candidateStatusCount.POTENTIAL}
                     </p>
-                    <p className="text-sm text-gray-600">Potansiyel</p>
+                    <p className="text-sm text-gray-600">{t('potential')}</p>
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-red-500">
                       {candidateStatusCount.NOT_SELECTED}
                     </p>
-                    <p className="text-sm text-gray-600">Seçilmedi</p>
+                    <p className="text-sm text-gray-600">{t('notSelected')}</p>
                   </div>
                 </div>
               </div>
               <div className="bg-white p-4 rounded-lg shadow-sm">
-                <h3 className="text-sm font-medium mb-2">Ortalama Süre</h3>
+                <h3 className="text-sm font-medium mb-2">{t('averageDuration')}</h3>
                 <p className="text-2xl font-bold">
                   {convertSecondstoMMSS(totalDuration / responses.length)}
                 </p>
-                <p className="text-sm text-gray-600">Dakika</p>
+                <p className="text-sm text-gray-600">{t('minutes')}</p>
               </div>
             </div>
             <div className="flex flex-col gap-1 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md">

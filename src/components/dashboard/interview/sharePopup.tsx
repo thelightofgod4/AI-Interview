@@ -4,6 +4,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
 import Modal from "@/components/dashboard/Modal";
+import { useTranslation } from 'react-i18next';
 
 interface SharePopupProps {
   open: boolean;
@@ -20,6 +21,8 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
 
   const [embedWidth, setEmbedWidth] = useState(1350);
   const [embedHeight, setEmbedHeight] = useState(735);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     const interviewURL = shareContent;
@@ -77,7 +80,7 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
   return (
     <Modal open={open} closeOnOutsideClick={false} onClose={onClose}>
       <div className="w-[28rem] flex flex-col">
-        <p className="text-lg font-semibold mb-4">Paylaşım Yöntemi:</p>
+        <p className="text-lg font-semibold mb-4">{t('shareVia')}</p>
         <div className="h-auto rounded-xl">
           <Tabs
             value={activeTab}
@@ -87,8 +90,8 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
             <div className="w-auto">
               <TabsList>
                 {/* <TabsTrigger value="mail">Mail</TabsTrigger> */}
-                <TabsTrigger value="copy">Bağlantı</TabsTrigger>
-                <TabsTrigger value="embed">Göm</TabsTrigger>
+                <TabsTrigger value="copy">{t('link')}</TabsTrigger>
+                <TabsTrigger value="embed">{t('embed')}</TabsTrigger>
               </TabsList>
             </div>
             <div>
@@ -107,7 +110,7 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
                   onClick={copyLinkToClipboard}
                 >
                   <Copy size={16} className="mr-2" />
-                  {copiedLink ? "Kopyalandı" : "Bağlantıyı Kopyala"}
+                  {copiedLink ? t('copied') : t('copyUrl')}
                 </Button>
               </TabsContent>
               <TabsContent value="embed" className="w-full">
@@ -122,7 +125,7 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
                 <div className="flex space-x-4 mb-4">
                   <div className="flex flex-col w-1/2">
                     <label htmlFor="width" className="mb-1">
-                      Genişlik (px)
+                      {t('width')}
                     </label>
                     <input
                       id="width"
@@ -140,7 +143,7 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
                   </div>
                   <div className="flex flex-col w-1/2">
                     <label htmlFor="height" className="mb-1">
-                      Yükseklik (px)
+                      {t('height')}
                     </label>
                     <input
                       id="height"
@@ -162,7 +165,7 @@ function SharePopup({ open, onClose, shareContent }: SharePopupProps) {
                   onClick={copyEmbedToClipboard}
                 >
                   <Copy size={16} className="mr-2" />
-                  {copiedEmbed ? "Kopyalandı" : "Gömme Kodunu Kopyala"}
+                  {copiedEmbed ? t('copied') : t('copyEmbedCode')}
                 </Button>
               </TabsContent>
             </div>

@@ -11,6 +11,7 @@ import SideMenu from "@/components/sideMenu";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 import Footer from "@/components/footer";
+import '../../i18n';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,6 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  if (!pathname) return null;
 
   return (
     <html lang="en">

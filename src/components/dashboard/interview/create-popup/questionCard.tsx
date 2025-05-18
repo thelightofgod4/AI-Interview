@@ -20,12 +20,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useTranslation } from 'react-i18next';
 
 interface QuestionCardProps {
   questionNumber: number;
   questionData: Question;
   onQuestionChange: (id: string, question: Question) => void;
   onDelete: (id: string) => void;
+  questionLabel?: string;
+  depthLevelLabel?: string;
+  lowLabel?: string;
+  mediumLabel?: string;
+  highLabel?: string;
 }
 
 const QuestionCard = ({
@@ -33,17 +39,23 @@ const QuestionCard = ({
   questionData,
   onQuestionChange,
   onDelete,
+  questionLabel = "Soru",
+  depthLevelLabel = "Derinlik Seviyesi:",
+  lowLabel = "Düşük",
+  mediumLabel = "Orta",
+  highLabel = "Yüksek",
 }: QuestionCardProps) => {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <>
       <Card className=" shadow-md mb-5 pb-3 ">
         <CardContent className="p-2 mx-5">
-          <div className="flex flex-row justify-between mt-3 items-baseline ">
-            <CardTitle className="text-lg">Soru {questionNumber}</CardTitle>
-            <div className="flex flex-row items-start space-x-1">
-              <h3 className="text-base font-semibold mr-2">Derinlik Seviyesi: </h3>
+          <div className="flex flex-row justify-between items-center w-full">
+            <h2 className="font-semibold text-lg">{t('questionLabel')} {questionNumber}</h2>
+            <div className="flex flex-row items-center gap-2">
+              <span className="font-medium">{t('depthLevel')}</span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -60,7 +72,7 @@ const QuestionCard = ({
                         })
                       }
                     >
-                      Düşük
+                      {t('low')}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="bg-zinc-200">
@@ -85,7 +97,7 @@ const QuestionCard = ({
                         })
                       }
                     >
-                      Orta
+                      {t('medium')}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="bg-zinc-200">
@@ -110,7 +122,7 @@ const QuestionCard = ({
                         })
                       }
                     >
-                      Yüksek
+                      {t('high')}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="bg-zinc-200">

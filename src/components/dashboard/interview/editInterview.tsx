@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useTranslation } from 'react-i18next';
 
 type EditInterviewProps = {
   interview: Interview | undefined;
@@ -35,6 +36,7 @@ type EditInterviewProps = {
 function EditInterview({ interview }: EditInterviewProps) {
   const { interviewers } = useInterviewers();
   const { fetchInterviews } = useInterviews();
+  const { t } = useTranslation();
 
   const [description, setDescription] = useState<string>(
     interview?.description || "",
@@ -166,11 +168,11 @@ function EditInterview({ interview }: EditInterviewProps) {
             }}
           >
             <ArrowLeft className="mr-2" />
-            <p className="text-sm font-semibold">Özete Dön</p>
+            <p className="text-sm font-semibold">{t('backToSummary')}</p>
           </div>
         </div>
         <div className="flex flex-row justify-between">
-          <p className="mt-3 mb-1 ml-2 font-medium">Görüşme Açıklaması <span className="text-xs ml-2 font-normal">(Katılımcılar bu açıklamayı görecek.)</span></p>
+          <p className="mt-3 mb-1 ml-2 font-medium">{t('interviewDescription')} <span className="text-xs ml-2 font-normal">({t('noteInterviewDescription')})</span></p>
           <div className="flex flex-row gap-3">
             <Button
               disabled={isClicked}
@@ -180,7 +182,7 @@ function EditInterview({ interview }: EditInterviewProps) {
                 onSave();
               }}
             >
-              Save <SaveIcon size={16} className="ml-2" />
+              {t('save')} <SaveIcon size={16} className="ml-2" />
             </Button>
             <AlertDialog>
               <AlertDialogTrigger>
@@ -217,7 +219,7 @@ function EditInterview({ interview }: EditInterviewProps) {
         <textarea
           value={description}
           className="h-fit mt-3 ml-2 py-2 border-2 rounded-md w-[75%] px-2 border-gray-400"
-          placeholder="Görüşme açıklamasını buraya girin."
+          placeholder={t('placeholderInterviewDescription')}
           rows={3}
           onChange={(e) => {
             setDescription(e.target.value);
@@ -226,18 +228,18 @@ function EditInterview({ interview }: EditInterviewProps) {
             setDescription(e.target.value.trim());
           }}
         />
-        <p className="mt-3 mb-1 ml-2 font-medium">Amaç</p>
+        <p className="mt-3 mb-1 ml-2 font-medium">{t('objective')}</p>
         <textarea
           value={objective}
           className="h-fit mt-3 ml-2 py-2 border-2 rounded-md w-[75%] px-2 border-gray-400"
-          placeholder="Görüşmenin amacını buraya girin."
+          placeholder={t('placeholderObjective')}
           rows={3}
           onChange={(e) => setObjective(e.target.value)}
           onBlur={(e) => setObjective(e.target.value.trim())}
         />
         <div className="flex flex-row gap-3">
           <div>
-            <p className="mt-3 mb-1 ml-2 font-medium">Interviewer</p>
+            <p className="mt-3 mb-1 ml-2 font-medium">{t('selectInterviewer')}</p>
             <div className=" flex items-center mt-1">
               <div
                 id="slider-3"
@@ -277,7 +279,7 @@ function EditInterview({ interview }: EditInterviewProps) {
         </div>
         <div className="flex flex-row justify-between w-[75%] gap-3 ml-2">
           <div className="flex flex-row justify-center items-center mt-5 ">
-            <h3 className="font-medium ">Soru Sayısı:</h3>
+            <h3 className="font-medium ">{t('questionCount')}:</h3>
             <input
               type="number"
               step="1"
@@ -300,7 +302,7 @@ function EditInterview({ interview }: EditInterviewProps) {
             />
           </div>
           <div className="flex flex-row items-center mt-5">
-            <h3 className="font-medium ">Süre (dakika):</h3>
+            <h3 className="font-medium ">{t('duration')}:</h3>
             <input
               type="number"
               step="1"
@@ -323,7 +325,7 @@ function EditInterview({ interview }: EditInterviewProps) {
             />
           </div>
         </div>
-        <p className="mt-3 mb-1 ml-2 font-medium">Sorular</p>
+        <p className="mt-3 mb-1 ml-2 font-medium">{t('questions')}</p>
         <ScrollArea className="flex ml-2 p-2 pr-4 mb-4 flex-col justify-center items-center w-[75%] max-h-[500px] bg-slate-100 rounded-md text-sm mt-3">
           {questions.map((question, index) => (
             <QuestionCard

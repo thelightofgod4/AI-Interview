@@ -13,6 +13,7 @@ import FileUpload from "../fileUpload";
 import Modal from "@/components/dashboard/Modal";
 import InterviewerDetailsModal from "@/components/dashboard/interviewer/interviewerDetailsModal";
 import { Interviewer } from "@/types/interviewer";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   open: boolean;
@@ -39,6 +40,7 @@ function DetailsPopup({
   const [isClicked, setIsClicked] = useState(false);
   const [openInterviewerDetails, setOpenInterviewerDetails] = useState(false);
   const [interviewerDetails, setInterviewerDetails] = useState<Interviewer>();
+  const { t } = useTranslation();
 
   const [name, setName] = useState(interviewData.name);
   const [selectedInterviewer, setSelectedInterviewer] = useState(
@@ -147,18 +149,18 @@ function DetailsPopup({
   return (
     <>
       <div className="w-full max-w-4xl mx-auto">
-        <h1 className="text-lg font-semibold mb-4 text-center">Görüşme Oluştur</h1>
+        <h1 className="text-lg font-semibold mb-4 text-center">{t('createInterviewTitle')}</h1>
         <div className="space-y-4">
           {/* Görüşme Adı */}
           <div className="space-y-1.5">
             <label htmlFor="interview-name" className="text-sm font-medium block">
-              Görüşme Adı:
+              {t('interviewName')}:
             </label>
             <input
               id="interview-name"
               type="text"
               className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="örn. Görüşmenin Adı"
+              placeholder={t('placeholderInterviewName')}
               value={name}
               onChange={(e) => setName(e.target.value)}
               onBlur={(e) => setName(e.target.value.trim())}
@@ -168,7 +170,7 @@ function DetailsPopup({
           {/* Görüşmeci Seçimi */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium block">
-              Görüşmeci Seçin:
+              {t('selectInterviewer')}:
             </label>
             <div className="w-full flex justify-center min-h-[90px]">
             <div
@@ -216,12 +218,12 @@ function DetailsPopup({
           {/* Amaç */}
           <div className="space-y-1.5">
             <label htmlFor="objective" className="text-sm font-medium block">
-              Amaç:
+              {t('objective')}:
             </label>
             <Textarea
               id="objective"
               className="w-full min-h-[80px] px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="örn. Adayların teknik becerilerini ve önceki projelerini değerlendirin."
+              placeholder={t('placeholderObjective')}
               value={objective}
               onChange={(e) => setObjective(e.target.value)}
               onBlur={(e) => setObjective(e.target.value.trim())}
@@ -232,7 +234,7 @@ function DetailsPopup({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label htmlFor="question-count" className="text-sm font-medium block">
-                Soru Sayısı:
+                {t('questionCount')}:
               </label>
               <input
                 id="question-count"
@@ -252,7 +254,7 @@ function DetailsPopup({
             </div>
             <div className="space-y-1.5">
               <label htmlFor="duration" className="text-sm font-medium block">
-                Süre (dk):
+                {t('duration')}:
               </label>
             <input
                 id="duration"
@@ -291,10 +293,10 @@ function DetailsPopup({
                 }
               }}
             >
-              Soruları Oluştur
+              {t('generateQuestions')}
             </Button>
             <Button
-              className="w-full sm:w-auto bg-indigo-100 text-indigo-600 hover:bg-indigo-200"
+              className="w-full sm:w-auto bg-gray-200 text-gray-700 hover:bg-gray-300"
               disabled={
                 !name ||
                 selectedInterviewer === BigInt(0) ||
@@ -310,7 +312,7 @@ function DetailsPopup({
                 }
               }}
             >
-              Kendim Gireceğim
+              {t('manualEntry')}
             </Button>
           </div>
         </div>

@@ -5,9 +5,11 @@ import { Plus } from "lucide-react";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import CreateInterviewModal from "@/components/dashboard/interview/createInterviewModal";
 import Modal from "@/components/dashboard/Modal";
+import { useTranslation } from "react-i18next";
 
 function CreateInterviewCard() {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <>
@@ -22,7 +24,7 @@ function CreateInterviewCard() {
             <Plus size={90} strokeWidth={0.5} className="text-gray-700" />
           </div>
           <CardTitle className="p-0 text-md text-center">
-            Görüşme Oluştur
+            {t('createInterviewCard')}
           </CardTitle>
         </CardContent>
       </Card>

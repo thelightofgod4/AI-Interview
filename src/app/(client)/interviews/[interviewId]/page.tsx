@@ -36,6 +36,7 @@ import {
 import { CandidateStatus } from "@/lib/enum";
 import LoaderWithText from "@/components/loaders/loader-with-text/loaderWithText";
 import axios from "axios";
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   params: {
@@ -64,6 +65,7 @@ function InterviewHome({ params, searchParams }: Props) {
   const { organization } = useOrganization();
   const [isSharePopupOpen, setIsSharePopupOpen] = useState(false);
   const router = useRouter();
+  const { t } = useTranslation();
 
   const getInterviewById = async (interviewId: string) => {
     try {
@@ -273,7 +275,7 @@ function InterviewHome({ params, searchParams }: Props) {
                     }}
                   >
                     <UserIcon className="h-4 w-4" />
-                    Özet
+                    {t('summaryTab')}
                   </Button>
                   <Button
                     className="w-full text-sm flex items-center justify-start gap-2"
@@ -281,7 +283,7 @@ function InterviewHome({ params, searchParams }: Props) {
                     onClick={openSharePopup}
                   >
                     <Share2 className="h-4 w-4" />
-                    Paylaş
+                    {t('share')}
                   </Button>
                   <Button
                     className={`w-full text-sm flex items-center justify-start gap-2 ${
@@ -297,7 +299,7 @@ function InterviewHome({ params, searchParams }: Props) {
                     }}
                   >
                     <Pencil className="h-4 w-4" />
-                    Düzenle
+                    {t('edit')}
                   </Button>
                 </div>
                 <div className="flex flex-row md:flex-col items-center gap-2 mt-2">
@@ -307,12 +309,12 @@ function InterviewHome({ params, searchParams }: Props) {
                       onCheckedChange={handleToggle}
                     />
                     <p className="text-sm">
-                      {isActive ? "Active" : "Inactive"}
+                      {isActive ? t('active') : t('inactive')}
                     </p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-2 mt-4">
-                  <p className="text-sm font-medium">Filtrele</p>
+                  <p className="text-sm font-medium">{t('filter')}</p>
                   <Select
                     value={filterStatus}
                     onValueChange={(value: CandidateStatus | "ALL") =>
@@ -320,17 +322,13 @@ function InterviewHome({ params, searchParams }: Props) {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Filter by status" />
+                      <SelectValue placeholder={t('filter')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="ALL">Tümü</SelectItem>
-                      <SelectItem value="NOT_SELECTED">
-                        Seçilmedi
-                      </SelectItem>
-                      <SelectItem value="POTENTIAL">
-                        Potansiyel
-                      </SelectItem>
-                      <SelectItem value="SELECTED">Seçildi</SelectItem>
+                      <SelectItem value="ALL">{t('all')}</SelectItem>
+                      <SelectItem value="NOT_SELECTED">{t('notSelected')}</SelectItem>
+                      <SelectItem value="POTENTIAL">{t('potential')}</SelectItem>
+                      <SelectItem value="SELECTED">{t('selected')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -366,7 +364,7 @@ function InterviewHome({ params, searchParams }: Props) {
                           <div className="flex flex-col my-auto">
                             <p className="font-medium mb-[2px] text-sm">
                               {response?.name
-                                ? `${response?.name}'s Response`
+                                ? t('responseOf', { name: response?.name })
                                 : "Anonymous"}
                             </p>
                             <p className="text-xs text-gray-600">

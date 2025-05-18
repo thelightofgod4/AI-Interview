@@ -3,11 +3,14 @@
 import React, { useState } from "react";
 import { PlayCircleIcon, SpeechIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 function SideMenu() {
   const pathname = usePathname();
+  if (!pathname) return null;
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div
@@ -32,7 +35,7 @@ function SideMenu() {
             onClick={() => router.push("/dashboard")}
           >
             <PlayCircleIcon className="font-thin mr-2" />
-            {isOpen && <p className="font-medium ">Interviews</p>}
+            {isOpen && <p className="font-medium ">{t('sidebarInterviews')}</p>}
           </div>
           <div
             className={`flex items-center p-3 rounded-md hover:bg-slate-200 cursor-pointer transition-all ${
@@ -43,7 +46,7 @@ function SideMenu() {
             onClick={() => router.push("/dashboard/interviewers")}
           >
             <SpeechIcon className="font-thin mr-2" />
-            {isOpen && <p className="font-medium ">Interviewers</p>}
+            {isOpen && <p className="font-medium ">{t('sidebarInterviewers')}</p>}
           </div>
         </div>
       </div>

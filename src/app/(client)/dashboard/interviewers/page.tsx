@@ -6,10 +6,12 @@ import { ChevronLeft } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import InterviewerCard from "@/components/dashboard/interviewer/interviewerCard";
 import CreateInterviewerButton from "@/components/dashboard/interviewer/createInterviewerButton";
+import { useTranslation } from 'react-i18next';
 
 function Interviewers() {
   const { interviewers, interviewersLoading } = useInterviewers();
   const [mounted, setMounted] = useState(false);
+  const { t } = useTranslation();
 
   const slideLeft = () => {
     var slider = document.getElementById("slider");
@@ -53,10 +55,10 @@ function Interviewers() {
         <div className="flex flex-row mt-5">
           <div>
             <h2 className="mr-2 text-2xl font-semibold tracking-tight mt-3">
-              Görüşmeciler
+              {t('interviewersTitle')}
             </h2>
             <h3 className="text-sm tracking-tight text-gray-600 font-medium">
-              Profillerine tıklayarak onları tanıyabilirsiniz.
+              {t('interviewersSubtitle')}
             </h3>
           </div>
         </div>

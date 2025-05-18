@@ -23,6 +23,7 @@ import {
   TooltipContent,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import { useTranslation } from "react-i18next";
 
 export type TableData = {
   call_id: string;
@@ -38,6 +39,7 @@ interface DataTableProps {
 }
 
 function DataTable({ data, interviewId }: DataTableProps) {
+  const { t } = useTranslation();
   const [sorting, setSorting] = useState<SortingState>([
     { id: "overallScore", desc: true },
   ]);
@@ -81,7 +83,7 @@ function DataTable({ data, interviewId }: DataTableProps) {
             className={`w-full justify-start font-semibold text-[15px] mb-1 ${column.getIsSorted() ? "text-indigo-600" : "text-black"}`}
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            İsim
+            {t('name')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -132,7 +134,7 @@ function DataTable({ data, interviewId }: DataTableProps) {
             className={`w-full justify-start font-semibold text-[15px] mb-1 ${column.getIsSorted() ? "text-indigo-600" : "text-black"}`}
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Genel Puanlama
+            {t('overallScore')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -158,7 +160,7 @@ function DataTable({ data, interviewId }: DataTableProps) {
             className={`w-full justify-start font-semibold text-[15px] mb-1 ${column.getIsSorted() ? "text-indigo-600" : "text-black"}`}
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            İletişim Puanı
+            {t('communicationScore')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -179,7 +181,7 @@ function DataTable({ data, interviewId }: DataTableProps) {
       accessorKey: "callSummary",
       header: () => (
         <div className="w-full justify-start font-semibold text-[15px] mb-1 text-black">
-          Özet
+          {t('summary')}
         </div>
       ),
       cell: ({ row }) => {

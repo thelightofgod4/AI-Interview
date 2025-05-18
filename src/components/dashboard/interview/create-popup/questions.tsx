@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   interviewData: InterviewBase;
@@ -34,6 +35,8 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
 
   const endOfListRef = useRef<HTMLDivElement>(null);
   const prevQuestionLengthRef = useRef(questions.length);
+
+  const { t } = useTranslation();
 
   const handleInputChange = (id: string, newQuestion: Question) => {
     setQuestions(
@@ -172,10 +175,10 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
               setProceed(false);
             }}
           />
-          <h1 className="text-2xl font-semibold">Görüşme Oluştur</h1>
+          <h1 className="text-2xl font-semibold">{t('createInterviewTitle')}</h1>
         </div>
         <div className="my-3 text-left w-[96%] text-sm">
-          Bu soruları görüşmelerde kullanacağız. Lütfen soruların uygun olduğundan emin olun.
+          {t('questionInfo')}
         </div>
         <ScrollArea className="flex flex-col justify-center items-center w-full mt-3">
           {questions.map((question, index) => (
@@ -185,6 +188,11 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
               questionData={question}
               onDelete={handleDeleteQuestion}
               onQuestionChange={handleInputChange}
+              questionLabel={t('questionLabel')}
+              depthLevelLabel={t('depthLevel')}
+              lowLabel={t('low')}
+              mediumLabel={t('medium')}
+              highLabel={t('high')}
             />
           ))}
           <div ref={endOfListRef} />
@@ -194,7 +202,7 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
             className="bg-indigo-600 text-white hover:bg-indigo-700 mt-4"
             onClick={handleAddQuestionClick}
           >
-            Soru Ekle
+            {t('addQuestion')}
           </Button>
         )}
         {addingQuestion && (
@@ -225,12 +233,12 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
         )}
       </div>
       <p className="mt-3 mb-1 ml-2 font-medium">
-        Görüşme Açıklaması {" "}
+        {t('interviewDescription')} {" "}
         <span
           style={{ fontSize: "0.7rem", lineHeight: "0.66rem" }}
           className="font-light text-xs italic w-full text-left block"
         >
-          Not: Görüşmeye katılanlar bu açıklamayı görecektir.
+          {t('noteInterviewDescription')}
         </span>
       </p>
       <textarea
@@ -264,7 +272,7 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
             });
           }}
         >
-          Kaydet
+          {t('save')}
         </Button>
       </div>
     </div>

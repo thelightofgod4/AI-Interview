@@ -12,6 +12,7 @@ import { useInterviews } from "@/contexts/interviews.context";
 import Modal from "@/components/dashboard/Modal";
 import { Gem, Plus } from "lucide-react";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 
 function Interviews() {
   const { interviews, interviewsLoading } = useInterviews();
@@ -21,6 +22,7 @@ function Interviews() {
   const [allowedResponsesCount, setAllowedResponsesCount] =
     useState<number>(10);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   function InterviewsLoader() {
     return (
@@ -107,10 +109,10 @@ function Interviews() {
     <main className="p-8 pt-0 ml-12 mr-auto rounded-md">
       <div className="flex flex-col items-left">
         <h2 className="mr-2 text-2xl font-semibold tracking-tight mt-8">
-          Görüşmelerim
+          {t('myInterviewsTitle')}
         </h2>
         <h3 className=" text-sm tracking-tight text-gray-600 font-medium ">
-          Hemen yanıt almaya başlayın!
+          {t('myInterviewsSubtitle')}
         </h3>
         <div className="relative flex items-center mt-1 flex-wrap">
           {currentPlan == "free_trial_over" ? (

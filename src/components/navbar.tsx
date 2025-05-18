@@ -2,6 +2,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Video, Bell, HelpCircle, Globe } from "lucide-react";
+import i18n from "i18next";
 
 function Navbar() {
   const [langMenuOpen, setLangMenuOpen] = useState(false);
@@ -31,21 +32,21 @@ function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-6 relative">
-          <button className="relative group">
+          <button className="relative group" aria-label="Bildirimler">
             <Bell className="w-6 h-6 text-gray-700" />
             <span className="absolute top-0 right-0 w-2 h-2 bg-purple-600 rounded-full"></span>
           </button>
-          <button className="group">
+          <button className="group" aria-label="Yardım">
             <HelpCircle className="w-6 h-6 text-gray-700" />
           </button>
           <div className="relative">
-            <button onClick={() => setLangMenuOpen((v) => !v)} className="group">
+            <button onClick={() => setLangMenuOpen((v) => !v)} className="group" aria-label="Dil Seçici">
               <Globe className="w-6 h-6 text-gray-700" />
             </button>
             {langMenuOpen && (
               <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-50">
-                <button className="w-full text-left px-4 py-2 hover:bg-indigo-100">Türkçe</button>
-                <button className="w-full text-left px-4 py-2 hover:bg-indigo-100">English</button>
+                <button aria-label="Türkçe" className="w-full text-left px-4 py-2 hover:bg-indigo-100" onClick={() => { i18n.changeLanguage('tr'); setLangMenuOpen(false); localStorage.setItem('lang', 'tr'); window.location.reload(); }}>Türkçe</button>
+                <button aria-label="English" className="w-full text-left px-4 py-2 hover:bg-indigo-100" onClick={() => { i18n.changeLanguage('en'); setLangMenuOpen(false); localStorage.setItem('lang', 'en'); window.location.reload(); }}>English</button>
               </div>
             )}
           </div>

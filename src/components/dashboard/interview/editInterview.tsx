@@ -172,11 +172,14 @@ function EditInterview({ interview }: EditInterviewProps) {
           </div>
         </div>
         <div className="flex flex-row justify-between">
-          <p className="mt-3 mb-1 ml-2 font-medium">{t('interviewDescription')} <span className="text-xs ml-2 font-normal">({t('noteInterviewDescription')})</span></p>
-          <div className="flex flex-row gap-3">
+          <div>
+            <p className="mt-3 mb-1 ml-2 font-medium">{t('interviewDescription')}</p>
+            <span className="block text-xs ml-2 font-normal text-gray-500 mt-1">({t('noteInterviewDescription')})</span>
+          </div>
+          <div className="flex flex-row gap-3 items-start">
             <Button
               disabled={isClicked}
-              className="bg-indigo-600 hover:bg-indigo-800 mt-2"
+              className="bg-indigo-600 hover:bg-indigo-800"
               onClick={() => {
                 setIsClicked(true);
                 onSave();
@@ -188,7 +191,7 @@ function EditInterview({ interview }: EditInterviewProps) {
               <AlertDialogTrigger>
                 <Button
                   disabled={isClicked}
-                  className="bg-red-500 hover:bg-red-600 mr-5 mt-2 p-2"
+                  className="bg-red-500 hover:bg-red-600 mr-5 p-2"
                 >
                   <TrashIcon size={16} className="" />
                 </Button>

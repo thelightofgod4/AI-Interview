@@ -40,7 +40,7 @@ function DetailsPopup({
   const [isClicked, setIsClicked] = useState(false);
   const [openInterviewerDetails, setOpenInterviewerDetails] = useState(false);
   const [interviewerDetails, setInterviewerDetails] = useState<Interviewer>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [name, setName] = useState(interviewData.name);
   const [selectedInterviewer, setSelectedInterviewer] = useState(
@@ -180,7 +180,7 @@ function DetailsPopup({
                 {interviewers.map((item) => (
                 <div
                   key={item.id}
-                    className="flex-shrink-0 relative"
+                  className="flex-shrink-0 relative group"
                 >
                   <button
                       className="absolute -top-1 right-0 z-10"
@@ -207,6 +207,13 @@ function DetailsPopup({
                         height={64}
                       className="w-full h-full object-cover"
                     />
+                  </div>
+                  {/* Tooltip */}
+                  <div className="absolute left-1/2 -translate-x-1/2 top-[90%] z-20 hidden group-hover:block min-w-[120px] max-w-[180px] bg-gray-800 text-gray-100 text-[10px] rounded px-2 py-1 shadow-lg whitespace-normal text-center pointer-events-none">
+                    {item.name.includes('Mia') && (i18n.language === 'tr' ? 'Teknik becerileri ölçen, hızlı ve hedef odaklı (İngilizce)' : 'Assesses technical skills, fast and goal-oriented (English)')}
+                    {item.name.includes('Alex') && (i18n.language === 'tr' ? 'Kişilik ve kültürel uyumu değerlendiren, rahatlatıcı (İngilizce)' : 'Evaluates personality and culture fit, relaxing (English)')}
+                    {item.name.includes('Duru') && (i18n.language === 'tr' ? 'Liderlik ve stratejik düşünmeyi ölçen, vizyoner (Türkçe)' : 'Assesses leadership and strategic thinking, visionary (Turkish)')}
+                    {item.name.includes('Ahmet') && (i18n.language === 'tr' ? 'Duygusal zeka ve iletişimi değerlendiren, destekleyici (Türkçe)' : 'Assesses emotional intelligence and communication, supportive (Turkish)')}
                   </div>
                     <p className="mt-2 text-xs sm:text-sm text-center">{item.name}</p>
                 </div>

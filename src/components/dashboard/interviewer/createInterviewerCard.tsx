@@ -115,7 +115,7 @@ const createInterviewerCard = () => {
                 <input
                   type="text"
                   className="border-b-2 focus:outline-none border-gray-500 px-2 py-0.5 ml-3 w-[12.5rem]"
-                  placeholder="e.g. Empathetic Bob"
+                  placeholder="e.g. Warmth Alex"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />

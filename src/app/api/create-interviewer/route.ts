@@ -2,7 +2,7 @@ import { logger } from "@/lib/logger";
 import { InterviewerService } from "@/services/interviewers.service";
 import { NextResponse, NextRequest } from "next/server";
 import Retell from "retell-sdk";
-import { INTERVIEWERS, RETELL_AGENT_GENERAL_PROMPT_LISA, RETELL_AGENT_GENERAL_PROMPT_BOB, RETELL_AGENT_GENERAL_PROMPT_AYSE, RETELL_AGENT_GENERAL_PROMPT_AHMET } from "@/lib/constants";
+import { INTERVIEWERS, RETELL_AGENT_GENERAL_PROMPT_MIA, RETELL_AGENT_GENERAL_PROMPT_ALEX, RETELL_AGENT_GENERAL_PROMPT_DURU, RETELL_AGENT_GENERAL_PROMPT_AHMET } from "@/lib/constants";
 
 const retellClient = new Retell({
   apiKey: process.env.RETELL_API_KEY || "",
@@ -20,11 +20,11 @@ export async function GET(req: NextRequest) {
   logger.info("create-interviewer request received");
 
   try {
-    // Lisa için ayrı model ve agent
-    logger.info("Creating Lisa LLM model...");
-    const lisaModel = await retellClient.llm.create({
+    // Mia için ayrı model ve agent
+    logger.info("Creating Mia LLM model...");
+    const miaModel = await retellClient.llm.create({
       model: "gpt-4o-mini",
-      general_prompt: RETELL_AGENT_GENERAL_PROMPT_LISA,
+      general_prompt: RETELL_AGENT_GENERAL_PROMPT_MIA,
       general_tools: [
         {
           type: "end_call",
@@ -34,25 +34,25 @@ export async function GET(req: NextRequest) {
         },
       ],
     });
-    logger.info("Lisa LLM model created", { llm_id: lisaModel.llm_id });
-    logger.info("Creating Lisa agent...");
+    logger.info("Mia LLM model created", { llm_id: miaModel.llm_id });
+    logger.info("Creating Mia agent...");
     const newFirstAgent = await retellClient.agent.create({
-      response_engine: { llm_id: lisaModel.llm_id, type: "retell-llm" },
-      voice_id: "11labs-Chloe",
-      agent_name: "Lisa",
+      response_engine: { llm_id: miaModel.llm_id, type: "retell-llm" },
+      voice_id: "custom_voice_6162b707fb42803f707cc944a3",
+      agent_name: "Mia",
     });
-    logger.info("Lisa agent created successfully", { agent_id: newFirstAgent.agent_id });
+    logger.info("Mia agent created successfully", { agent_id: newFirstAgent.agent_id });
     const newInterviewer = await InterviewerService.createInterviewer({
       agent_id: newFirstAgent.agent_id,
-      ...INTERVIEWERS.LISA,
+      ...INTERVIEWERS.MIA,
     });
-    logger.info("Lisa interviewer created in database", { interviewer: newInterviewer });
+    logger.info("Mia interviewer created in database", { interviewer: newInterviewer });
 
-    // Bob için ayrı model ve agent
-    logger.info("Creating Bob LLM model...");
-    const bobModel = await retellClient.llm.create({
+    // Alex için ayrı model ve agent
+    logger.info("Creating Alex LLM model...");
+    const alexModel = await retellClient.llm.create({
       model: "gpt-4o-mini",
-      general_prompt: RETELL_AGENT_GENERAL_PROMPT_BOB,
+      general_prompt: RETELL_AGENT_GENERAL_PROMPT_ALEX,
       general_tools: [
         {
           type: "end_call",
@@ -62,25 +62,25 @@ export async function GET(req: NextRequest) {
         },
       ],
     });
-    logger.info("Bob LLM model created", { llm_id: bobModel.llm_id });
-    logger.info("Creating Bob agent...");
+    logger.info("Alex LLM model created", { llm_id: alexModel.llm_id });
+    logger.info("Creating Alex agent...");
     const newSecondAgent = await retellClient.agent.create({
-      response_engine: { llm_id: bobModel.llm_id, type: "retell-llm" },
-      voice_id: "11labs-Brian",
-      agent_name: "Bob",
+      response_engine: { llm_id: alexModel.llm_id, type: "retell-llm" },
+      voice_id: "custom_voice_62c863ffa835bde34a67e02ea5",
+      agent_name: "Alex",
     });
-    logger.info("Bob agent created successfully", { agent_id: newSecondAgent.agent_id });
+    logger.info("Alex agent created successfully", { agent_id: newSecondAgent.agent_id });
     const newSecondInterviewer = await InterviewerService.createInterviewer({
       agent_id: newSecondAgent.agent_id,
-      ...INTERVIEWERS.BOB,
+      ...INTERVIEWERS.ALEX,
     });
-    logger.info("Bob interviewer created in database", { interviewer: newSecondInterviewer });
+    logger.info("Alex interviewer created in database", { interviewer: newSecondInterviewer });
 
-    // Ayşe için ayrı model ve agent
-    logger.info("Creating Ayşe LLM model...");
-    const ayseModel = await retellClient.llm.create({
+    // Duru için ayrı model ve agent
+    logger.info("Creating Duru LLM model...");
+    const duruModel = await retellClient.llm.create({
       model: "gpt-4o-mini",
-      general_prompt: RETELL_AGENT_GENERAL_PROMPT_AYSE,
+      general_prompt: RETELL_AGENT_GENERAL_PROMPT_DURU,
       general_tools: [
         {
           type: "end_call",
@@ -90,20 +90,20 @@ export async function GET(req: NextRequest) {
         },
       ],
     });
-    logger.info("Ayşe LLM model created", { llm_id: ayseModel.llm_id });
-    logger.info("Creating Ayşe agent...");
+    logger.info("Duru LLM model created", { llm_id: duruModel.llm_id });
+    logger.info("Creating Duru agent...");
     const newThirdAgent = await retellClient.agent.create({
-      response_engine: { llm_id: ayseModel.llm_id, type: "retell-llm" },
+      response_engine: { llm_id: duruModel.llm_id, type: "retell-llm" },
       voice_id: "custom_voice_364370f6601bf695fb194ac3a6",
-      agent_name: "Ayse",
+      agent_name: "Duru",
       language: "tr-TR",
     });
-    logger.info("Ayşe agent created successfully", { agent_id: newThirdAgent.agent_id });
+    logger.info("Duru agent created successfully", { agent_id: newThirdAgent.agent_id });
     const newThirdInterviewer = await InterviewerService.createInterviewer({
       agent_id: newThirdAgent.agent_id,
-      ...INTERVIEWERS.AYSE,
+      ...INTERVIEWERS.DURU,
     });
-    logger.info("Ayşe interviewer created in database", { interviewer: newThirdInterviewer });
+    logger.info("Duru interviewer created in database", { interviewer: newThirdInterviewer });
 
     // Ahmet için ayrı model ve agent
     logger.info("Creating Ahmet LLM model...");

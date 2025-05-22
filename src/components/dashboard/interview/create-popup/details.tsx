@@ -83,7 +83,7 @@ function DetailsPopup({
       objective: objective.trim(),
       number: numQuestions,
       context: uploadedDocumentContext,
-      language: selectedInterviewerData?.name === "Keşifçi Ayşe" || selectedInterviewerData?.name === "Empatik Ahmet" ? "tr" : "en"
+      language: selectedInterviewerData?.name === "Vizyoner Duru" || selectedInterviewerData?.name === "Empatik Ahmet" ? "tr" : "en"
     };
 
     const generatedQuestions = (await axios.post(

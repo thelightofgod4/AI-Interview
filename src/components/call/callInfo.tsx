@@ -58,7 +58,7 @@ function CallInfo({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [transcript, setTranscript] = useState("");
-  const [candidateStatus, setCandidateStatus] = useState<string>("");
+  const [candidateStatus, setCandidateStatus] = useState<string>(CandidateStatus.NO_STATUS);
   const [interviewId, setInterviewId] = useState<string>("");
   const [tabSwitchCount, setTabSwitchCount] = useState<number>();
   const [translatedSummary, setTranslatedSummary] = useState<string | null>(null);
@@ -141,7 +141,7 @@ function CallInfo({
         const response = await ResponseService.getResponseByCallId(call_id);
         setEmail(response.email);
         setName(response.name);
-        setCandidateStatus(response.candidate_status);
+        setCandidateStatus(response.candidate_status || CandidateStatus.NO_STATUS);
         setInterviewId(response.interview_id);
         setTabSwitchCount(response.tab_switch_count);
       } catch (error) {

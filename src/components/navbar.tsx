@@ -7,9 +7,8 @@ import i18n from "i18next";
 function Navbar() {
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   return (
-    <div className="fixed inset-x-0 top-0 bg-slate-100 z-[10] h-16 flex items-center px-4 md:px-8"
-         style={{ minHeight: 64, height: 64, maxHeight: 64, paddingTop: 0, paddingBottom: 0 }}>
-      <div className="flex items-center justify-between h-full gap-2 w-full mx-auto">
+    <div className="fixed inset-x-0 top-0 bg-slate-100 z-[10] h-fit py-4">
+      <div className="flex items-center justify-between h-full gap-2 px-4 md:px-8 mx-auto">
         <div className="flex flex-row gap-3 justify-center">
           <Link href={"/dashboard"} className="flex items-center gap-2">
             <Video className="w-6 h-6 text-indigo-600" />

@@ -1,16 +1,14 @@
-/* stylelint-disable at-rule-no-unknown */
-@import './normalize.css';
-/* @tailwind base; */
-/* @tailwind components; */
-/* @tailwind utilities; */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
   * {
-    /* @apply border-border; */
+    @apply border-border;
   }
 
   body {
-    /* @apply bg-background text-foreground; */
+    @apply bg-background text-foreground;
   }
 }
 
@@ -80,11 +78,11 @@
 
 @layer base {
   * {
-    /* @apply border-border; */
+    @apply border-border;
   }
 
   body {
-    /* @apply bg-background text-foreground; */
+    @apply bg-background text-foreground;
   }
 }
 
@@ -102,24 +100,4 @@
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-end-rgb));
-}
-
-@media not all and (min-resolution:.001dpcm) {
-  @supports (-webkit-appearance:none) {
-    .fixed.inset-x-0.top-0.bg-slate-100 {
-      height: 64px !important;
-      padding-top: 16px !important;
-      padding-bottom: 16px !important;
-    }
-
-    .fixed.inset-x-0.top-0.bg-slate-100 .w-6.h-6 {
-      width: 24px !important;
-      height: 24px !important;
-    }
-
-    .fixed.inset-x-0.top-0.bg-slate-100 p {
-      font-size: 20px !important;
-      line-height: 1.2 !important;
-    }
-  }
 }

@@ -7,7 +7,9 @@ import { Question } from "@/types/interview";
 import { Analytics } from "@/types/response";
 import {
   getInterviewAnalyticsPrompt,
-  SYSTEM_PROMPT,
+  getInterviewAnalyticsPromptEn,
+  SYSTEM_PROMPT_TR,
+  SYSTEM_PROMPT_EN,
 } from "@/lib/prompts/analytics";
 
 // Fonksiyonları dosya seviyesine taşı
@@ -59,12 +61,22 @@ export const generateInterviewAnalytics = async (payload: {
     if (!hasUserResponse) {
       return {
         analytics: {
+          tr: {
           overallScore: 0,
           overallFeedback: "Adaydan yanıt alınamadı.",
           communication: { score: 0, feedback: "Adaydan yanıt alınamadı." },
           generalIntelligence: "Adaydan yanıt alınamadı.",
           softSkillSummary: "Adaydan yanıt alınamadı.",
           questionSummaries: [],
+          },
+          en: {
+            overallScore: 0,
+            overallFeedback: "No response received from the candidate.",
+            communication: { score: 0, feedback: "No response received from the candidate." },
+            generalIntelligence: "No response received from the candidate.",
+            softSkillSummary: "No response received from the candidate.",
+            questionSummaries: [],
+          }
         },
         status: 200
       };
@@ -75,7 +87,7 @@ export const generateInterviewAnalytics = async (payload: {
       .map((q: Question, index: number) => `${index + 1}. ${q.question}`)
       .join("\n");
 
-    const prompt = getInterviewAnalyticsPrompt(
+    const promptTr = getInterviewAnalyticsPrompt(
       interviewTranscript,
       mainInterviewQuestions
     );
@@ -86,63 +98,50 @@ export const generateInterviewAnalytics = async (payload: {
       dangerouslyAllowBrowser: true,
     });
 
-    const baseCompletion = await openai.chat.completions.create({
+    // SADECE TÜRKÇE ANALİZ ÜRET
+    const baseCompletionTr = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: SYSTEM_PROMPT,
+          content: SYSTEM_PROMPT_TR,
         },
         {
           role: "user",
-          content: prompt,
+          content: promptTr,
         },
       ],
       response_format: { type: "json_object" },
     });
 
-    const basePromptOutput = baseCompletion.choices[0] || {};
-    const content = basePromptOutput.message?.content || "";
-    const analyticsResponse = JSON.parse(content);
-
-    analyticsResponse.mainInterviewQuestions = questions.map(
+    const basePromptOutputTr = baseCompletionTr.choices[0] || {};
+    const contentTr = basePromptOutputTr.message?.content || "";
+    const analyticsResponseTr = JSON.parse(contentTr);
+    analyticsResponseTr.mainInterviewQuestions = questions.map(
       (q: Question) => q.question,
     );
 
-    // questionAnalysis içindeki summary'leri çevir
-    if (analyticsResponse.questionAnalysis && Array.isArray(analyticsResponse.questionAnalysis)) {
-      for (let i = 0; i < analyticsResponse.questionAnalysis.length; i++) {
-        const item = analyticsResponse.questionAnalysis[i];
-        if (item.summary && await detectEnglish(item.summary)) {
-          console.log("[ÇEVİRİ] questionAnalysis.summary İngilizce, çeviriliyor...");
-          analyticsResponse.questionAnalysis[i].summary = await translateToTurkish(item.summary, openai);
-        }
-      }
+    // TÜRKÇE ANALİZİ İNGİLİZCEYE ÇEVİR
+    const translationCompletion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "Aşağıdaki JSON'u İngilizceye çevir. Sadece çeviriyi döndür. JSON formatını koru." },
+        { role: "user", content: JSON.stringify(analyticsResponseTr) },
+      ],
+    });
+    let analyticsResponseEn;
+    try {
+      analyticsResponseEn = JSON.parse(translationCompletion.choices[0]?.message?.content || "{}");
+    } catch (e) {
+      analyticsResponseEn = {};
     }
+    analyticsResponseEn.mainInterviewQuestions = questions.map(
+      (q: Question) => q.question,
+    );
 
-    // softSkillSummary varsa onu da çevir
-    if (analyticsResponse.softSkillSummary) {
-      console.log("[DEBUG] softSkillSummary orijinal:", analyticsResponse.softSkillSummary);
-      const isEnglish = await detectEnglish(analyticsResponse.softSkillSummary);
-      console.log("[DEBUG] softSkillSummary İngilizce algılandı mı?", isEnglish);
-      if (isEnglish) {
-        console.log("[ÇEVİRİ] softSkillSummary İngilizce, çeviriliyor...");
-        const translated = await translateToTurkish(analyticsResponse.softSkillSummary, openai);
-        console.log("[ÇEVİRİ] softSkillSummary çeviri sonucu:", translated);
-        analyticsResponse.softSkillSummary = translated;
-      }
-    }
-
-    // overallFeedback varsa onu da çevir
-    if (analyticsResponse.overallFeedback && await detectEnglish(analyticsResponse.overallFeedback)) {
-      console.log("[ÇEVİRİ] overallFeedback İngilizce, çeviriliyor...");
-      analyticsResponse.overallFeedback = await translateToTurkish(analyticsResponse.overallFeedback, openai);
-    }
-
-    return { analytics: analyticsResponse, status: 200 };
+    return { analytics: { tr: analyticsResponseTr, en: analyticsResponseEn }, status: 200 };
   } catch (error) {
     console.error("Error in OpenAI request:", error);
-
     return { error: "internal server error", status: 500 };
   }
 };

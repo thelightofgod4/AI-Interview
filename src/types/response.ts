@@ -104,6 +104,8 @@ export interface CallData {
   disconnection_reason: string;
   call_analysis: {
     call_summary: string;
+    call_summary_en?: string;
+    call_summary_tr?: string;
     user_sentiment: string;
     agent_sentiment: string;
     agent_task_completion_rating: string;

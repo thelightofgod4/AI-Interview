@@ -80,6 +80,9 @@ const resources = {
       "aiInterviewer": "AI interviewer",
       "user": "User",
       "questionSummary": "Question Summary",
+      "minuteShort": "m",
+      "secondShort": "s",
+      "noStatus": "No Status",
       // ... diğer İngilizce metinler
     }
   },
@@ -161,6 +164,9 @@ const resources = {
       "aiInterviewer": "AI görüşmeci",
       "user": "Kullanıcı",
       "questionSummary": "Soru Özeti",
+      "minuteShort": "dk",
+      "secondShort": "sn",
+      "noStatus": "Durum Yok",
       // ... diğer Türkçe metinler
     }
   }

@@ -51,21 +51,26 @@ export async function POST(req: Request, res: Response) {
       callResponse.end_timestamp / 1000 - callResponse.start_timestamp / 1000,
     );
 
-    // call_summary Türkçeye çevrilsin
+    // call_summary İngilizce ve Türkçe olarak kaydedilsin
     if (callResponse.call_analysis?.call_summary) {
-      const summary = callResponse.call_analysis.call_summary;
-      const isEnglish = /the|and|was|for|with|that|this|from|user|agent|call|interview|position|requested|concluded|acknowledged|immediately|conversation|politely/i.test(summary);
-      if (isEnglish) {
+      const summaryEn = callResponse.call_analysis.call_summary;
+      let summaryTr = summaryEn;
+      try {
         const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
         const completion = await openai.chat.completions.create({
           model: "gpt-4o-mini",
           messages: [
             { role: "system", content: "Aşağıdaki metni Türkçeye çevir. Sadece çeviriyi döndür." },
-            { role: "user", content: summary },
+            { role: "user", content: summaryEn },
           ],
         });
-        callResponse.call_analysis.call_summary = completion.choices[0]?.message?.content || summary;
+        summaryTr = completion.choices[0]?.message?.content || summaryEn;
+      } catch (e) {
+        logger.error("Translation failed", { error: e });
       }
+      callResponse.call_analysis.call_summary_en = summaryEn;
+      callResponse.call_analysis.call_summary_tr = summaryTr;
+      callResponse.call_analysis.call_summary = summaryTr; // Geriye dönük uyumluluk için
     }
 
     // Save call details

@@ -47,7 +47,7 @@ function InfoTooltip({ content }: { content: string }) {
 
 function SummaryInfo({ responses, interview }: SummaryProps) {
   const { interviewers } = useInterviewers();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [interviewer, setInterviewer] = useState<Interviewer>();
   const [totalDuration, setTotalDuration] = useState<number>(0);
   const [completedInterviews, setCompletedInterviews] = useState<number>(0);
@@ -74,16 +74,23 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
   const [tableData, setTableData] = useState<TableData[]>([]);
 
   const prepareTableData = (responses: Response[]): TableData[] => {
-    return responses.map((response) => ({
-      call_id: response.call_id,
-      name: response.name || "Anonymous",
-      overallScore: response.analytics?.overallScore || 0,
-      communicationScore: response.analytics?.communication?.score || 0,
-      callSummary:
-        response.analytics?.softSkillSummary ||
-        response.details?.call_analysis?.call_summary ||
-        "No summary available",
-    }));
+    return responses.map((response) => {
+      const analytics = response.analytics;
+      const lang = i18n.language === 'tr' ? 'tr' : 'en';
+      const analyticsData = analytics && (analytics[lang] || analytics);
+      return {
+        call_id: response.call_id,
+        name: response.name || "Anonymous",
+        overallScore: analyticsData?.overallScore || 0,
+        communicationScore: analyticsData?.communication?.score || 0,
+        callSummary:
+          analyticsData?.softSkillSummary ||
+          (i18n.language === 'tr'
+            ? response.details?.call_analysis?.call_summary_tr || response.details?.call_analysis?.call_summary_en || response.details?.call_analysis?.call_summary
+            : response.details?.call_analysis?.call_summary_en || response.details?.call_analysis?.call_summary_tr || response.details?.call_analysis?.call_summary) ||
+          "No summary available",
+      };
+    });
   };
 
   useEffect(() => {
@@ -143,12 +150,7 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
         callCompletionCounter.partial += 1;
       }
 
-      const agentTaskCompletion =
-        response.details?.call_analysis?.agent_task_completion_rating;
-      if (
-        agentTaskCompletion === "Complete" ||
-        agentTaskCompletion === "Partial"
-      ) {
+      if (response.analysis_status === "completed") {
         completedCount += 1;
       }
 
@@ -231,13 +233,17 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <h3 className="text-sm font-medium mb-2">{t('averageDuration')}</h3>
                 <p className="text-2xl font-bold">
-                  {convertSecondstoMMSS(totalDuration / responses.length)}
+                  {convertSecondstoMMSS(
+                    totalDuration / responses.length,
+                    t('minuteShort'),
+                    t('secondShort')
+                  )}
                 </p>
                 <p className="text-sm text-gray-600">{t('minutes')}</p>
               </div>
             </div>
-            <div className="flex flex-col gap-1 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md">
-              <ScrollArea className="h-[250px] w-full">
+            <div className="flex flex-col gap-1 mt-4 mx-2 p-4 rounded-2xl bg-slate-50 shadow-md h-full min-h-[400px]">
+              <ScrollArea className="w-full h-[calc(100vh-220px)] min-h-[350px] max-h-[calc(100vh-180px)]">
                 <DataTable data={tableData} interviewId={interview?.id || ""} />
               </ScrollArea>
             </div>

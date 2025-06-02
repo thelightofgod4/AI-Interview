@@ -37,11 +37,11 @@ export function testEmail(email: string) {
   return re.test(email);
 }
 
-export function convertSecondstoMMSS(seconds: number) {
+export function convertSecondstoMMSS(seconds: number, minuteShort: string, secondShort: string) {
   const minutes = Math.trunc(seconds / 60);
   const remainingSeconds = Math.round(seconds % 60);
 
-  return `${minutes}m ${remainingSeconds.toString().padStart(2, "0")}s`;
+  return `${minutes}${minuteShort} ${remainingSeconds.toString().padStart(2, "0")}${secondShort}`;
 }
 
 export function isLightColor(color: string) {

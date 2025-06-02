@@ -45,13 +45,16 @@ type CallProps = {
   onCandidateStatusChange: (callId: string, newStatus: string) => void;
 };
 
+// Analytics tipi hem eski hem yeni formatı destekleyecek şekilde genişletiliyor
+type AnalyticsMultiLang = Analytics | { tr: Analytics; en: Analytics };
+
 function CallInfo({
   call_id,
   onDeleteResponse,
   onCandidateStatusChange,
 }: CallProps) {
   const [call, setCall] = useState<CallData>();
-  const [analytics, setAnalytics] = useState<Analytics | null>(null);
+  const [analytics, setAnalytics] = useState<AnalyticsMultiLang | null>(null);
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [isClicked, setIsClicked] = useState(false);
@@ -62,7 +65,7 @@ function CallInfo({
   const [interviewId, setInterviewId] = useState<string>("");
   const [tabSwitchCount, setTabSwitchCount] = useState<number>();
   const [translatedSummary, setTranslatedSummary] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   function detectEnglish(text: string) {
     const commonEnglishWords = [
@@ -218,6 +221,15 @@ function CallInfo({
     }
   };
 
+  // analyticsData: seçili dile göre analytics verisi
+  const lang = i18n.language === 'tr' ? 'tr' : 'en';
+  let analyticsData: Analytics | undefined = undefined;
+  if (analytics && typeof analytics === 'object' && 'tr' in (analytics as any) && 'en' in (analytics as any)) {
+    analyticsData = (analytics as any)[lang];
+  } else if (analytics) {
+    analyticsData = analytics as Analytics;
+  }
+
   return (
     <div className="h-screen z-[10] mx-2 mb-[100px] overflow-y-scroll">
       {isLoading ? (
@@ -281,25 +293,25 @@ function CallInfo({
                         <SelectItem value={CandidateStatus.NO_STATUS}>
                           <div className="flex items-center">
                             <div className="w-3 h-3 bg-gray-400 rounded-full mr-2" />
-                            No Status
+                            {t('noStatus')}
                           </div>
                         </SelectItem>
                         <SelectItem value={CandidateStatus.NOT_SELECTED}>
                           <div className="flex items-center">
                             <div className="w-3 h-3 bg-red-500 rounded-full mr-2" />
-                            Not Selected
+                            {t('notSelected')}
                           </div>
                         </SelectItem>
                         <SelectItem value={CandidateStatus.POTENTIAL}>
                           <div className="flex items-center">
                             <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2" />
-                            Potential
+                            {t('potential')}
                           </div>
                         </SelectItem>
                         <SelectItem value={CandidateStatus.SELECTED}>
                           <div className="flex items-center">
                             <div className="w-3 h-3 bg-green-500 rounded-full mr-2" />
-                            Selected
+                            {t('selected')}
                           </div>
                         </SelectItem>
                       </SelectContent>
@@ -364,7 +376,7 @@ function CallInfo({
             <p className="font-semibold my-2">{t('generalSummary')}</p>
 
             <div className="grid grid-cols-3 gap-4 my-2 mt-4 ">
-              {analytics?.overallScore !== undefined && (
+              {analyticsData?.overallScore !== undefined && (
                 <div className="flex flex-col gap-3 text-sm p-4 rounded-2xl bg-slate-50">
                   <div className="flex flex-row gap-2 align-middle">
                     <CircularProgress
@@ -374,7 +386,7 @@ function CallInfo({
                         track: "stroke-indigo-600/10",
                         value: "text-3xl font-semibold text-indigo-600",
                       }}
-                      value={analytics?.overallScore}
+                      value={analyticsData?.overallScore}
                       strokeWidth={4}
                       showValueLabel={true}
                       formatOptions={{ signDisplay: "never" }}
@@ -386,16 +398,16 @@ function CallInfo({
                   <div className="">
                     <div className="font-medium ">
                       <span className="font-normal">{t('feedback')}: </span>
-                      {analytics?.overallFeedback === undefined ? (
+                      {analyticsData?.overallFeedback === undefined ? (
                         <Skeleton className="w-[200px] h-[20px]" />
                       ) : (
-                        analytics?.overallFeedback
+                        analyticsData?.overallFeedback
                       )}
                     </div>
                   </div>
                 </div>
               )}
-              {analytics?.communication && (
+              {analyticsData?.communication && (
                 <div className="flex flex-col gap-3 text-sm p-4 rounded-2xl bg-slate-50">
                   <div className="flex flex-row gap-2 align-middle">
                     <CircularProgress
@@ -405,14 +417,14 @@ function CallInfo({
                         track: "stroke-indigo-600/10",
                         value: "text-3xl font-semibold text-indigo-600",
                       }}
-                      value={analytics?.communication.score}
+                      value={analyticsData?.communication.score}
                       maxValue={10}
                       minValue={0}
                       strokeWidth={4}
                       showValueLabel={true}
                       valueLabel={
                         <div className="flex items-baseline">
-                          {analytics?.communication.score ?? 0}
+                          {analyticsData?.communication.score ?? 0}
                           <span className="text-xl ml-0.5">/10</span>
                         </div>
                       }
@@ -423,10 +435,10 @@ function CallInfo({
                   <div className="">
                     <div className="font-medium ">
                       <span className="font-normal">{t('feedback')}: </span>
-                      {analytics?.communication.feedback === undefined ? (
+                      {analyticsData?.communication.feedback === undefined ? (
                         <Skeleton className="w-[200px] h-[20px]" />
                       ) : (
-                        analytics?.communication.feedback
+                        analyticsData?.communication.feedback
                       )}
                     </div>
                   </div>
@@ -460,10 +472,12 @@ function CallInfo({
                 <div className="">
                   <div className="font-medium  ">
                     <span className="font-normal">{t('interviewSummary')}: </span>
-                    {call?.call_analysis?.call_summary === undefined ? (
+                    {call?.call_analysis === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
                     ) : (
-                      translatedSummary || call?.call_analysis?.call_summary
+                      (i18n.language === 'tr' && (call?.call_analysis?.call_summary_tr || call?.call_analysis?.call_summary_en || call?.call_analysis?.call_summary)) ||
+                      (i18n.language === 'en' && (call?.call_analysis?.call_summary_en || call?.call_analysis?.call_summary_tr || call?.call_analysis?.call_summary)) ||
+                      call?.call_analysis?.call_summary || ''
                     )}
                   </div>
                 </div>
@@ -473,13 +487,13 @@ function CallInfo({
               </div>
             </div>
           </div>
-          {analytics &&
-            analytics.questionSummaries &&
-            analytics.questionSummaries.length > 0 && (
+          {analyticsData &&
+            analyticsData.questionSummaries &&
+            analyticsData.questionSummaries.length > 0 && (
               <div className="bg-slate-200 rounded-2xl min-h-[120px] p-4 px-5 my-3">
                 <p className="font-semibold my-2 mb-4">{t('questionSummary')}</p>
                 <ScrollArea className="rounded-md h-72 text-sm mt-3 py-3 leading-6 overflow-y-scroll whitespace-pre-line px-2">
-                  {analytics?.questionSummaries.map((qs, index) => (
+                  {analyticsData.questionSummaries.map((qs: any, index: number) => (
                     <QuestionAnswerCard
                       key={qs.question}
                       questionNumber={index + 1}

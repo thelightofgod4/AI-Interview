@@ -252,16 +252,16 @@ function InterviewHome({ params, searchParams }: Props) {
   };
 
   return (
-    <div className="flex flex-col w-full h-full m-2 bg-white">
+    <div className="flex flex-col w-full min-h-screen mx-0 bg-white">
       {loading ? (
         <div className="flex flex-col items-center justify-center h-[80%] w-full">
           <LoaderWithText />
         </div>
       ) : (
         <>
-          <div className="flex flex-col md:flex-row gap-4 w-full">
-            <div className="w-full md:w-[15%] bg-slate-200 rounded-md p-4">
-              <div className="flex flex-col gap-2">
+          <div className="flex flex-col md:flex-row gap-4 w-full flex-1">
+            <div className="w-full md:w-[15%] bg-slate-200 rounded-md p-4 flex flex-col min-h-[85vh]">
+              <div className="flex flex-col gap-2 flex-1 h-full">
                 <div className="flex flex-row md:flex-col gap-2">
                   <Button
                     className={`w-full text-sm flex items-center justify-start gap-2 ${
@@ -332,7 +332,7 @@ function InterviewHome({ params, searchParams }: Props) {
                     </SelectContent>
                   </Select>
                 </div>
-                <ScrollArea className="h-[400px] mt-4">
+                <ScrollArea className="flex-1 mt-4">
                   {filterResponses().map((response) => (
                     <div
                       key={response.call_id}

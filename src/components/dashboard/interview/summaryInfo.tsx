@@ -79,16 +79,16 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
       const lang = i18n.language === 'tr' ? 'tr' : 'en';
       const analyticsData = analytics && (analytics[lang] || analytics);
       return {
-        call_id: response.call_id,
-        name: response.name || "Anonymous",
+      call_id: response.call_id,
+      name: response.name || "Anonymous",
         overallScore: analyticsData?.overallScore || 0,
         communicationScore: analyticsData?.communication?.score || 0,
-        callSummary:
+      callSummary:
           analyticsData?.softSkillSummary ||
           (i18n.language === 'tr'
             ? response.details?.call_analysis?.call_summary_tr || response.details?.call_analysis?.call_summary_en || response.details?.call_analysis?.call_summary
             : response.details?.call_analysis?.call_summary_en || response.details?.call_analysis?.call_summary_tr || response.details?.call_analysis?.call_summary) ||
-          "No summary available",
+        "No summary available",
       };
     });
   };
@@ -175,7 +175,7 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
   }, [responses]);
 
   return (
-    <div className="h-screen z-[10] mx-2">
+    <div className="z-[10] mx-2">
       {responses.length > 0 ? (
         <div className="bg-slate-200 rounded-2xl min-h-[120px] p-4">
           <div className="flex flex-col gap-4 justify-between items-start mx-2">

@@ -231,7 +231,7 @@ function CallInfo({
   }
 
   return (
-    <div className="h-screen z-[10] mx-2 mb-[100px] overflow-y-scroll">
+    <div className="z-[10] mx-2 mb-[100px]">
       {isLoading ? (
         <div className="flex flex-col items-center justify-center h-[75%] w-full">
           <LoaderWithText />
@@ -397,12 +397,14 @@ function CallInfo({
                   </div>
                   <div className="">
                     <div className="font-medium ">
-                      <span className="font-normal">{t('feedback')}: </span>
-                      {analyticsData?.overallFeedback === undefined ? (
-                        <Skeleton className="w-[200px] h-[20px]" />
-                      ) : (
-                        analyticsData?.overallFeedback
-                      )}
+                      <span className="font-bold">{t('feedback')}:</span>
+                      <div className="mt-1">
+                        {analyticsData?.overallFeedback === undefined ? (
+                          <Skeleton className="w-[200px] h-[20px]" />
+                        ) : (
+                          analyticsData?.overallFeedback
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -434,19 +436,21 @@ function CallInfo({
                   </div>
                   <div className="">
                     <div className="font-medium ">
-                      <span className="font-normal">{t('feedback')}: </span>
-                      {analyticsData?.communication.feedback === undefined ? (
-                        <Skeleton className="w-[200px] h-[20px]" />
-                      ) : (
-                        analyticsData?.communication.feedback
-                      )}
+                      <span className="font-bold">{t('feedback')}:</span>
+                      <div className="mt-1">
+                        {analyticsData?.communication.feedback === undefined ? (
+                          <Skeleton className="w-[200px] h-[20px]" />
+                        ) : (
+                          analyticsData?.communication.feedback
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               )}
               <div className="flex flex-col gap-3 text-sm p-4 rounded-2xl bg-slate-50">
                 <div className="flex flex-row gap-2  align-middle">
-                  <p className="my-auto">{t('userSentiment')}: </p>
+                  <p className="my-auto font-bold">{t('userSentiment')}: </p>
                   <p className="font-medium my-auto">
                     {call?.call_analysis?.user_sentiment === undefined ? (
                       <Skeleton className="w-[200px] h-[20px]" />
@@ -471,14 +475,16 @@ function CallInfo({
                 </div>
                 <div className="">
                   <div className="font-medium  ">
-                    <span className="font-normal">{t('interviewSummary')}: </span>
-                    {call?.call_analysis === undefined ? (
-                      <Skeleton className="w-[200px] h-[20px]" />
-                    ) : (
-                      (i18n.language === 'tr' && (call?.call_analysis?.call_summary_tr || call?.call_analysis?.call_summary_en || call?.call_analysis?.call_summary)) ||
-                      (i18n.language === 'en' && (call?.call_analysis?.call_summary_en || call?.call_analysis?.call_summary_tr || call?.call_analysis?.call_summary)) ||
-                      call?.call_analysis?.call_summary || ''
-                    )}
+                    <span className="font-bold">{t('interviewSummary')}:</span>
+                    <div className="mt-1">
+                      {call?.call_analysis === undefined ? (
+                        <Skeleton className="w-[200px] h-[20px]" />
+                      ) : (
+                        (i18n.language === 'tr' && (call?.call_analysis?.call_summary_tr || call?.call_analysis?.call_summary_en || call?.call_analysis?.call_summary)) ||
+                        (i18n.language === 'en' && (call?.call_analysis?.call_summary_en || call?.call_analysis?.call_summary_tr || call?.call_analysis?.call_summary)) ||
+                        call?.call_analysis?.call_summary || ''
+                      )}
+                    </div>
                   </div>
                 </div>
                 <p className="font-medium ">
@@ -492,7 +498,7 @@ function CallInfo({
             analyticsData.questionSummaries.length > 0 && (
               <div className="bg-slate-200 rounded-2xl min-h-[120px] p-4 px-5 my-3">
                 <p className="font-semibold my-2 mb-4">{t('questionSummary')}</p>
-                <ScrollArea className="rounded-md h-72 text-sm mt-3 py-3 leading-6 overflow-y-scroll whitespace-pre-line px-2">
+                <div className="text-sm mt-3 py-3 leading-6 px-2">
                   {analyticsData.questionSummaries.map((qs: any, index: number) => (
                     <QuestionAnswerCard
                       key={qs.question}
@@ -501,18 +507,18 @@ function CallInfo({
                       answer={qs.summary}
                     />
                   ))}
-                </ScrollArea>
+                </div>
               </div>
             )}
-          <div className="bg-slate-200 rounded-2xl min-h-[150px] max-h-[500px] p-4 px-5 mb-[150px]">
+          <div className="bg-slate-200 rounded-2xl min-h-[150px] p-4 px-5 mb-[150px]">
             <p className="font-semibold my-2 mb-4">{t('transcript')}</p>
-            <ScrollArea className="rounded-2xl text-sm h-96  overflow-y-auto whitespace-pre-line px-2">
+            <div className="rounded-2xl text-sm max-h-[60vh] overflow-y-auto whitespace-pre-line px-2">
               <div
-                className="text-sm p-4 rounded-2xl leading-5 bg-slate-50"
+                className="text-sm p-4 rounded-2xl leading-6 bg-slate-50"
                 // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{ __html: marked(transcript) }}
               />
-            </ScrollArea>
+            </div>
           </div>
         </>
       )}

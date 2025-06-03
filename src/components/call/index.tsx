@@ -37,6 +37,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { InterviewerService } from "@/services/interviewers.service";
+import { useCallLanguage } from "@/contexts/call-language.context";
+import { CallLanguageSelector } from "./language-selector";
+import { CallHelpButton } from "./help-button";
 
 const webClient = new RetellWebClient();
 
@@ -60,6 +63,7 @@ interface Transcript {
 
 function Call({ interview }: InterviewProps) {
   const { createResponse } = useResponses();
+  const { getLocalizedText } = useCallLanguage();
   const [lastInterviewerResponse, setLastInterviewerResponse] =
     useState<string>("");
   const [lastUserResponse, setLastUserResponse] = useState<string>("");
@@ -77,6 +81,7 @@ function Call({ interview }: InterviewProps) {
   const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [interviewerImg, setInterviewerImg] = useState("");
+  const [responseId, setResponseId] = useState<number | null>(null);
   const [interviewTimeDuration, setInterviewTimeDuration] =
     useState<string>("1");
   const [time, setTime] = useState(0);
@@ -85,12 +90,17 @@ function Call({ interview }: InterviewProps) {
   const lastUserResponseRef = useRef<HTMLDivElement | null>(null);
 
   const handleFeedbackSubmit = async (
-    formData: Omit<FeedbackData, "interview_id">,
+    formData: Omit<FeedbackData, "response_id">,
   ) => {
     try {
+      if (!responseId) {
+        toast.error("Response ID bulunamadı.");
+        return;
+      }
+
       const result = await FeedbackService.submitFeedback({
         ...formData,
-        interview_id: interview.id,
+        response_id: responseId,
       });
 
       if (result) {
@@ -239,12 +249,16 @@ function Call({ interview }: InterviewProps) {
               setIsStarted(true);
               setCallId(registerCallResponse?.data?.registerCallResponse?.call_id);
 
-              await createResponse({
+              const createdResponse = await createResponse({
                 interview_id: interview.id,
                 call_id: registerCallResponse.data.registerCallResponse.call_id,
                 email: email,
                 name: name,
               });
+              
+              if (createdResponse?.id) {
+                setResponseId(createdResponse.id);
+              }
             } catch (webClientError) {
               console.error("Error starting web client call:", webClientError);
               toast.error("Görüşme başlatılırken bir hata oluştu. Lütfen tekrar deneyin.");
@@ -313,7 +327,7 @@ function Call({ interview }: InterviewProps) {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       {isStarted && <TabSwitchWarning />}
       <div className="bg-white rounded-md md:w-[80%] w-[90%]">
-        <Card className="h-[88vh] rounded-lg border-2 border-b-4 border-r-4 border-black text-xl font-bold transition-all  md:block dark:border-white ">
+        <Card className="h-[88vh] rounded-lg border-2 border-b-4 border-r-4 border-black text-xl font-bold transition-all  md:block dark:border-white relative">
           <div>
             <div className="m-4 h-[15px] rounded-lg border-[1px]  border-black">
               <div
@@ -329,7 +343,14 @@ function Call({ interview }: InterviewProps) {
                 }}
               />
             </div>
-            <CardHeader className="items-center p-1">
+            
+            {/* Header Icons - moved below progress bar */}
+            <div className="absolute top-16 right-4 flex items-center gap-2 z-10">
+              <CallHelpButton />
+              <CallLanguageSelector />
+            </div>
+            
+            <CardHeader className="items-center p-1 pr-20">
               {!isEnded && (
                 <CardTitle className="flex flex-row items-center text-lg md:text-xl font-bold mb-2">
                   {interview?.name}
@@ -342,14 +363,14 @@ function Call({ interview }: InterviewProps) {
                     style={{ color: interview.theme_color }}
                   />
                   <div className="text-sm font-normal">
-                    Tahmini süre:{" "}
+                    {getLocalizedText('Tahmini süre:', 'Estimated time:')}{" "}
                     <span
                       className="font-bold"
                       style={{ color: interview.theme_color }}
                     >
-                      {interviewTimeDuration} dakika{" "}
+                      {interviewTimeDuration} {getLocalizedText('dakika', 'minutes')}{" "}
                     </span>
-                    veya daha az
+                    {getLocalizedText('veya daha az', 'or less')}
                   </div>
                 </div>
               )}
@@ -370,10 +391,21 @@ function Call({ interview }: InterviewProps) {
                   )}
                   <div className="p-2 font-normal text-sm mb-4 whitespace-pre-line">
                     {interview?.description}
+                    <p className="font-bold text-sm text-red-600 bg-red-50 p-3 rounded-md mt-3 border border-red-200">
+                      {getLocalizedText(
+                        '⚠️ ZORUNLU: Kulaklık kullanımı zorunludur! Hoparlör veya telefon hoparlörü kullanmak görüşme kalitesini olumsuz etkiler.',
+                        '⚠️ MANDATORY: Headphone usage is required! Using speakers or phone speakers will negatively affect interview quality.'
+                      )}
+                    </p>
                     <p className="font-bold text-sm">
-                      {"\n"}Lütfen ses seviyenizin açık olduğundan ve mikrofon izni verdiğinizden emin olun. 
-                      Ayrıca, sessiz bir ortamda olduğunuzdan emin olun.
-                      {"\n\n"}Not: Sekme değiştirme işlemleri kaydedilecektir.
+                      {"\n"}{getLocalizedText(
+                        'Lütfen ses seviyenizin açık olduğundan ve mikrofon izni verdiğinizden emin olun. Ayrıca, sessiz bir ortamda olduğunuzdan emin olun.',
+                        'Please make sure your volume is on and you have granted microphone permission. Also, make sure you are in a quiet environment.'
+                      )}
+                      {"\n\n"}{getLocalizedText(
+                        'Not: Sekme değiştirme işlemleri kaydedilecektir.',
+                        'Note: Tab switching operations will be recorded.'
+                      )}
                     </p>
                   </div>
                   {!interview?.is_anonymous && (
@@ -382,7 +414,7 @@ function Call({ interview }: InterviewProps) {
                         <input
                           value={email}
                           className="h-fit mx-auto py-2 border-2 rounded-md w-[75%] self-center px-2 border-gray-400 text-sm font-normal"
-                          placeholder="E-posta adresinizi girin"
+                          placeholder={getLocalizedText('E-posta adresinizi girin', 'Enter your email address')}
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
@@ -390,7 +422,7 @@ function Call({ interview }: InterviewProps) {
                         <input
                           value={name}
                           className="h-fit mb-4 mx-auto py-2 border-2 rounded-md w-[75%] self-center px-2 border-gray-400 text-sm font-normal"
-                          placeholder="Adınızı girin"
+                          placeholder={getLocalizedText('Adınızı girin', 'Enter your name')}
                           onChange={(e) => setName(e.target.value)}
                         />
                       </div>
@@ -412,7 +444,7 @@ function Call({ interview }: InterviewProps) {
                     }
                     onClick={startConversation}
                   >
-                    {!Loading ? "Görüşmeyi Başlat" : <MiniLoader />}
+                    {!Loading ? getLocalizedText('Görüşmeyi Başlat', 'Start Interview') : <MiniLoader />}
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger>
@@ -421,22 +453,22 @@ function Call({ interview }: InterviewProps) {
                         style={{ borderColor: interview.theme_color }}
                         disabled={Loading}
                       >
-                        Çıkış
+                        {getLocalizedText('Çıkış', 'Exit')}
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Emin misiniz?</AlertDialogTitle>
+                        <AlertDialogTitle>{getLocalizedText('Emin misiniz?', 'Are you sure?')}</AlertDialogTitle>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>İptal</AlertDialogCancel>
+                        <AlertDialogCancel>{getLocalizedText('İptal', 'Cancel')}</AlertDialogCancel>
                         <AlertDialogAction
                           className="bg-indigo-600 hover:bg-indigo-800"
                           onClick={async () => {
                             await onEndCallClick();
                           }}
                         >
-                          Devam Et
+                          {getLocalizedText('Devam Et', 'Continue')}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -456,7 +488,7 @@ function Call({ interview }: InterviewProps) {
                     <div className="flex flex-col mx-auto justify-center items-center align-middle">
                       <Image
                         src={interviewerImg}
-                        alt="Görüşmeci resmi"
+                        alt={getLocalizedText('Görüşmeci resmi', 'Interviewer image')}
                         width={120}
                         height={120}
                         className={`object-cover object-center mx-auto my-auto ${
@@ -465,7 +497,7 @@ function Call({ interview }: InterviewProps) {
                             : ""
                         }`}
                       />
-                      <div className="font-semibold">Görüşmeci</div>
+                      <div className="font-semibold">{getLocalizedText('Görüşmeci', 'Interviewer')}</div>
                     </div>
                   </div>
                 </div>
@@ -480,7 +512,7 @@ function Call({ interview }: InterviewProps) {
                   <div className="flex flex-col mx-auto justify-center items-center align-middle">
                     <Image
                       src={`/user-icon.png`}
-                      alt="Kullanıcı resmi"
+                      alt={getLocalizedText('Kullanıcı resmi', 'User image')}
                       width={120}
                       height={120}
                       className={`object-cover object-center mx-auto my-auto ${
@@ -489,7 +521,7 @@ function Call({ interview }: InterviewProps) {
                           : ""
                       }`}
                     />
-                    <div className="font-semibold">Siz</div>
+                    <div className="font-semibold">{getLocalizedText('Siz', 'You')}</div>
                   </div>
                 </div>
               </div>
@@ -502,26 +534,29 @@ function Call({ interview }: InterviewProps) {
                       className=" bg-white text-black border  border-indigo-600 h-10 mx-auto flex flex-row justify-center mb-8"
                       disabled={Loading}
                     >
-                      Görüşmeyi Bitir{" "}
+                      {getLocalizedText('Görüşmeyi Bitir', 'End Interview')}{" "}
                       <XCircleIcon className="h-[1.5rem] ml-2 w-[1.5rem] rotate-0 scale-100  dark:-rotate-90 dark:scale-0 text-red" />
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Emin misiniz?</AlertDialogTitle>
+                      <AlertDialogTitle>{getLocalizedText('Emin misiniz?', 'Are you sure?')}</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Bu işlem geri alınamaz. Bu işlem görüşmeyi sonlandıracak.
+                        {getLocalizedText(
+                          'Bu işlem geri alınamaz. Bu işlem görüşmeyi sonlandıracak.',
+                          'This action cannot be undone. This will end the interview.'
+                        )}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>İptal</AlertDialogCancel>
+                      <AlertDialogCancel>{getLocalizedText('İptal', 'Cancel')}</AlertDialogCancel>
                       <AlertDialogAction
                         className="bg-indigo-600 hover:bg-indigo-800"
                         onClick={async () => {
                           await onEndCallClick();
                         }}
                       >
-                        Devam Et
+                        {getLocalizedText('Devam Et', 'Continue')}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -536,12 +571,18 @@ function Call({ interview }: InterviewProps) {
                     <CheckCircleIcon className="h-[2rem] w-[2rem] mx-auto my-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-indigo-500 " />
                     <p className="text-lg font-semibold text-center">
                       {isStarted
-                        ? `Bu görüşmeye katıldığınız için teşekkür ederiz`
-                        : "İlginiz için teşekkür ederiz."}
+                        ? getLocalizedText(
+                            'Bu görüşmeye katıldığınız için teşekkür ederiz',
+                            'Thank you for participating in this interview'
+                          )
+                        : getLocalizedText(
+                            'İlginiz için teşekkür ederiz.',
+                            'Thank you for your interest.'
+                          )}
                     </p>
                     <p className="text-center">
                       {"\n"}
-                      Bu sekmeyi kapatabilirsiniz.
+                      {getLocalizedText('Bu sekmeyi kapatabilirsiniz.', 'You can close this tab.')}
                     </p>
                   </div>
 
@@ -555,7 +596,7 @@ function Call({ interview }: InterviewProps) {
                           className="bg-indigo-600 text-white h-10 mt-4 mb-4"
                           onClick={() => setIsDialogOpen(true)}
                         >
-                          Geri Bildirim Ver
+                          {getLocalizedText('Geri Bildirim Ver', 'Give Feedback')}
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
@@ -575,11 +616,14 @@ function Call({ interview }: InterviewProps) {
                   <div className="p-2 font-normal text-base mb-4 whitespace-pre-line">
                     <CheckCircleIcon className="h-[2rem] w-[2rem] mx-auto my-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-indigo-500 " />
                     <p className="text-lg font-semibold text-center">
-                      Bu görüşmeye daha önce katıldınız veya katılma yetkiniz bulunmuyor. Teşekkürler!
+                      {getLocalizedText(
+                        'Bu görüşmeye daha önce katıldınız veya katılma yetkiniz bulunmuyor. Teşekkürler!',
+                        'You have already participated in this interview or do not have permission to participate. Thank you!'
+                      )}
                     </p>
                     <p className="text-center">
                       {"\n"}
-                      Bu sekmeyi kapatabilirsiniz.
+                      {getLocalizedText('Bu sekmeyi kapatabilirsiniz.', 'You can close this tab.')}
                     </p>
                   </div>
                 </div>

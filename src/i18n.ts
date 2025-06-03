@@ -83,6 +83,27 @@ const resources = {
       "minuteShort": "m",
       "secondShort": "s",
       "noStatus": "No Status",
+      "userFeedback": "User Feedback",
+      "satisfactionLevel": "Satisfaction Level",
+      "satisfactionNote": "Based on user feedback after the interview",
+      "writtenFeedback": "Written Feedback",
+      "noFeedbackProvided": "No feedback provided by the user",
+      "moderate": "Moderate",
+      "good": "Good",
+      "bad": "Bad",
+      "noFeedbackGiven": "No feedback was provided",
+      "noWrittenComment": "No written comment was provided",
+      // Pop-up translations
+      "areYouSure": "Are you sure?",
+      "deleteInterviewConfirm": "This action cannot be undone. This will permanently delete this interview.",
+      "deleteResponseConfirm": "This action cannot be undone. This will permanently delete this response.",
+      "deleteQuestionConfirm": "This action cannot be undone. The question will be permanently deleted.",
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "delete": "Delete",
+      "newQuestionPlaceholder": "Enter new question...",
+      "addQuestionButton": "Add Question",
+      "cancelButton": "Cancel"
       // ... diğer İngilizce metinler
     }
   },
@@ -167,6 +188,27 @@ const resources = {
       "minuteShort": "dk",
       "secondShort": "sn",
       "noStatus": "Durum Yok",
+      "userFeedback": "Kullanıcı Geri Bildirimi",
+      "satisfactionLevel": "Memnuniyet Seviyesi",
+      "satisfactionNote": "Görüşme sonrası kullanıcı geri bildirimine dayalı",
+      "writtenFeedback": "Yazılı Geri Bildirim",
+      "noFeedbackProvided": "Kullanıcı tarafından geri bildirim sağlanmadı",
+      "moderate": "Orta",
+      "good": "İyi",
+      "bad": "Kötü",
+      "noFeedbackGiven": "Geri bildirim sağlanmadı",
+      "noWrittenComment": "Yazılı yorum sağlanmadı",
+      // Pop-up translations
+      "areYouSure": "Emin misiniz?",
+      "deleteInterviewConfirm": "Bu işlem geri alınamaz. Bu görüşmeyi kalıcı olarak silecektir.",
+      "deleteResponseConfirm": "Bu işlem geri alınamaz. Bu yanıtı kalıcı olarak silecektir.",
+      "deleteQuestionConfirm": "Bu işlem geri alınamaz. Soru kalıcı olarak silinecek.",
+      "cancel": "Vazgeç",
+      "continue": "Devam Et",
+      "delete": "Sil",
+      "newQuestionPlaceholder": "Yeni soru girin...",
+      "addQuestionButton": "Soru Ekle",
+      "cancelButton": "İptal"
       // ... diğer Türkçe metinler
     }
   }

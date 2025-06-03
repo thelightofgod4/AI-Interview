@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { FeedbackData } from "@/types/response";
+import { useCallLanguage } from "@/contexts/call-language.context";
 
 enum SatisfactionLevel {
   Positive = "😀",
@@ -10,7 +11,7 @@ enum SatisfactionLevel {
 }
 
 interface FeedbackFormProps {
-  onSubmit: (data: Omit<FeedbackData, "interview_id">) => void;
+  onSubmit: (data: Omit<FeedbackData, "response_id">) => void;
   email: string;
 }
 
@@ -19,6 +20,7 @@ export function FeedbackForm({ onSubmit, email }: FeedbackFormProps) {
     SatisfactionLevel.Moderate,
   );
   const [feedback, setFeedback] = useState("");
+  const { getLocalizedText } = useCallLanguage();
 
   const handleSubmit = () => {
     if (satisfaction !== null || feedback.trim() !== "") {
@@ -33,13 +35,16 @@ export function FeedbackForm({ onSubmit, email }: FeedbackFormProps) {
   return (
     <div className="p-4">
       <h3 className="text-lg font-semibold mb-4">
-        Platformdan memnun kaldınız mı?
+        {getLocalizedText(
+          'Platformdan memnun kaldınız mı?',
+          'Are you satisfied with the platform?'
+        )}
       </h3>
       <div className="flex justify-center space-x-4 mb-4">
         {Object.values(SatisfactionLevel).map((emoji) => (
           <button
             key={emoji}
-            className={`text-3xl ${satisfaction === emoji ? "border-2 border-indigo-600" : ""}`}
+            className={`text-3xl p-2 rounded-lg transition-all ${satisfaction === emoji ? "border-2 border-indigo-600 bg-indigo-50" : "hover:bg-gray-100"}`}
             onClick={() => setSatisfaction(emoji)}
           >
             {emoji}
@@ -48,7 +53,10 @@ export function FeedbackForm({ onSubmit, email }: FeedbackFormProps) {
       </div>
       <Textarea
         value={feedback}
-        placeholder="Geri bildiriminizi buraya yazın"
+        placeholder={getLocalizedText(
+          'Geri bildiriminizi buraya yazın',
+          'Write your feedback here'
+        )}
         className="mb-4"
         onChange={(e) => setFeedback(e.target.value)}
       />
@@ -57,7 +65,7 @@ export function FeedbackForm({ onSubmit, email }: FeedbackFormProps) {
         className="w-full bg-indigo-600 text-white"
         onClick={handleSubmit}
       >
-        Geri Bildirimi Gönder
+        {getLocalizedText('Geri Bildirimi Gönder', 'Send Feedback')}
       </Button>
     </div>
   );

@@ -65,6 +65,8 @@ function CallInfo({
   const [interviewId, setInterviewId] = useState<string>("");
   const [tabSwitchCount, setTabSwitchCount] = useState<number>();
   const [translatedSummary, setTranslatedSummary] = useState<string | null>(null);
+  const [feedbackData, setFeedbackData] = useState<any>(null);
+  const [responseId, setResponseId] = useState<number | null>(null);
   const { t, i18n } = useTranslation();
 
   function detectEnglish(text: string) {
@@ -147,6 +149,7 @@ function CallInfo({
         setCandidateStatus(response.candidate_status || CandidateStatus.NO_STATUS);
         setInterviewId(response.interview_id);
         setTabSwitchCount(response.tab_switch_count);
+        setResponseId(response.id);
       } catch (error) {
         console.error(error);
       } finally {
@@ -191,6 +194,22 @@ function CallInfo({
     handleTranslation();
   }, [call?.call_analysis?.call_summary]);
 
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      if (responseId) {
+        try {
+          const response = await axios.get(`/api/feedback/${responseId}`);
+          setFeedbackData(response.data);
+        } catch (error) {
+          console.error('Error fetching feedback:', error);
+          setFeedbackData(null);
+        }
+      }
+    };
+    
+    fetchFeedback();
+  }, [responseId]);
+
   const onDeleteResponseClick = async () => {
     try {
       const response = await ResponseService.getResponseByCallId(call_id);
@@ -230,6 +249,40 @@ function CallInfo({
     analyticsData = analytics as Analytics;
   }
 
+  const getSatisfactionEmoji = (satisfaction: number) => {
+    switch (satisfaction) {
+      case 0: return '😀';
+      case 1: return '😐';
+      case 2: return '😔';
+      default: return '😐';
+    }
+  };
+
+  const getSatisfactionText = (satisfaction: number) => {
+    switch (satisfaction) {
+      case 0: return t('good', 'Good');
+      case 1: return t('moderate', 'Moderate');
+      case 2: return t('bad', 'Bad');
+      default: return t('moderate', 'Moderate');
+    }
+  };
+
+  const getFeedbackText = () => {
+    if (!feedbackData) {
+      return t('noFeedbackGiven', 'No feedback was provided');
+    }
+    
+    if (feedbackData.feedback && feedbackData.feedback.trim()) {
+      return feedbackData.feedback;
+    }
+    
+    if (typeof feedbackData.satisfaction === 'number') {
+      return t('noWrittenComment', 'No written comment was provided');
+    }
+    
+    return t('noFeedbackGiven', 'No feedback was provided');
+  };
+
   return (
     <div className="z-[10] mx-2 mb-[100px]">
       {isLoading ? (
@@ -254,7 +307,7 @@ function CallInfo({
                     <ArrowLeft className="mr-2" />
                     <p className="text-sm font-semibold">{t('backToSummary')}</p>
                   </div>
-                  {typeof tabSwitchCount === 'number' && tabSwitchCount > 0 && (
+                  {(typeof tabSwitchCount === 'number' && tabSwitchCount > 0) && (
                     <p className="text-sm font-semibold text-red-500 bg-red-200 rounded-sm px-2 py-1">
                       Tab Switching Detected
                     </p>
@@ -328,16 +381,15 @@ function CallInfo({
 
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogTitle>{t('areYouSure')}</AlertDialogTitle>
 
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently
-                            delete this response.
+                            {t('deleteResponseConfirm')}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
 
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
 
                           <AlertDialogAction
                             className="bg-indigo-600 hover:bg-indigo-800"
@@ -345,7 +397,7 @@ function CallInfo({
                               await onDeleteResponseClick();
                             }}
                           >
-                            Continue
+                            {t('continue')}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -400,10 +452,10 @@ function CallInfo({
                       <span className="font-bold">{t('feedback')}:</span>
                       <div className="mt-1">
                         {analyticsData?.overallFeedback === undefined ? (
-                          <Skeleton className="w-[200px] h-[20px]" />
-                        ) : (
+                        <Skeleton className="w-[200px] h-[20px]" />
+                      ) : (
                           analyticsData?.overallFeedback
-                        )}
+                      )}
                       </div>
                     </div>
                   </div>
@@ -439,10 +491,10 @@ function CallInfo({
                       <span className="font-bold">{t('feedback')}:</span>
                       <div className="mt-1">
                         {analyticsData?.communication.feedback === undefined ? (
-                          <Skeleton className="w-[200px] h-[20px]" />
-                        ) : (
+                        <Skeleton className="w-[200px] h-[20px]" />
+                      ) : (
                           analyticsData?.communication.feedback
-                        )}
+                      )}
                       </div>
                     </div>
                   </div>
@@ -478,12 +530,12 @@ function CallInfo({
                     <span className="font-bold">{t('interviewSummary')}:</span>
                     <div className="mt-1">
                       {call?.call_analysis === undefined ? (
-                        <Skeleton className="w-[200px] h-[20px]" />
-                      ) : (
+                      <Skeleton className="w-[200px] h-[20px]" />
+                    ) : (
                         (i18n.language === 'tr' && (call?.call_analysis?.call_summary_tr || call?.call_analysis?.call_summary_en || call?.call_analysis?.call_summary)) ||
                         (i18n.language === 'en' && (call?.call_analysis?.call_summary_en || call?.call_analysis?.call_summary_tr || call?.call_analysis?.call_summary)) ||
                         call?.call_analysis?.call_summary || ''
-                      )}
+                    )}
                     </div>
                   </div>
                 </div>
@@ -493,6 +545,33 @@ function CallInfo({
               </div>
             </div>
           </div>
+          
+          {/* User Feedback Section */}
+          <div className="bg-slate-200 rounded-2xl p-4 px-5 my-3">
+            <p className="font-semibold my-2 mb-4">{t('userFeedback', 'User Feedback')}</p>
+            <div className="flex flex-col gap-3 text-sm p-4 rounded-2xl bg-slate-50">
+              {feedbackData ? (
+                <>
+                  <div className="flex flex-row gap-3 align-middle">
+                    <span className="text-2xl">{getSatisfactionEmoji(feedbackData.satisfaction)}</span>
+                    <span className="font-medium text-lg">{getSatisfactionText(feedbackData.satisfaction)}</span>
+                  </div>
+                  <div className="text-sm text-gray-700 bg-white p-3 rounded-lg border border-gray-200 min-h-[60px]">
+                    <p className={`${(!feedbackData.feedback || !feedbackData.feedback.trim()) ? 'italic text-gray-500' : ''}`}>
+                      {getFeedbackText()}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-center py-4">
+                  <p className="text-gray-500 italic text-center">
+                    {t('noFeedbackGiven', 'No feedback was provided')}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
           {analyticsData &&
             analyticsData.questionSummaries &&
             analyticsData.questionSummaries.length > 0 && (

@@ -162,13 +162,13 @@ const QuestionCard = ({
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Bu soruyu silmek istediğinize emin misiniz?</AlertDialogTitle>
+                  <AlertDialogTitle>{t('areYouSure')}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Bu işlem geri alınamaz. Soru kalıcı olarak silinecek.
+                    {t('deleteQuestionConfirm')}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Vazgeç</AlertDialogCancel>
+                  <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-red-600 hover:bg-red-700"
                     onClick={() => {
@@ -176,7 +176,7 @@ const QuestionCard = ({
                       setOpen(false);
                     }}
                   >
-                    Sil
+                    {t('delete')}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

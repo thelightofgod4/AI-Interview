@@ -29,7 +29,7 @@ export interface Analytics {
 }
 
 export interface FeedbackData {
-  interview_id: string;
+  response_id: number;
   satisfaction: number | null;
   feedback: string | null;
   email: string | null;

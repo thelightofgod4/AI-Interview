@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ArrowUpRightSquareIcon } from "lucide-react";
 import { Interview } from "@/types/interview";
 import LoaderWithText from "@/components/loaders/loader-with-text/loaderWithText";
+import { CallLanguageProvider } from "@/contexts/call-language.context";
 
 type Props = {
   params: {
@@ -94,29 +95,31 @@ function InterviewInterface({ params }: Props) {
   }, []);
 
   return (
-    <div>
-      <div className="p-8 mx-auto form-container">
-        {!interview ? (
-          interviewNotFound ? (
+    <CallLanguageProvider>
+      <div>
+        <div className="p-8 mx-auto form-container">
+          {!interview ? (
+            interviewNotFound ? (
+              <PopUpMessage
+                title="Geçersiz URL"
+                description="Erişmeye çalıştığınız görüşme linki geçersiz. Lütfen URL'i kontrol edip tekrar deneyin."
+                image="/invalid-url.png"
+              />
+            ) : (
+              <PopupLoader />
+            )
+          ) : !isActive ? (
             <PopUpMessage
-              title="Geçersiz URL"
-              description="Erişmeye çalıştığınız görüşme linki geçersiz. Lütfen URL'i kontrol edip tekrar deneyin."
-              image="/invalid-url.png"
+              title="Görüşme Kullanılamıyor"
+              description="Şu anda yanıt kabul etmiyoruz. Daha fazla bilgi için lütfen gönderen kişiyle iletişime geçin."
+              image="/closed.png"
             />
           ) : (
-            <PopupLoader />
-          )
-        ) : !isActive ? (
-          <PopUpMessage
-            title="Görüşme Kullanılamıyor"
-            description="Şu anda yanıt kabul etmiyoruz. Daha fazla bilgi için lütfen gönderen kişiyle iletişime geçin."
-            image="/closed.png"
-          />
-        ) : (
-          <Call interview={interview} />
-        )}
+            <Call interview={interview} />
+          )}
+        </div>
       </div>
-    </div>
+    </CallLanguageProvider>
   );
 }
 

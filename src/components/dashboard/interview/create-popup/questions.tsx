@@ -209,7 +209,7 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
           <div className="flex flex-col items-center w-full mt-4">
             <textarea
               className="border-2 rounded-md w-3/4 px-2 py-2 border-gray-400 mb-2"
-              placeholder="Yeni soru girin..."
+              placeholder={t('newQuestionPlaceholder')}
               value={newQuestionText}
               onChange={(e) => setNewQuestionText(e.target.value)}
               rows={3}
@@ -220,13 +220,13 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
                 onClick={handleSaveNewQuestion}
                 disabled={newQuestionText.trim() === ""}
               >
-                Soru Ekle
+                {t('addQuestionButton')}
               </Button>
               <Button
                 className="bg-gray-200 text-gray-700 hover:bg-gray-300"
                 onClick={handleCancelNewQuestion}
               >
-                İptal
+                {t('cancelButton')}
               </Button>
             </div>
           </div>

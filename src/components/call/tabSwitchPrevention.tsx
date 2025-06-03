@@ -8,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useCallLanguage } from "@/contexts/call-language.context";
 
 const useTabSwitchPrevention = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -37,15 +38,20 @@ const useTabSwitchPrevention = () => {
 
 function TabSwitchWarning() {
   const { isDialogOpen, handleUnderstand } = useTabSwitchPrevention();
+  const { getLocalizedText } = useCallLanguage();
 
   return (
     <AlertDialog open={isDialogOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Warning: Tab Switching</AlertDialogTitle>
+          <AlertDialogTitle>
+            {getLocalizedText('Uyarı: Sekme Değiştirme', 'Warning: Tab Switching')}
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            Switching tabs may degrade your interview performance. Tab switching
-            is tracked.
+            {getLocalizedText(
+              'Sekme değiştirmek görüşme performansınızı olumsuz etkileyebilir. Sekme değiştirme işlemleri takip edilmektedir.',
+              'Switching tabs may degrade your interview performance. Tab switching is tracked.'
+            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -53,7 +59,7 @@ function TabSwitchWarning() {
             className="bg-indigo-400 hover:bg-indigo-600 text-white"
             onClick={handleUnderstand}
           >
-            I understand
+            {getLocalizedText('Anladım', 'I understand')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

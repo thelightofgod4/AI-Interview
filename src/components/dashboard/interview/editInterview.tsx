@@ -198,21 +198,20 @@ function EditInterview({ interview }: EditInterviewProps) {
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogTitle>{t('areYouSure')}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    this interview.
+                    {t('deleteInterviewConfirm')}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-indigo-600 hover:bg-indigo-800"
                     onClick={async () => {
                       await onDeleteInterviewClick();
                     }}
                   >
-                    Continue
+                    {t('continue')}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

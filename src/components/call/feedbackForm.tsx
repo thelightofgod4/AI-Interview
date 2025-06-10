@@ -32,23 +32,50 @@ export function FeedbackForm({ onSubmit, email }: FeedbackFormProps) {
     }
   };
 
+  const getEmojiTooltip = (emoji: SatisfactionLevel) => {
+    switch (emoji) {
+      case SatisfactionLevel.Positive:
+        return getLocalizedText(
+          'Harikaydı',
+          'It was great'
+        );
+      case SatisfactionLevel.Moderate:
+        return getLocalizedText(
+          'İyiydi ama geliştirilebilir',
+          'It was okay but could be better'
+        );
+      case SatisfactionLevel.Negative:
+        return getLocalizedText(
+          'Beklentimin altındaydı',
+          'Below expectations'
+        );
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className="p-4">
       <h3 className="text-lg font-semibold mb-4">
         {getLocalizedText(
-          'Platformdan memnun kaldınız mı?',
-          'Are you satisfied with the platform?'
+          'Görüşme deneyeminiz nasıldır?',
+          'How was your interview experience?'
         )}
       </h3>
       <div className="flex justify-center space-x-4 mb-4">
         {Object.values(SatisfactionLevel).map((emoji) => (
-          <button
-            key={emoji}
-            className={`text-3xl p-2 rounded-lg transition-all ${satisfaction === emoji ? "border-2 border-indigo-600 bg-indigo-50" : "hover:bg-gray-100"}`}
-            onClick={() => setSatisfaction(emoji)}
-          >
-            {emoji}
-          </button>
+          <div key={emoji} className="relative group">
+            <button
+              className={`text-3xl p-2 rounded-lg transition-all ${satisfaction === emoji ? "border-2 border-indigo-600 bg-indigo-50" : "hover:bg-gray-100"}`}
+              onClick={() => setSatisfaction(emoji)}
+            >
+              {emoji}
+            </button>
+            {/* Tooltip */}
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block min-w-[160px] max-w-[200px] bg-gray-800 text-white text-xs rounded px-2 py-1 shadow-lg whitespace-normal text-center pointer-events-none z-10">
+              {getEmojiTooltip(emoji)}
+            </div>
+          </div>
         ))}
       </div>
       <Textarea

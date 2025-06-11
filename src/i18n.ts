@@ -155,7 +155,7 @@ const resources = {
       "interviewDescription": "Görüşme Açıklaması",
       "save": "Kaydet",
       "noteInterviewDescription": "Not: Görüşmeye katılanlar bu açıklamayı görecektir.",
-      "responses": "Yanıtlar",
+      "responses": "Yanıt",
       "sidebarInterviews": "Görüşmeler",
       "sidebarInterviewers": "Görüşmeciler",
       "questionInfo": "Bu soruları görüşmelerde kullanacağız. Lütfen soruların uygun olduğundan emin olun.",

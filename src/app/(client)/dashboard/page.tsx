@@ -440,7 +440,7 @@ function Dashboard() {
                           {interview.creator}
                         </p>
                       </div>
-                    </div>
+                        </div>
                       <div className="flex items-center space-x-6">
                         <div className="text-right">
                           <p className="text-lg font-semibold text-gray-900">{interview.responses} {t('responses')}</p>
@@ -452,7 +452,7 @@ function Dashboard() {
                       </div>
                     </div>
                   ))}
-                </div>
+                  </div>
               )}
             </CardContent>
           </Card>

@@ -250,8 +250,23 @@ function SummaryInfo({ responses, interview }: SummaryProps) {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center h-full">
-          <p className="text-gray-500">Henüz yanıt yok</p>
+        <div className="flex flex-col items-center justify-center min-h-[400px] bg-slate-50 rounded-2xl p-12">
+          <div className="text-center space-y-6">
+            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gray-100">
+              <svg className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('noResponsesYet')}</h3>
+              <p className="text-gray-600 max-w-md mx-auto">
+                {i18n.language === 'tr' 
+                  ? 'Bu görüşme henüz hiç yanıt almadı. Adaylar görüşmeye katıldığında burada yanıtlarını görebilirsiniz.'
+                  : 'This interview hasn\'t received any responses yet. You\'ll see candidate responses here once they complete the interview.'
+                }
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -103,8 +103,22 @@ const resources = {
       "delete": "Delete",
       "newQuestionPlaceholder": "Enter new question...",
       "addQuestionButton": "Add Question",
-      "cancelButton": "Cancel"
-      // ... diğer İngilizce metinler
+      "cancelButton": "Cancel",
+      // Dashboard (ana sayfa) metinleri
+      "dashboardTitle": "Overview",
+      "dashboardSubtitle": "Welcome to the AI-powered interview platform. Here you can manage your interviews, evaluate candidates, and access detailed analytics.",
+      "totalInterviewsCreated": "Total Interviews Created",
+      "activeInterviews": "Active Interviews",
+      "closedInterviews": "Inactive Interviews",
+      "quickActions": "Quick Actions",
+      "createInterview": "Create Interview",
+      "browseInterviewers": "Browse Interviewers",
+      "viewAllInterviews": "View All Interviews",
+      "recentInterviews": "Recent Interviews",
+      "viewAll": "View All",
+      "noInterviewsCreated": "No interviews created yet",
+      "createFirstInterview": "Create your first interview using the button above",
+      "noResponsesYet": "No responses yet"
     }
   },
   tr: {
@@ -167,7 +181,7 @@ const resources = {
       "name": "İsim",
       "overallScore": "Genel Puanlama",
       "communicationScore": "İletişim Puanı",
-      "inactive": "Pasif",
+      "inactive": "İnaktif",
       "responseOf": "{{name}} Cevabı",
       "backToSummary": "Özete Dön",
       "placeholderInterviewDescription": "Görüşme açıklamasını buraya girin.",
@@ -208,7 +222,22 @@ const resources = {
       "delete": "Sil",
       "newQuestionPlaceholder": "Yeni soru girin...",
       "addQuestionButton": "Soru Ekle",
-      "cancelButton": "İptal"
+      "cancelButton": "İptal",
+      // Dashboard (ana sayfa) metinleri
+      "dashboardTitle": "Genel Bakış",
+      "dashboardSubtitle": "AI destekli görüşme platformuna hoş geldiniz. Burada görüşmelerinizi yönetebilir, adayları değerlendirebilir ve ayrıntılı analizlere erişebilirsiniz.",
+      "totalInterviewsCreated": "Toplam Oluşturulan Görüşmeler",
+      "activeInterviews": "Aktif Görüşmeler", 
+      "closedInterviews": "İnaktif Görüşmeler",
+      "quickActions": "Hızlı Aksiyonlar",
+      "createInterview": "Görüşme Oluştur",
+      "browseInterviewers": "Görüşmecilere Gözat",
+      "viewAllInterviews": "Tüm Görüşmeleri Gör",
+      "recentInterviews": "Son Görüşmeler", 
+      "viewAll": "Tümünü Gör",
+      "noInterviewsCreated": "Henüz görüşme oluşturulmamış",
+      "createFirstInterview": "İlk görüşmenizi oluşturmak için yukarıdaki butonu kullanın",
+      "noResponsesYet": "Henüz yanıt yok"
       // ... diğer Türkçe metinler
     }
   }

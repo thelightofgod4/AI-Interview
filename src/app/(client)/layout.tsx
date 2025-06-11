@@ -65,17 +65,19 @@ export default function RootLayout({
           <Providers>
             <Suspense fallback={null}>
               {!pathname.includes("/sign-in") &&
-                !pathname.includes("/sign-up") && <Navbar />}
+                !pathname.includes("/sign-up") &&
+                pathname !== "/dashboard" && <Navbar />}
               <div className="flex flex-row flex-1 min-h-screen items-stretch">
                 {!pathname.includes("/sign-in") &&
-                  !pathname.includes("/sign-up") && (
+                  !pathname.includes("/sign-up") &&
+                  pathname !== "/dashboard" && (
                     <SideMenu />
                   )}
-                <div className="pt-[64px] flex-1 overflow-y-auto">
+                <div className={`${pathname === "/dashboard" ? "pt-0" : "pt-[64px]"} flex-1 overflow-y-auto`}>
                   {children}
                 </div>
               </div>
-              <Footer />
+              {pathname !== "/dashboard" && <Footer />}
             </Suspense>
             <Toaster
               toastOptions={{

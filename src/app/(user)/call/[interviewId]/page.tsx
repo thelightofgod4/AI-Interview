@@ -96,29 +96,29 @@ function InterviewInterface({ params }: Props) {
 
   return (
     <CallLanguageProvider>
-      <div>
-        <div className="p-8 mx-auto form-container">
-          {!interview ? (
-            interviewNotFound ? (
-              <PopUpMessage
-                title="Geçersiz URL"
-                description="Erişmeye çalıştığınız görüşme linki geçersiz. Lütfen URL'i kontrol edip tekrar deneyin."
-                image="/invalid-url.png"
-              />
-            ) : (
-              <PopupLoader />
-            )
-          ) : !isActive ? (
+    <div>
+      <div className="p-8 mx-auto form-container">
+        {!interview ? (
+          interviewNotFound ? (
             <PopUpMessage
-              title="Görüşme Kullanılamıyor"
-              description="Şu anda yanıt kabul etmiyoruz. Daha fazla bilgi için lütfen gönderen kişiyle iletişime geçin."
-              image="/closed.png"
+              title="Geçersiz URL"
+              description="Erişmeye çalıştığınız görüşme linki geçersiz. Lütfen URL'i kontrol edip tekrar deneyin."
+              image="/invalid-url.png"
             />
           ) : (
-            <Call interview={interview} />
-          )}
-        </div>
+            <PopupLoader />
+          )
+        ) : !isActive ? (
+          <PopUpMessage
+            title="Görüşme Kullanılamıyor"
+            description="Şu anda yanıt kabul etmiyoruz. Daha fazla bilgi için lütfen gönderen kişiyle iletişime geçin."
+            image="/closed.png"
+          />
+        ) : (
+          <Call interview={interview} />
+        )}
       </div>
+    </div>
     </CallLanguageProvider>
   );
 }

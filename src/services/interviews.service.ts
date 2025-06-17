@@ -106,7 +106,8 @@ const createInterview = async (payload: any) => {
       question_count: payload.question_count,
       response_count: 0,
       time_duration: payload.time_duration,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      folder_id: payload.folder_id
     };
 
     // Insert the interview and return the created record

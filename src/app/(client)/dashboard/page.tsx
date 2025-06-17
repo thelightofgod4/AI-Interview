@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { useOrganization } from "@clerk/nextjs";
+import { useOrganization, useClerk } from "@clerk/nextjs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { InterviewService } from "@/services/interviews.service";
 import { ClientService } from "@/services/clients.service";
@@ -26,6 +26,7 @@ import Modal from "@/components/dashboard/Modal";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
 import { Bell, HelpCircle, Globe } from "lucide-react";
 import i18n from "i18next";
+import { supabase } from '@/lib/supabase';
 
 interface InterviewStats {
   totalInterviews: number;
@@ -45,6 +46,7 @@ interface RecentInterview {
 function Dashboard() {
   const { interviews, interviewsLoading } = useInterviews();
   const { organization } = useOrganization();
+  const { user } = useClerk();
   const [loading, setLoading] = useState<boolean>(false);
   
   // Cache'den başlangıç değerleri al
@@ -83,6 +85,7 @@ function Dashboard() {
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const { t } = useTranslation();
   const router = useRouter();
+  const [folders, setFolders] = useState<any[]>([]);
 
   // Interviewer ID'den isim mapping
   const getInterviewerName = (interviewerId: string | bigint | null) => {
@@ -200,6 +203,28 @@ function Dashboard() {
     return () => clearTimeout(timeoutId);
   }, [interviews]);
 
+  useEffect(() => {
+    // Kullanıcı veya organization değiştiğinde cache ve state sıfırla
+    setStats({ totalInterviews: 0, activeInterviews: 0, closedInterviews: 0, totalResponses: 0 });
+    setRecentInterviews([]);
+    localStorage.removeItem('dashboard-stats');
+    localStorage.removeItem('dashboard-recent-interviews');
+  }, [user?.id, organization?.id]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const fetchFolders = async () => {
+      const { data, error } = await supabase
+        .from('folders')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('is_default', { ascending: false })
+        .order('created_at', { ascending: true });
+      if (!error && data) setFolders(data);
+    };
+    fetchFolders();
+  }, [user?.id]);
+
   const handleCreateInterview = () => {
     setCreateInterviewModalOpen(true);
   };
@@ -241,15 +266,15 @@ function Dashboard() {
         );
       default:
         return null;
-    }
-  };
+      }
+    };
 
   // Loading skeleton'ı tamamen kaldırdık - direkt content'i göster
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 relative">
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 relative">
       {/* Header Actions */}
-      <div className="fixed top-6 right-8 z-10 flex items-center gap-6">
+      <div className="fixed top-4 right-6 z-10 flex items-center gap-4">
         <div className="flex items-center gap-3">
           <OrganizationSwitcher
             afterCreateOrganizationUrl="/dashboard"
@@ -312,142 +337,142 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="w-full max-w-7xl mx-auto px-8 space-y-12">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pt-16">
         {/* Header */}
-        <div className="text-center space-y-6">
-          <h1 className="text-5xl font-bold tracking-tight text-gray-900">{t('dashboardTitle')}</h1>
-          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+        <div className="text-center space-y-4">
+          <h1 className="text-3xl sm:text-4xl lg:text-4xl font-bold tracking-tight text-gray-900">{t('dashboardTitle')}</h1>
+          <p className="text-base sm:text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed px-4">
             {t('dashboardSubtitle')}
           </p>
         </div>
 
         {/* Overview Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Card className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                          <CardTitle className="text-lg font-semibold text-gray-700">
-              {t('totalInterviewsCreated')}
-            </CardTitle>
-              <Calendar className="h-6 w-6 text-blue-500" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm sm:text-base font-semibold text-gray-700">
+                {t('totalInterviewsCreated')}
+              </CardTitle>
+              <Calendar className="h-5 w-5 text-blue-500" />
             </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold text-gray-900 mb-2">{stats.totalInterviews}</div>
+            <CardContent className="pb-3">
+              <div className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.totalInterviews}</div>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                          <CardTitle className="text-lg font-semibold text-gray-700">
-              {t('activeInterviews')}
-            </CardTitle>
-              <BarChart3 className="h-6 w-6 text-green-500" />
+          <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm sm:text-base font-semibold text-gray-700">
+                {t('activeInterviews')}
+              </CardTitle>
+              <BarChart3 className="h-5 w-5 text-green-500" />
             </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold text-gray-900 mb-2">{stats.activeInterviews}</div>
+            <CardContent className="pb-3">
+              <div className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.activeInterviews}</div>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                          <CardTitle className="text-lg font-semibold text-gray-700">
-              {t('closedInterviews')}
-            </CardTitle>
-              <Users className="h-6 w-6 text-red-500" />
+          <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md sm:col-span-2 lg:col-span-1">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm sm:text-base font-semibold text-gray-700">
+                {t('closedInterviews')}
+              </CardTitle>
+              <Users className="h-5 w-5 text-red-500" />
             </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold text-gray-900 mb-2">{stats.closedInterviews}</div>
+            <CardContent className="pb-3">
+              <div className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.closedInterviews}</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Quick Actions */}
-        <div className="space-y-8">
+        <div className="space-y-6">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">{t('quickActions')}</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t('quickActions')}</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 border-0 shadow-lg" onClick={handleCreateInterview}>
-              <CardContent className="flex items-center justify-center p-10">
-                <div className="text-center space-y-4">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-blue-100">
-                    <Plus className="h-8 w-8 text-blue-600" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <Card className="cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 border-0 shadow-md" onClick={handleCreateInterview}>
+              <CardContent className="flex items-center justify-center p-6 sm:p-8">
+                <div className="text-center space-y-3">
+                  <div className="mx-auto flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-blue-100">
+                    <Plus className="h-6 w-6 sm:h-7 sm:w-7 text-blue-600" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">{t('createInterview')}</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">{t('createInterview')}</h3>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 border-0 shadow-lg" onClick={handleBrowseInterviewers}>
-              <CardContent className="flex items-center justify-center p-10">
-                <div className="text-center space-y-4">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-green-100">
-                    <UserCheck className="h-8 w-8 text-green-600" />
+            <Card className="cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 border-0 shadow-md" onClick={handleBrowseInterviewers}>
+              <CardContent className="flex items-center justify-center p-6 sm:p-8">
+                <div className="text-center space-y-3">
+                  <div className="mx-auto flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-green-100">
+                    <UserCheck className="h-6 w-6 sm:h-7 sm:w-7 text-green-600" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">{t('browseInterviewers')}</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">{t('browseInterviewers')}</h3>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 border-0 shadow-lg" onClick={handleViewAllInterviews}>
-              <CardContent className="flex items-center justify-center p-10">
-                <div className="text-center space-y-4">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-purple-100">
-                    <Eye className="h-8 w-8 text-purple-600" />
+            <Card className="cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 border-0 shadow-md sm:col-span-2 lg:col-span-1" onClick={handleViewAllInterviews}>
+              <CardContent className="flex items-center justify-center p-6 sm:p-8">
+                <div className="text-center space-y-3">
+                  <div className="mx-auto flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-purple-100">
+                    <Eye className="h-6 w-6 sm:h-7 sm:w-7 text-purple-600" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">{t('viewAllInterviews')}</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">{t('viewAllInterviews')}</h3>
                 </div>
               </CardContent>
             </Card>
           </div>
-        </div>
+                    </div>
 
         {/* Recent Interviews */}
-        <div className="space-y-8">
+        <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-gray-900">{t('recentInterviews')}</h2>
-            <Button variant="outline" size="lg" onClick={handleViewAllInterviews} className="text-lg px-6 py-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t('recentInterviews')}</h2>
+            <Button variant="outline" size="sm" onClick={handleViewAllInterviews} className="text-sm sm:text-base px-4 py-2">
               {t('viewAll')}
             </Button>
-          </div>
+                      </div>
 
-          <Card className="border-0 shadow-xl">
-            <CardContent className="p-8">
+          <Card className="border-0 shadow-lg">
+            <CardContent className="p-4 sm:p-6">
               {recentInterviews.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 mb-6">
-                    <Calendar className="h-10 w-10 text-gray-400" />
+                <div className="text-center py-12">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 mb-4">
+                    <Calendar className="h-8 w-8 text-gray-400" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('noInterviewsCreated')}</h3>
-                  <p className="text-gray-600 mb-6">{t('createFirstInterview')}</p>
-                  <Button onClick={handleCreateInterview} size="lg" className="px-8 py-3 text-lg">
-                    <Plus className="mr-2 h-5 w-5" />
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('noInterviewsCreated')}</h3>
+                  <p className="text-gray-600 mb-4 text-sm">{t('createFirstInterview')}</p>
+                  <Button onClick={handleCreateInterview} size="default" className="px-6 py-2">
+                    <Plus className="mr-2 h-4 w-4" />
                     {t('createInterview')}
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {recentInterviews.map((interview) => (
                     <div 
                       key={interview.id}
-                      className="flex items-center justify-between p-6 border border-gray-100 rounded-xl hover:bg-gray-50 cursor-pointer transition-all duration-200 hover:shadow-md"
+                      className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 cursor-pointer transition-all duration-200 hover:shadow-sm"
                       onClick={() => handleViewInterview(interview.id)}
                     >
-                                          <div className="flex items-center space-x-6">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{interview.name}</h3>
-                        <p className="text-gray-600">
-                          {interview.creator}
-                        </p>
-                      </div>
+                      <div className="flex items-center space-x-4">
+                        <div>
+                          <h3 className="text-base font-semibold text-gray-900">{interview.name}</h3>
+                          <p className="text-gray-600">
+                            {interview.creator}
+                          </p>
                         </div>
-                      <div className="flex items-center space-x-6">
+                      </div>
+                      <div className="flex items-center space-x-3">
                         <div className="text-right">
-                          <p className="text-lg font-semibold text-gray-900">{interview.responses} {t('responses')}</p>
+                          <p className="text-sm font-semibold text-gray-900">{interview.responses} {t('responses')}</p>
                           {getStatusBadge(interview.status)}
                         </div>
-                        <Button variant="ghost" size="lg" className="h-12 w-12">
-                          <Eye className="h-5 w-5" />
+                        <Button variant="ghost" size="sm" className="h-8 w-8">
+                          <Eye className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
@@ -470,6 +495,7 @@ function Dashboard() {
         <CreateInterviewModal 
           open={createInterviewModalOpen} 
           setOpen={setCreateInterviewModalOpen} 
+          folders={folders}
         />
       </Modal>
     </main>

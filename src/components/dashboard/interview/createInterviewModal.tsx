@@ -7,6 +7,7 @@ import { InterviewBase } from "@/types/interview";
 interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
+  folders: any[];
 }
 
 const CreateEmptyInterviewData = (): InterviewBase => ({
@@ -23,7 +24,7 @@ const CreateEmptyInterviewData = (): InterviewBase => ({
   response_count: BigInt(0),
 });
 
-function CreateInterviewModal({ open, setOpen }: Props) {
+function CreateInterviewModal({ open, setOpen, folders }: Props) {
   const [loading, setLoading] = useState(false);
   const [proceed, setProceed] = useState(false);
   const [interviewData, setInterviewData] = useState<InterviewBase>(
@@ -33,6 +34,9 @@ function CreateInterviewModal({ open, setOpen }: Props) {
   // Below for File Upload
   const [isUploaded, setIsUploaded] = useState(false);
   const [fileName, setFileName] = useState("");
+
+  // userId'i localStorage'dan veya context'ten çek (örnek: localStorage'dan)
+  const userId = typeof window !== 'undefined' ? localStorage.getItem('userId') || '' : '';
 
   useEffect(() => {
     if (loading == true) {
@@ -71,6 +75,8 @@ function CreateInterviewModal({ open, setOpen }: Props) {
           setIsUploaded={setIsUploaded}
           fileName={fileName}
           setFileName={setFileName}
+          folders={folders}
+          userId={userId}
         />
       ) : (
         <QuestionsPopup

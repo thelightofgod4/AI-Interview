@@ -21,6 +21,7 @@ export interface InterviewBase {
   questions: Question[];
   description: string;
   response_count: bigint;
+  folder_id?: number;
 }
 
 export interface InterviewDetails {
@@ -37,4 +38,6 @@ export interface InterviewDetails {
   readable_slug: string;
 }
 
-export interface Interview extends InterviewBase, InterviewDetails {}
+export interface Interview extends InterviewBase, InterviewDetails {
+  folder_id?: number;
+}

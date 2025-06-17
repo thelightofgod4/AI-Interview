@@ -24,6 +24,8 @@ interface Props {
   setIsUploaded: (isUploaded: boolean) => void;
   fileName: string;
   setFileName: (fileName: string) => void;
+  folders: any[];
+  userId: string;
 }
 
 function DetailsPopup({
@@ -35,6 +37,8 @@ function DetailsPopup({
   setIsUploaded,
   fileName,
   setFileName,
+  folders,
+  userId,
 }: Props) {
   const { interviewers } = useInterviewers();
   const [isClicked, setIsClicked] = useState(false);
@@ -57,6 +61,15 @@ function DetailsPopup({
   );
   const [duration, setDuration] = useState(interviewData.time_duration);
   const [uploadedDocumentContext, setUploadedDocumentContext] = useState("");
+  const [selectedFolderId, setSelectedFolderId] = useState<number | undefined>(interviewData.folder_id);
+  const [selectedFolderName, setSelectedFolderName] = useState<string>("");
+
+  // İlk renderda otomatik olarak ilk klasörü seç
+  useEffect(() => {
+    if (folders.length > 0 && !selectedFolderId) {
+      setSelectedFolderId(folders[0].id);
+    }
+  }, [folders]);
 
   const slideLeft = (id: string, value: number) => {
     var slider = document.getElementById(`${id}`);
@@ -113,6 +126,7 @@ function DetailsPopup({
       time_duration: duration,
       description: generatedQuestionsResponse.description,
       is_anonymous: isAnonymous,
+      folder_id: selectedFolderId,
     };
     setInterviewData(updatedInterviewData);
   };
@@ -130,6 +144,7 @@ function DetailsPopup({
       time_duration: String(duration),
       description: "",
       is_anonymous: isAnonymous,
+      folder_id: selectedFolderId,
     };
     setInterviewData(updatedInterviewData);
   };
@@ -146,11 +161,55 @@ function DetailsPopup({
     }
   }, [open]);
 
+  useEffect(() => {
+    setInterviewData({ ...interviewData, folder_id: selectedFolderId });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedFolderId]);
+
+  const handleFolderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const folderName = e.target.value;
+    setSelectedFolderName(folderName);
+    const found = folders.find(f => f.name === folderName && f.user_id === userId);
+    setSelectedFolderId(found ? found.id : undefined);
+  };
+
   return (
     <>
       <div className="w-full max-w-4xl mx-auto">
         <h1 className="text-lg font-semibold mb-4 text-center">{t('createInterviewTitle')}</h1>
         <div className="space-y-4">
+          {/* Folder Seçimi */}
+          <div className="space-y-1.5">
+            <label htmlFor="folder-select" className="text-sm font-medium block">
+              {t('selectFolder', 'Klasör Seçin')}:
+            </label>
+            {folders.length === 0 ? (
+              <>
+                <div className="text-red-500 text-sm font-semibold mb-2">
+                  {t('needToCreateFolder', 'Klasör oluşturmanız gerek')}
+                </div>
+                <select
+                  id="folder-select"
+                  className="w-full px-3 py-1.5 border border-gray-300 rounded-md"
+                  disabled
+                >
+                  <option>{t('noFolders', 'Klasör yok')}</option>
+                </select>
+              </>
+            ) : (
+              <select
+                id="folder-select"
+                className="w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                value={selectedFolderId ?? ''}
+                onChange={e => setSelectedFolderId(Number(e.target.value))}
+              >
+                {folders.map(folder => (
+                  <option key={folder.id} value={folder.id}>{folder.name}</option>
+                ))}
+              </select>
+            )}
+          </div>
+
           {/* Görüşme Adı */}
           <div className="space-y-1.5">
             <label htmlFor="interview-name" className="text-sm font-medium block">
@@ -286,6 +345,7 @@ function DetailsPopup({
             <Button
               className="w-full sm:w-auto bg-indigo-600 text-white hover:bg-indigo-700"
               disabled={
+                folders.length === 0 ||
                 !name ||
                 selectedInterviewer === BigInt(0) ||
                 !objective ||
@@ -305,6 +365,7 @@ function DetailsPopup({
             <Button
               className="w-full sm:w-auto bg-gray-200 text-gray-700 hover:bg-gray-300"
               disabled={
+                folders.length === 0 ||
                 !name ||
                 selectedInterviewer === BigInt(0) ||
                 !objective ||

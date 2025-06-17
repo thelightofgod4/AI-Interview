@@ -113,7 +113,8 @@ function QuestionsPopup({ interviewData, setProceed, setOpen }: Props) {
         quotes: [],
         insights: [],
         respondents: [],
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        folder_id: interviewData.folder_id,
       };
 
       // Log the data being sent

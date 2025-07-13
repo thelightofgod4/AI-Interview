@@ -303,11 +303,14 @@ function Interviews() {
                   <SelectTrigger className={`w-[180px] h-12 border-gray-300 hover:bg-gray-100 focus:bg-white transition-all duration-200 rounded-lg ${selectedInterviewer !== "all" ? "bg-blue-50 border-blue-300" : "bg-gray-50"}`}>
                     <div className="flex items-center">
                       <User className={`h-4 w-4 mr-2 ${selectedInterviewer !== "all" ? "text-blue-600" : "text-gray-600"}`} />
-                      <SelectValue placeholder="Interviewer" />
+                      {selectedInterviewer === "all"
+                        ? <span className="text-gray-700 font-medium">{t('interviewers', 'Görüşmeciler')}</span>
+                        : <span className="text-gray-900 font-medium">{interviewerMap[selectedInterviewer as keyof typeof interviewerMap]}</span>
+                      }
                     </div>
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t('allInterviewers', 'All Interviewers')}</SelectItem>
+                    <SelectItem value="all">{t('allInterviewers', 'Tüm Görüşmeciler')}</SelectItem>
                     {Object.entries(interviewerMap).map(([id, name]) => (
                       <SelectItem key={id} value={id}>{name}</SelectItem>
                     ))}
@@ -320,7 +323,7 @@ function Interviews() {
                 )}
               </div>
 
-              {/* Folder Filter (placeholder for future) */}
+              {/* Folder Filter */}
               <div className="min-w-0 relative">
                 <Select value={selectedFolder} onValueChange={setSelectedFolder}>
                   <SelectTrigger
@@ -330,11 +333,14 @@ function Interviews() {
                   >
                     <div className="flex items-center">
                       <Folder className="h-4 w-4 mr-2 text-gray-600" />
-                      <SelectValue placeholder="Folder" />
+                      {selectedFolder === "all"
+                        ? <span className="text-gray-700 font-medium">{t('folders', 'Klasörler')}</span>
+                        : <span className="text-gray-900 font-medium">{folders?.find(f => f.id.toString() === selectedFolder)?.name}</span>
+                      }
                     </div>
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t('allFolders', 'All Folders')}</SelectItem>
+                    <SelectItem value="all">{t('allFolders', 'Tüm Klasörler')}</SelectItem>
                     {folders?.map(folder => (
                       <SelectItem key={folder.id} value={folder.id.toString()}>{folder.name}</SelectItem>
                     ))}
@@ -353,13 +359,16 @@ function Interviews() {
                   <SelectTrigger className={`w-[140px] h-12 border-gray-300 hover:bg-gray-100 focus:bg-white transition-all duration-200 rounded-lg ${selectedStatus !== "all" ? "bg-green-50 border-green-300" : "bg-gray-50"}`}>
                     <div className="flex items-center">
                       <Activity className={`h-4 w-4 mr-2 ${selectedStatus !== "all" ? "text-green-600" : "text-gray-600"}`} />
-                      <SelectValue placeholder="Status" />
+                      {selectedStatus === "all"
+                        ? <span className="text-gray-700 font-medium">{t('status', 'Durum')}</span>
+                        : <span className="text-gray-900 font-medium">{selectedStatus === 'active' ? t('active', 'Aktif') : t('inactive', 'İnaktif')}</span>
+                      }
                     </div>
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">{t('allStatus', 'All Status')}</SelectItem>
-                    <SelectItem value="active">{t('active', 'Active')}</SelectItem>
-                    <SelectItem value="inactive">{t('inactive', 'Inactive')}</SelectItem>
+                    <SelectItem value="all">{t('allStatus', 'Tüm Durumlar')}</SelectItem>
+                    <SelectItem value="active">{t('active', 'Aktif')}</SelectItem>
+                    <SelectItem value="inactive">{t('inactive', 'İnaktif')}</SelectItem>
                   </SelectContent>
                 </Select>
                 {selectedStatus !== "all" && (

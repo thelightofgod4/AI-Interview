@@ -121,9 +121,9 @@ const resources = {
       "createFirstInterview": "Create your first interview using the button above",
       "noResponsesYet": "No responses yet",
       "searchInterviews": "Search interviews...",
-      "allInterviewers": "All Interviewers",
-      "allFolders": "All Folders",
-      "allStatus": "All Status",
+      "interviewers": "Interviewers",
+      "folders": "Folders",
+      "status": "Status",
       "results": "results",
       "of": "of",
       "filtered": "Filtered",
@@ -143,7 +143,10 @@ const resources = {
       "selectFolderToDelete": "Select a folder to delete",
       "folderDeleted": "Folder deleted successfully.",
       "needToCreateFolder": "You need to create a folder",
-      "noFolders": "No folders"
+      "noFolders": "No folders",
+      "allInterviewers": "All Interviewers",
+      "allFolders": "All Folders",
+      "allStatus": "All Status"
     }
   },
   tr: {
@@ -265,9 +268,9 @@ const resources = {
       "createFirstInterview": "İlk görüşmenizi oluşturmak için yukarıdaki butonu kullanın",
       "noResponsesYet": "Henüz yanıt yok",
       "searchInterviews": "Görüşmelerde ara...",
-      "allInterviewers": "Tüm Görüşmeciler",
-      "allFolders": "Tüm Klasörler",
-      "allStatus": "Tüm Durumlar",
+      "interviewers": "Görüşmeciler",
+      "folders": "Klasörler",
+      "status": "Durum",
       "results": "sonuç",
       "of": "/",
       "filtered": "Filtrelenmiş",
@@ -287,7 +290,10 @@ const resources = {
       "selectFolderToDelete": "Silinecek klasörü seçin",
       "folderDeleted": "Klasör başarıyla silindi.",
       "needToCreateFolder": "Klasör oluşturmanız gerek",
-      "noFolders": "Klasör yok"
+      "noFolders": "Klasör yok",
+      "allInterviewers": "Tüm Görüşmeciler",
+      "allFolders": "Tüm Klasörler",
+      "allStatus": "Tüm Durumlar"
     }
   }
 };

@@ -16,7 +16,8 @@ import {
   Eye,
   Clock,
   CheckCircle,
-  PauseCircle 
+  PauseCircle,
+  FolderPlus
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
@@ -24,9 +25,12 @@ import { useRouter } from "next/navigation";
 import CreateInterviewModal from "@/components/dashboard/interview/createInterviewModal";
 import Modal from "@/components/dashboard/Modal";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
-import { Bell, HelpCircle, Globe } from "lucide-react";
+import { Bell, Globe } from "lucide-react";
 import i18n from "i18next";
 import { supabase } from '@/lib/supabase';
+import CreateInterviewCard from "@/components/dashboard/interview/createInterviewCard";
+import CreateFolderButton from "@/components/dashboard/interview/createFolderButton";
+import ActionButton from '@/components/dashboard/interview/ActionButton';
 
 interface InterviewStats {
   totalInterviews: number;
@@ -82,6 +86,7 @@ function Dashboard() {
 
   const [recentInterviews, setRecentInterviews] = useState<RecentInterview[]>(getCachedRecentInterviews);
   const [createInterviewModalOpen, setCreateInterviewModalOpen] = useState(false);
+  const [createFolderModalOpen, setCreateFolderModalOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const { t } = useTranslation();
   const router = useRouter();
@@ -272,9 +277,9 @@ function Dashboard() {
   // Loading skeleton'ı tamamen kaldırdık - direkt content'i göster
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 relative">
-      {/* Header Actions */}
-      <div className="fixed top-4 right-6 z-10 flex items-center gap-4">
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-0">
+      {/* İkonlar ve switcher en sağ üstte, container dışında */}
+      <div className="w-full flex justify-end px-8 pt-1">
         <div className="flex items-center gap-3">
           <OrganizationSwitcher
             afterCreateOrganizationUrl="/dashboard"
@@ -292,9 +297,6 @@ function Dashboard() {
           <button className="relative group p-2 rounded-full hover:bg-white/20 transition-colors" aria-label="Bildirimler">
             <Bell className="w-6 h-6 text-gray-700" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-purple-600 rounded-full"></span>
-          </button>
-          <button className="group p-2 rounded-full hover:bg-white/20 transition-colors" aria-label="Yardım">
-            <HelpCircle className="w-6 h-6 text-gray-700" />
           </button>
           <div className="relative">
             <button 
@@ -336,8 +338,8 @@ function Dashboard() {
           <UserButton afterSignOutUrl="/sign-in" signInUrl="/sign-in" />
         </div>
       </div>
-
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pt-16">
+      {/* Dashboard ana içeriği */}
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 pt-4">
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-3xl sm:text-4xl lg:text-4xl font-bold tracking-tight text-gray-900">{t('dashboardTitle')}</h1>
@@ -390,42 +392,61 @@ function Dashboard() {
           <div className="text-center">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t('quickActions')}</h2>
           </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <Card className="cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 border-0 shadow-md" onClick={handleCreateInterview}>
-              <CardContent className="flex items-center justify-center p-6 sm:p-8">
-                <div className="text-center space-y-3">
-                  <div className="mx-auto flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-blue-100">
-                    <Plus className="h-6 w-6 sm:h-7 sm:w-7 text-blue-600" />
-                  </div>
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">{t('createInterview')}</h3>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 border-0 shadow-md" onClick={handleBrowseInterviewers}>
-              <CardContent className="flex items-center justify-center p-6 sm:p-8">
-                <div className="text-center space-y-3">
-                  <div className="mx-auto flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-green-100">
-                    <UserCheck className="h-6 w-6 sm:h-7 sm:w-7 text-green-600" />
-                  </div>
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">{t('browseInterviewers')}</h3>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 border-0 shadow-md sm:col-span-2 lg:col-span-1" onClick={handleViewAllInterviews}>
-              <CardContent className="flex items-center justify-center p-6 sm:p-8">
-                <div className="text-center space-y-3">
-                  <div className="mx-auto flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl bg-purple-100">
-                    <Eye className="h-6 w-6 sm:h-7 sm:w-7 text-purple-600" />
-                  </div>
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">{t('viewAllInterviews')}</h3>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="flex flex-row items-center justify-center gap-8 mt-2">
+            <ActionButton
+              icon={<Plus size={56} strokeWidth={1.5} className="text-gray-700" />}
+              text={t('createInterview')}
+              onClick={() => setCreateInterviewModalOpen(true)}
+              className="h-32 w-80"
+            />
+            <ActionButton
+              icon={<FolderPlus size={56} strokeWidth={1.5} className="text-gray-700" />}
+              text={t('createFolderButton')}
+              onClick={() => setCreateFolderModalOpen(true)}
+              className="h-32 w-80"
+            />
+            <ActionButton
+              icon={<Eye size={56} strokeWidth={1.5} className="text-indigo-500" />}
+              text={t('viewAllInterviews')}
+              onClick={handleViewAllInterviews}
+              iconBg="bg-indigo-50"
+              className="h-32 w-80"
+            />
           </div>
-                    </div>
+          {/* Modals */}
+          <Modal
+            open={createInterviewModalOpen}
+            closeOnOutsideClick={false}
+            onClose={() => setCreateInterviewModalOpen(false)}
+          >
+            <CreateInterviewModal 
+              open={createInterviewModalOpen} 
+              setOpen={setCreateInterviewModalOpen} 
+              folders={folders}
+            />
+          </Modal>
+          <Modal
+            open={createFolderModalOpen}
+            closeOnOutsideClick={true}
+            onClose={() => setCreateFolderModalOpen(false)}
+          >
+            <CreateFolderButton 
+              folders={folders}
+              fetchFolders={async () => {
+                if (!user?.id) return;
+                const { data, error } = await supabase
+                  .from('folders')
+                  .select('*')
+                  .eq('user_id', user?.id)
+                  .order('is_default', { ascending: false })
+                  .order('created_at', { ascending: true });
+                if (!error && data) setFolders(data);
+              }}
+              modalOnly
+              setOpen={setCreateFolderModalOpen}
+            />
+          </Modal>
+        </div>
 
         {/* Recent Interviews */}
         <div className="space-y-6">
@@ -434,11 +455,16 @@ function Dashboard() {
             <Button variant="outline" size="sm" onClick={handleViewAllInterviews} className="text-sm sm:text-base px-4 py-2">
               {t('viewAll')}
             </Button>
-                      </div>
+          </div>
 
           <Card className="border-0 shadow-lg">
             <CardContent className="p-4 sm:p-6">
-              {recentInterviews.length === 0 ? (
+              {interviewsLoading ? (
+                <div className="text-center py-12">
+                  {/* Skeleton veya spinner */}
+                  <span>Yükleniyor...</span>
+                </div>
+              ) : recentInterviews.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 mb-4">
                     <Calendar className="h-8 w-8 text-gray-400" />
@@ -452,6 +478,7 @@ function Dashboard() {
                 </div>
               ) : (
                 <div className="space-y-4">
+                  {/* Asıl içerik */}
                   {recentInterviews.map((interview) => (
                     <div 
                       key={interview.id}
@@ -477,27 +504,12 @@ function Dashboard() {
                       </div>
                     </div>
                   ))}
-                  </div>
+                </div>
               )}
             </CardContent>
           </Card>
         </div>
       </div>
-
-      {/* Create Interview Modal */}
-      <Modal
-        open={createInterviewModalOpen}
-        closeOnOutsideClick={false}
-        onClose={() => {
-          setCreateInterviewModalOpen(false);
-        }}
-      >
-        <CreateInterviewModal 
-          open={createInterviewModalOpen} 
-          setOpen={setCreateInterviewModalOpen} 
-          folders={folders}
-        />
-      </Modal>
     </main>
   );
 }

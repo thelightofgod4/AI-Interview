@@ -18,9 +18,9 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-function CreateFolderButton({ folders, fetchFolders }: { folders: any[], fetchFolders: () => void }) {
+function CreateFolderButton({ folders, fetchFolders, big = false, modalOnly = false, setOpen }: { folders: any[], fetchFolders: () => void, big?: boolean, modalOnly?: boolean, setOpen?: (open: boolean) => void }) {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [folderName, setFolderName] = useState('');
   const [loading, setLoading] = useState(false);
   const { user } = useClerk();
@@ -38,7 +38,7 @@ function CreateFolderButton({ folders, fetchFolders }: { folders: any[], fetchFo
     });
     setLoading(false);
     setFolderName('');
-    setOpen(false);
+    setOpenModal(false);
     fetchFolders();
   };
 
@@ -53,91 +53,48 @@ function CreateFolderButton({ folders, fetchFolders }: { folders: any[], fetchFo
     fetchFolders();
   };
 
+  if (modalOnly) {
+    return (
+      <div className="w-full max-w-xs mx-auto flex flex-col items-center justify-center p-4">
+        <Card className="w-full flex flex-col items-center p-4">
+          <FolderPlus size={40} className="text-indigo-600 mb-2" />
+          <CardTitle className="text-base mb-2">{t('createFolderTitle')}</CardTitle>
+          <input
+            className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder={t('folderNamePlaceholder')}
+            value={folderName}
+            onChange={e => setFolderName(e.target.value)}
+            maxLength={32}
+          />
+          <Button className="w-full" onClick={handleCreate} disabled={!folderName.trim() || loading}>
+            {loading ? t('creating', 'Oluşturuluyor...') : t('createFolderButton')}
+          </Button>
+          {setOpen && (
+            <Button className="w-full mt-2" variant="outline" onClick={() => setOpen(false)}>{t('cancelButton')}</Button>
+          )}
+        </Card>
+      </div>
+    );
+  }
   return (
     <>
       <div className="flex flex-row gap-2">
-        <Card className="flex items-center border-dashed border-gray-700 border-2 cursor-pointer hover:scale-105 ease-in-out duration-300 h-16 w-44 ml-1 mr-3 mt-0 rounded-xl shrink-0 overflow-hidden shadow-md"
-          onClick={() => setOpen(true)}>
-          <CardContent className="flex items-center flex-col mx-auto p-0">
+        <Card className={`flex items-center border-dashed border-gray-700 border-2 cursor-pointer hover:scale-105 hover:border-indigo-500 hover:shadow-xl transition-all duration-200 ${big ? 'h-28 w-64 rounded-2xl' : 'h-16 w-44 rounded-xl'} ml-1 mr-3 mt-0 shrink-0 overflow-hidden shadow-md bg-white`}
+          onClick={() => setOpen && setOpen(true)}>
+          <CardContent className="flex items-center flex-col mx-auto p-0 w-full h-full justify-center">
             <div className="flex flex-col justify-center items-center w-full overflow-hidden">
-              <FolderPlus size={32} strokeWidth={1.5} className="text-gray-700" />
+              <FolderPlus size={big ? 48 : 32} strokeWidth={1.5} className="text-gray-700" />
             </div>
-            <CardTitle className="p-0 text-center text-sm">
+            <CardTitle className={`p-0 text-center ${big ? 'text-lg font-semibold' : 'text-sm'}`}> 
               {t('createFolderButton')}
             </CardTitle>
           </CardContent>
         </Card>
-        <Card className="flex items-center border-dashed border-gray-700 border-2 cursor-pointer hover:scale-105 ease-in-out duration-300 h-16 w-44 ml-1 mr-3 mt-0 rounded-xl shrink-0 overflow-hidden shadow-md"
-          onClick={() => setDeleteOpen(true)}>
-          <CardContent className="flex items-center flex-col mx-auto p-0">
-            <div className="flex flex-col justify-center items-center w-full overflow-hidden">
-              <FolderMinus size={32} strokeWidth={1.5} className="text-gray-700" />
-            </div>
-            <CardTitle className="p-0 text-center text-sm">
-              {t('deleteFolderButton')}
-            </CardTitle>
-          </CardContent>
-        </Card>
       </div>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <div className="w-full max-w-xs mx-auto flex flex-col items-center justify-center p-4">
-          <Card className="w-full flex flex-col items-center p-4">
-            <FolderPlus size={40} className="text-indigo-600 mb-2" />
-            <CardTitle className="text-base mb-2">{t('createFolderTitle')}</CardTitle>
-            <input
-              className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder={t('folderNamePlaceholder')}
-              value={folderName}
-              onChange={e => setFolderName(e.target.value)}
-              maxLength={32}
-            />
-            <Button className="w-full" onClick={handleCreate} disabled={!folderName.trim() || loading}>
-              {loading ? t('creating', 'Oluşturuluyor...') : t('createFolderButton')}
-            </Button>
-          </Card>
-        </div>
-      </Modal>
-      <Modal open={deleteOpen} onClose={() => setDeleteOpen(false)}>
-        <div className="w-full max-w-xs mx-auto flex flex-col items-center justify-center p-4">
-          <Card className="w-full flex flex-col items-center p-4">
-            <FolderMinus size={40} className="text-red-600 mb-2" />
-            <CardTitle className="text-base mb-2">{t('deleteFolderButton')}</CardTitle>
-            <label className="mb-2 text-sm">{t('selectFolderToDelete')}</label>
-            <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 focus:outline-none focus:ring-2 focus:ring-red-500"
-              value={selectedDeleteFolderId}
-              onChange={e => setSelectedDeleteFolderId(e.target.value)}
-            >
-              <option value="">--</option>
-              {folders.map((folder: any) => (
-                <option key={folder.id} value={folder.id}>{folder.name}</option>
-              ))}
-            </select>
-            <div className="text-xs text-red-600 mb-3 text-center">{t('deleteFolderConfirm')}</div>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button className="w-full bg-red-600 hover:bg-red-700 text-white" disabled={!selectedDeleteFolderId || deleteLoading}>
-                  {deleteLoading ? t('deleting', 'Siliniyor...') : t('deleteFolderButton')}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{t('areYouSure')}</AlertDialogTitle>
-                  <AlertDialogDescription>{t('deleteFolderConfirm')}</AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
-                  <AlertDialogAction className="bg-red-600 hover:bg-red-700 text-white" onClick={handleDelete} disabled={deleteLoading}>
-                    {deleteLoading ? t('deleting', 'Siliniyor...') : t('delete')}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </Card>
-        </div>
-      </Modal>
+      {/* Modal eski kullanım için bırakıldı */}
     </>
   );
 }
 
 export default CreateFolderButton; 
+ 

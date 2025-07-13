@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { X } from "lucide-react";
+import { createPortal } from "react-dom";
 
 interface ModalProps {
   open: boolean;
@@ -14,9 +15,10 @@ export default function Modal({
   closeOnOutsideClick = true,
   children,
 }: ModalProps) {
-  return (
+  if (typeof window === "undefined") return null;
+  return createPortal(
     <div
-      className={`fixed z-50 inset-0 flex justify-center items-center transition-colors
+      className={`fixed z-[99999] inset-0 flex justify-center items-center transition-colors
       ${open ? "visible bg-black/30" : "invisible"}
       `}
       onClick={closeOnOutsideClick ? onClose : () => {}}
@@ -35,6 +37,7 @@ export default function Modal({
         </button>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

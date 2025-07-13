@@ -9,7 +9,7 @@ import { ClientService } from "@/services/clients.service";
 import { ResponseService } from "@/services/responses.service";
 import { useInterviews } from "@/contexts/interviews.context";
 import Modal from "@/components/dashboard/Modal";
-import { Gem, Plus, Search, Filter, User, Folder, Activity, X, RotateCcw, ChevronDown, ChevronRight } from "lucide-react";
+import { Gem, Plus, Search, Filter, User, Folder, Activity, X, RotateCcw, ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from '@/lib/supabase';
 import CreateInterviewModal from "@/components/dashboard/interview/createInterviewModal";
 import CreateFolderButton from '@/components/dashboard/interview/createFolderButton';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 function Interviews() {
   const { interviews, interviewsLoading } = useInterviews();
@@ -49,10 +50,10 @@ function Interviews() {
     if (!interviews) return [];
     return interviews.filter((interview) => {
       const matchesSearch = interview.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesInterviewer =
-        selectedInterviewer === "all" ||
+      const matchesInterviewer = 
+        selectedInterviewer === "all" || 
         interview.interviewer_id?.toString() === selectedInterviewer;
-      const matchesStatus =
+      const matchesStatus = 
         selectedStatus === "all" ||
         (selectedStatus === "active" && interview.is_active) ||
         (selectedStatus === "inactive" && !interview.is_active);
@@ -154,10 +155,26 @@ function Interviews() {
     fetchResponsesCount();
   }, [interviews, organization, currentPlan, allowedResponsesCount]);
 
-  const [folders, setFolders] = useState<any[]>([]);
+  const [folders, setFolders] = useState<any[] | undefined>(undefined);
+  const [deleteFolderId, setDeleteFolderId] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const handleDeleteFolder = async () => {
+    if (!deleteFolderId) return;
+    setDeleteLoading(true);
+    await supabase.from('folders').delete().eq('id', deleteFolderId);
+    setDeleteLoading(false);
+    setDeleteFolderId(null);
+    fetchFolders();
+  };
 
   const fetchFolders = async () => {
-    if (!user?.id) return;
+    setLoading(true);
+    if (!user?.id) {
+      setFolders(undefined);
+      setLoading(false);
+      return;
+    }
     const { data, error } = await supabase
       .from('folders')
       .select('*')
@@ -165,6 +182,7 @@ function Interviews() {
       .order('is_default', { ascending: false })
       .order('created_at', { ascending: true });
     if (!error && data) setFolders(data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -174,7 +192,7 @@ function Interviews() {
   // Folder bazlı interview gruplama
   const interviewsByFolder = useMemo(() => {
     const map: Record<string, any[]> = {};
-    folders.forEach(folder => {
+    folders?.forEach(folder => {
       map[folder.id] = [];
     });
     filteredInterviews.forEach(interview => {
@@ -189,7 +207,7 @@ function Interviews() {
 
   useEffect(() => {
     // Varsayılan olarak tüm folderlar kapalı başlasın
-    if (folders.length > 0) {
+    if (folders && folders.length > 0) {
       const initial: Record<number, boolean> = {};
       folders.forEach(f => { initial[f.id] = false; });
       setOpenFolders(initial);
@@ -200,20 +218,33 @@ function Interviews() {
     setOpenFolders(prev => ({ ...prev, [folderId]: !prev[folderId] }));
   };
 
+  const [createFolderModalOpen, setCreateFolderModalOpen] = useState(false);
+
   return (
     <main className="p-8 pt-0 ml-12 mr-auto rounded-md">
-      <div className="flex flex-col items-left">
-        <div className="flex flex-row items-center gap-3 mt-8 mb-2">
-          <h2 className="mr-2 text-2xl font-semibold tracking-tight">
-          {t('myInterviewsTitle')}
-        </h2>
-          <CreateInterviewCard folders={folders} small />
-          <CreateFolderButton folders={folders} fetchFolders={fetchFolders} />
+      <div>
+        <div className="flex flex-row items-start justify-between gap-3 mt-8 mb-2 w-full">
+          <div>
+            <h2 className="mr-2 text-2xl font-semibold tracking-tight">
+              {t('myInterviewsTitle')}
+            </h2>
+            <div className=" text-sm tracking-tight text-gray-600 font-medium ">
+              {t('myInterviewsSubtitle')}
+            </div>
+          </div>
+          <div className="flex flex-row gap-4 mt-1">
+            <CreateInterviewCard folders={folders ?? []} small />
+            <div onClick={() => setCreateFolderModalOpen(true)} style={{ cursor: 'pointer' }}>
+              <CreateFolderButton folders={folders ?? []} fetchFolders={fetchFolders} />
+            </div>
+          </div>
         </div>
-        <h3 className=" text-sm tracking-tight text-gray-600 font-medium ">
-          {t('myInterviewsSubtitle')}
-        </h3>
-        
+        <Modal
+          open={createFolderModalOpen}
+          onClose={() => setCreateFolderModalOpen(false)}
+        >
+          <CreateFolderButton folders={folders ?? []} fetchFolders={fetchFolders} modalOnly setOpen={setCreateFolderModalOpen} />
+        </Modal>
         {/* Search and Filter Section */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mt-6 mb-6">
           {/* Header with filter count and reset button */}
@@ -304,7 +335,7 @@ function Interviews() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{t('allFolders', 'All Folders')}</SelectItem>
-                    {folders.map(folder => (
+                    {folders?.map(folder => (
                       <SelectItem key={folder.id} value={folder.id.toString()}>{folder.name}</SelectItem>
                     ))}
                   </SelectContent>
@@ -340,24 +371,53 @@ function Interviews() {
             </div>
           </div>
         </div>
-
         <div className="mt-8">
-          {folders
+          {loading || folders === undefined ? (
+            <div className="text-center py-12">
+              {/* Skeleton veya spinner */}
+              <span>Yükleniyor...</span>
+            </div>
+          ) : folders
             .filter(folder => selectedFolder === "all" || folder.id.toString() === selectedFolder)
             .map((folder) => (
               <div key={folder.id} className="mb-6 border-b pb-2">
-                <button
-                  className="flex items-center gap-2 text-xl font-bold text-gray-800 focus:outline-none hover:text-indigo-600 transition-colors mb-2"
-                  onClick={() => toggleFolder(folder.id)}
-                  style={{ userSelect: 'none' }}
-                >
-                  {openFolders[folder.id] ? (
-                    <ChevronDown className="w-5 h-5" />
-                  ) : (
-                    <ChevronRight className="w-5 h-5" />
-                  )}
-                  {folder.name}
-                </button>
+                <div className="flex items-center gap-2 mb-2">
+                  <button
+                    className="flex items-center gap-2 text-xl font-bold text-gray-800 focus:outline-none hover:text-indigo-600 transition-colors"
+                    onClick={() => toggleFolder(folder.id)}
+                    style={{ userSelect: 'none' }}
+                  >
+                    {openFolders[folder.id] ? (
+                      <ChevronDown className="w-5 h-5" />
+                    ) : (
+                      <ChevronRight className="w-5 h-5" />
+                    )}
+                    {folder.name}
+                  </button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button
+                        className="ml-1 p-1 rounded hover:bg-red-100 group"
+                        title={t('deleteFolderButton')}
+                        onClick={e => { e.stopPropagation(); setDeleteFolderId(folder.id.toString()); }}
+                      >
+                        <Trash2 className="w-4 h-4 text-gray-400 group-hover:text-red-600 transition-colors" />
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>{t('areYouSure')}</AlertDialogTitle>
+                        <AlertDialogDescription>{t('deleteFolderConfirm')}</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+                        <AlertDialogAction className="bg-red-600 hover:bg-red-700 text-white" onClick={handleDeleteFolder} disabled={deleteLoading}>
+                          {deleteLoading ? t('deleting', 'Siliniyor...') : t('delete')}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
                 {openFolders[folder.id] && (
                   <div className="flex flex-wrap items-start">
                     {interviewsByFolder[folder.id] && interviewsByFolder[folder.id].length > 0 ? (

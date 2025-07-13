@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { OrganizationSwitcher, UserButton } from "@clerk/nextjs";
-import { Video, Bell, HelpCircle, Globe } from "lucide-react";
+import { Video, Bell, Globe } from "lucide-react";
 import i18n from "i18next";
 
 function Navbar() {
@@ -35,9 +35,6 @@ function Navbar() {
           <button className="relative group" aria-label="Bildirimler">
             <Bell className="w-6 h-6 text-gray-700" />
             <span className="absolute top-0 right-0 w-2 h-2 bg-purple-600 rounded-full"></span>
-          </button>
-          <button className="group" aria-label="Yardım">
-            <HelpCircle className="w-6 h-6 text-gray-700" />
           </button>
           <div className="relative">
             <button onClick={() => setLangMenuOpen((v) => !v)} className="group" aria-label="Dil Seçici">

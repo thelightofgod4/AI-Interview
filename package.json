@@ -48,6 +48,7 @@
     "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.0.0-rc22",
     "framer-motion": "^11.3.21",
     "fs": "^0.0.1-security",

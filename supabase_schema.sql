@@ -83,3 +83,11 @@ CREATE TABLE feedback (
     feedback TEXT,
     satisfaction INTEGER
 );
+
+create table notifications (
+    id uuid primary key default gen_random_uuid(),
+    response_id int4 not null,
+    interview_id text not null,
+    user_id text,
+    created_at timestamp with time zone default now()
+);

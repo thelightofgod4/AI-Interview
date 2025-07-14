@@ -146,7 +146,13 @@ const resources = {
       "noFolders": "No folders",
       "allInterviewers": "All Interviewers",
       "allFolders": "All Folders",
-      "allStatus": "All Status"
+      "allStatus": "All Status",
+      "noNotifications": "No notifications",
+      "newResponseNotification": "You have a new interview response",
+      "newResponseNotificationWithName": "You have a new response from {{name}}",
+      "newResponseNotificationWithInterviewName": "You have a new response for the interview \"{{interviewName}}\"",
+      "newResponseNotificationWithInterviewAndName": "You have a new response for the interview \"{{interviewName}}\" from {{name}}",
+      "newResponseNotificationGrouped": "{{name}} and {{count}} others responded to the interview \"{{interviewName}}\"",
     }
   },
   tr: {
@@ -293,7 +299,13 @@ const resources = {
       "noFolders": "Klasör yok",
       "allInterviewers": "Tüm Görüşmeciler",
       "allFolders": "Tüm Klasörler",
-      "allStatus": "Tüm Durumlar"
+      "allStatus": "Tüm Durumlar",
+      "noNotifications": "Bildirim yok",
+      "newResponseNotification": "{{name}} adlı yanıtınız geldi",
+      "newResponseNotificationWithName": "{{name}} adlı kişiden yeni bir yanıtınız var",
+      "newResponseNotificationWithInterviewName": "{{interviewName}} adlı görüşmeye yeni bir yanıtınız var",
+      "newResponseNotificationWithInterviewAndName": "{{interviewName}} adlı görüşmeye {{name}} kişisinden yeni bir yanıtınız var",
+      "newResponseNotificationGrouped": "{{interviewName}} adlı görüşmeye {{name}} ve toplam {{count}} kişi cevap verdi",
     }
   }
 };

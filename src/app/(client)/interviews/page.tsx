@@ -226,10 +226,10 @@ function Interviews() {
         <div className="flex flex-row items-start justify-between gap-3 mt-8 mb-2 w-full">
           <div>
             <h2 className="mr-2 text-2xl font-semibold tracking-tight">
-              {t('myInterviewsTitle')}
-            </h2>
+          {t('myInterviewsTitle')}
+        </h2>
             <div className=" text-sm tracking-tight text-gray-600 font-medium ">
-              {t('myInterviewsSubtitle')}
+          {t('myInterviewsSubtitle')}
             </div>
           </div>
           <div className="flex flex-row gap-4 mt-1">
@@ -431,21 +431,21 @@ function Interviews() {
                   <div className="flex flex-wrap items-start">
                     {interviewsByFolder[folder.id] && interviewsByFolder[folder.id].length > 0 ? (
                       interviewsByFolder[folder.id].map((item) => (
-                        <InterviewCard
-                          id={item.id}
-                          interviewerId={item.interviewer_id}
-                          key={item.id}
-                          name={item.name}
-                          url={item.url ?? ""}
-                          readableSlug={item.readable_slug}
-                        />
-                      ))
-                    ) : (
+                  <InterviewCard
+                    id={item.id}
+                    interviewerId={item.interviewer_id}
+                    key={item.id}
+                    name={item.name}
+                    url={item.url ?? ""}
+                    readableSlug={item.readable_slug}
+                  />
+                ))
+              ) : (
                       <div className="text-gray-400 italic ml-2">{t('noInterviewsYet', 'Henüz görüşme yok')}</div>
                     )}
                   </div>
-                )}
-              </div>
+                  )}
+                </div>
             ))}
         </div>
       </div>

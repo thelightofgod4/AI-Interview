@@ -31,6 +31,8 @@ import { supabase } from '@/lib/supabase';
 import CreateInterviewCard from "@/components/dashboard/interview/createInterviewCard";
 import CreateFolderButton from "@/components/dashboard/interview/createFolderButton";
 import ActionButton from '@/components/dashboard/interview/ActionButton';
+import { formatDistanceToNow } from "date-fns";
+import { tr, enUS } from "date-fns/locale";
 
 interface InterviewStats {
   totalInterviews: number;
@@ -91,6 +93,8 @@ function Dashboard() {
   const { t } = useTranslation();
   const router = useRouter();
   const [folders, setFolders] = useState<any[]>([]);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
 
   // Interviewer ID'den isim mapping
   const getInterviewerName = (interviewerId: string | bigint | null) => {
@@ -230,6 +234,73 @@ function Dashboard() {
     fetchFolders();
   }, [user?.id]);
 
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from("notifications")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+        if (!error && data) {
+          const interviewIds = data.map((n: any) => n.interview_id);
+          const responseIds = data.map((n: any) => n.response_id);
+          const { data: interviews } = await supabase
+            .from("interview")
+            .select("id, name")
+            .in("id", interviewIds);
+          const { data: responses } = await supabase
+            .from("response")
+            .select("id, name, interview_id, created_at")
+            .in("id", responseIds);
+          const interviewNameMap: Record<string, string> = {};
+          if (interviews) {
+            interviews.forEach((r: any) => {
+              interviewNameMap[r.id] = r.name;
+            });
+          }
+          const grouped: Record<string, any[]> = {};
+          if (responses) {
+            responses.forEach((r: any) => {
+              if (!grouped[r.interview_id]) grouped[r.interview_id] = [];
+              grouped[r.interview_id].push(r);
+            });
+          }
+          let finalNotifications: any[] = [];
+          Object.entries(grouped).forEach(([interviewId, respArr]) => {
+            if (respArr.length >= 4) {
+              const sorted = respArr.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+              const last = sorted[0];
+              finalNotifications.push({
+                id: `grouped-${interviewId}`,
+                interview_id: interviewId,
+                interview_name: interviewNameMap[interviewId] || "",
+                response_name: last.name,
+                count: respArr.length - 1,
+                created_at: last.created_at,
+                grouped: true
+              });
+            } else {
+              respArr.forEach((r: any) => {
+                finalNotifications.push({
+                  id: r.id,
+                  interview_id: interviewId,
+                  interview_name: interviewNameMap[interviewId] || "",
+                  response_name: r.name,
+                  created_at: r.created_at,
+                  grouped: false
+                });
+              });
+            }
+          });
+          finalNotifications = finalNotifications.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+          setNotifications(finalNotifications);
+        }
+      }
+    };
+    fetchNotifications();
+  }, [user?.id, i18n.language]);
+
   const handleCreateInterview = () => {
     setCreateInterviewModalOpen(true);
   };
@@ -276,6 +347,8 @@ function Dashboard() {
 
   // Loading skeleton'ı tamamen kaldırdık - direkt content'i göster
 
+  const lang = i18n.language === "tr" ? tr : enUS;
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-0">
       {/* İkonlar ve switcher en sağ üstte, container dışında */}
@@ -294,10 +367,44 @@ function Dashboard() {
           />
         </div>
         <div className="flex items-center gap-4">
-          <button className="relative group p-2 rounded-full hover:bg-white/20 transition-colors" aria-label="Bildirimler">
+          <div className="relative">
+            <button
+              className="relative group p-2 rounded-full hover:bg-white/20 transition-colors"
+              aria-label="Bildirimler"
+              onClick={() => setNotificationOpen((v) => !v)}
+            >
             <Bell className="w-6 h-6 text-gray-700" />
+              {notifications.length > 0 && (
             <span className="absolute top-1 right-1 w-2 h-2 bg-purple-600 rounded-full"></span>
+              )}
           </button>
+            {notificationOpen && (
+              <div className="absolute right-0 mt-2 w-80 bg-white border rounded shadow-lg z-50 max-h-96 overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="p-4 text-gray-500">{i18n.t("noNotifications")}</div>
+                ) : (
+                  notifications.map((n) => (
+                    <div key={n.id} className="p-4 border-b last:border-b-0">
+                      <div className="font-medium text-sm">
+                        {n.grouped
+                          ? i18n.t("newResponseNotificationGrouped", { interviewName: n.interview_name, name: n.response_name, count: n.count })
+                          : n.interview_name && n.response_name
+                            ? i18n.t("newResponseNotificationWithInterviewAndName", { interviewName: n.interview_name, name: n.response_name })
+                            : n.interview_name
+                              ? i18n.t("newResponseNotificationWithInterviewName", { interviewName: n.interview_name })
+                              : n.response_name
+                                ? i18n.t("newResponseNotificationWithName", { name: n.response_name })
+                                : i18n.t("newResponseNotification")}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: lang })}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
           <div className="relative">
             <button 
               onClick={() => setLangMenuOpen((v) => !v)} 
@@ -446,7 +553,7 @@ function Dashboard() {
               setOpen={setCreateFolderModalOpen}
             />
           </Modal>
-        </div>
+                    </div>
 
         {/* Recent Interviews */}
         <div className="space-y-6">
@@ -455,7 +562,7 @@ function Dashboard() {
             <Button variant="outline" size="sm" onClick={handleViewAllInterviews} className="text-sm sm:text-base px-4 py-2">
               {t('viewAll')}
             </Button>
-          </div>
+                      </div>
 
           <Card className="border-0 shadow-lg">
             <CardContent className="p-4 sm:p-6">
@@ -504,7 +611,7 @@ function Dashboard() {
                       </div>
                     </div>
                   ))}
-                </div>
+                  </div>
               )}
             </CardContent>
           </Card>

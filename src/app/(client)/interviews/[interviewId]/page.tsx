@@ -173,10 +173,8 @@ function InterviewHome({ params, searchParams }: Props) {
         params.interviewId,
       );
 
-      toast.success("Interview status updated", {
-        description: `The interview is now ${
-          updatedIsActive ? "active" : "inactive"
-        }.`,
+      toast.success(t("interviewStatusUpdated"), {
+        description: updatedIsActive ? t("interviewNowActive") : t("interviewNowInactive"),
         position: "bottom-right",
         duration: 3000,
       });

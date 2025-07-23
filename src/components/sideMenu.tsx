@@ -24,7 +24,7 @@ function SideMenu() {
       onMouseLeave={() => setIsOpen(false)}
     >
       <div className="flex flex-col gap-1 h-full">
-        <div className="flex flex-col justify-between gap-2 mt-20 mb-4">
+        <div className="flex flex-col justify-between gap-2 mb-4">
           <div
             className={`flex items-center p-3 rounded-md hover:bg-slate-200 cursor-pointer transition-all ${
               pathname === "/dashboard"

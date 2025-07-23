@@ -157,6 +157,9 @@ const resources = {
       "newResponseNotificationWithInterviewName": "You have a new response for the interview \"{{interviewName}}\"",
       "newResponseNotificationWithInterviewAndName": "You have a new response for the interview \"{{interviewName}}\" from {{name}}",
       "newResponseNotificationGrouped": "{{name}} and {{count}} others responded to the interview \"{{interviewName}}\"",
+      "interviewStatusUpdated": "Interview status updated",
+      "interviewNowActive": "The interview is now active.",
+      "interviewNowInactive": "The interview is now inactive.",
     }
   },
   tr: {
@@ -310,6 +313,9 @@ const resources = {
       "newResponseNotificationWithInterviewName": "{{interviewName}} adlı görüşmeye yeni bir yanıtınız var",
       "newResponseNotificationWithInterviewAndName": "{{interviewName}} adlı görüşmeye {{name}} kişisinden yeni bir yanıtınız var",
       "newResponseNotificationGrouped": "{{interviewName}} adlı görüşmeye {{name}} ve toplam {{count}} kişi cevap verdi",
+      "interviewStatusUpdated": "Görüşme durumu güncellendi",
+      "interviewNowActive": "Görüşme artık aktif.",
+      "interviewNowInactive": "Görüşme artık inaktif.",
       "addNewInterviewer": "Yeni Görüşmeci",
       "premiumFeature": "Premium özellik - Ton, rol ve analizi özelleştirin",
       "comingSoon": "Yakında Gelecek",

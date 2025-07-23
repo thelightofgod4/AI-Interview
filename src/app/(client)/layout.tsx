@@ -73,7 +73,7 @@ export default function RootLayout({
                   pathname !== "/dashboard" && (
                     <SideMenu />
                   )}
-                <div className={`${pathname === "/dashboard" ? "pt-0" : "pt-[64px]"} flex-1 overflow-y-auto`}>
+                <div className="flex-1 overflow-y-auto">
                   {children}
                 </div>
               </div>

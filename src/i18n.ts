@@ -145,6 +145,10 @@ const resources = {
       "needToCreateFolder": "You need to create a folder",
       "noFolders": "No folders",
       "allInterviewers": "All Interviewers",
+      "addNewInterviewer": "New Interviewer",
+      "premiumFeature": "Premium feature - Customize tone, role & analysis",
+      "comingSoon": "Coming Soon",
+      "comingSoonForPro": "Create personalized interviewers tailored to your specific needs. Customize their personality, expertise, and interview style to match your company culture and job requirements. This powerful feature will be available soon for Pro users.",
       "allFolders": "All Folders",
       "allStatus": "All Status",
       "noNotifications": "No notifications",
@@ -306,6 +310,10 @@ const resources = {
       "newResponseNotificationWithInterviewName": "{{interviewName}} adlı görüşmeye yeni bir yanıtınız var",
       "newResponseNotificationWithInterviewAndName": "{{interviewName}} adlı görüşmeye {{name}} kişisinden yeni bir yanıtınız var",
       "newResponseNotificationGrouped": "{{interviewName}} adlı görüşmeye {{name}} ve toplam {{count}} kişi cevap verdi",
+      "addNewInterviewer": "Yeni Görüşmeci",
+      "premiumFeature": "Premium özellik - Ton, rol ve analizi özelleştirin",
+      "comingSoon": "Yakında Gelecek",
+      "comingSoonForPro": "İhtiyaçlarınıza özel kişiselleştirilmiş görüşmeciler oluşturun. Kişiliklerini, uzmanlıklarını ve görüşme tarzlarını şirket kültürünüz ve iş gereksinimlerinize uygun şekilde özelleştirin. Bu güçlü özellik yakında Pro kullanıcılar için kullanılabilir olacak.",
     }
   }
 };

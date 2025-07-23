@@ -6,6 +6,7 @@ import { ChevronLeft } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import InterviewerCard from "@/components/dashboard/interviewer/interviewerCard";
 import CreateInterviewerButton from "@/components/dashboard/interviewer/createInterviewerButton";
+import AddNewInterviewerButton from "@/components/dashboard/interviewer/addNewInterviewerButton";
 import { useTranslation } from 'react-i18next';
 
 function Interviewers() {
@@ -65,7 +66,7 @@ function Interviewers() {
         <div className="relative flex items-center mt-2">
           <div
             id="slider"
-            className="h-44 pt-2 overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide w-[40rem]"
+            className="h-44 pt-2 overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide w-[50rem]"
           >
             {interviewersLoading ? (
               <InterviewersLoader />
@@ -78,7 +79,8 @@ function Interviewers() {
                   />
                 ))}
                 {/* Her zaman sonda göster ama otomatik tetikleme */}
-                <CreateInterviewerButton />
+                {/* <CreateInterviewerButton /> */}
+                <AddNewInterviewerButton />
               </>
             )}
           </div>

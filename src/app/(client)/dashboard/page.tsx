@@ -393,8 +393,8 @@ function Dashboard() {
                             : n.interview_name
                               ? i18n.t("newResponseNotificationWithInterviewName", { interviewName: n.interview_name })
                               : n.response_name
-                                ? i18n.t("newResponseNotificationWithName", { name: n.response_name })
-                                : i18n.t("newResponseNotification")}
+                          ? i18n.t("newResponseNotificationWithName", { name: n.response_name })
+                          : i18n.t("newResponseNotification")}
                       </div>
                       <div className="text-xs text-gray-500">
                         {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: lang })}

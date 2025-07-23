@@ -101,8 +101,8 @@ function Navbar() {
   const lang = i18n.language === "tr" ? tr : enUS;
 
   return (
-    <div className="fixed inset-x-0 top-0 bg-slate-100 z-[10] min-h-[64px] py-4 safe-top">
-      <div className="flex items-center justify-between h-full gap-2 px-4 md:px-8 w-full max-w-7xl min-h-[56px]">
+    <div className="fixed inset-x-0 top-0 bg-slate-100 z-[10] h-fit py-4">
+      <div className="flex items-center justify-between h-full gap-2 px-4 md:px-8 mx-auto max-w-5xl">
         <div className="flex flex-row gap-3">
           <Link href={"/dashboard"} className="flex items-center gap-2">
             <Video className="w-6 h-6 text-indigo-600" />
@@ -125,7 +125,7 @@ function Navbar() {
             />
           </div>
         </div>
-        <div className="flex items-center gap-6 relative">
+        <div className="flex items-center gap-6 relative justify-end">
           <div className="relative">
             <button
               className="relative group"

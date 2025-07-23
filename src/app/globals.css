@@ -104,35 +104,3 @@ body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-end-rgb));
 }
-
-/* Safari iOS için özel düzenlemeler */
-@supports (-webkit-touch-callout: none) {
-  .safe-top {
-    padding-top: env(safe-area-inset-top);
-  }
-
-  .safe-top-content {
-    padding-top: calc(64px + env(safe-area-inset-top));
-  }
-
-  /* iOS Safari'de viewport sorunlarını çözmek için */
-  html {
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  /* iOS Safari'de fixed elementler için */
-  .fixed {
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-  }
-}
-
-/* iOS Safari için viewport düzeltmeleri */
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-  .fixed {
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
-}

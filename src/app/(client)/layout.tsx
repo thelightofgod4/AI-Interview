@@ -47,6 +47,7 @@ export default function RootLayout({
       <head>
         <title>AI Interview</title>
         <meta name="description" content="AI-powered Video Interviews" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
         <link rel="icon" href="/browser-client-icon.ico" />
       </head>
       <body
@@ -73,7 +74,7 @@ export default function RootLayout({
                   pathname !== "/dashboard" && (
                     <SideMenu />
                   )}
-                <div className={`${pathname === "/dashboard" ? "pt-0" : "pt-[64px]"} flex-1 overflow-y-auto`}>
+                <div className={`${pathname === "/dashboard" ? "pt-0" : "pt-[64px] safe-top-content"} flex-1 overflow-y-auto`}>
                   {children}
                 </div>
               </div>

@@ -104,3 +104,16 @@ body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-end-rgb));
 }
+
+/* Safari-specific fixes for header */
+@supports (-webkit-touch-callout: none) {
+  .fixed {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+
+  /* Ensure minimum height for Safari */
+  .min-h-\[60px\] {
+    min-height: 60px !important;
+  }
+}

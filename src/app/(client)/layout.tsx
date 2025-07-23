@@ -47,7 +47,6 @@ export default function RootLayout({
       <head>
         <title>AI Interview</title>
         <meta name="description" content="AI-powered Video Interviews" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
         <link rel="icon" href="/browser-client-icon.ico" />
       </head>
       <body

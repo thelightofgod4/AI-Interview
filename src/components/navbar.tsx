@@ -101,8 +101,8 @@ function Navbar() {
   const lang = i18n.language === "tr" ? tr : enUS;
 
   return (
-    <div className="fixed inset-x-0 top-0 bg-slate-100 z-[10] h-fit py-4 min-h-[60px]">
-      <div className="flex items-center justify-between h-full gap-2 px-4 md:px-8 mx-auto min-h-[60px]">
+    <div className="fixed inset-x-0 top-0 bg-slate-100 z-[10] h-fit py-4 min-h-[48px]">
+      <div className="flex items-center justify-between h-full gap-2 px-4 md:px-8 mx-auto min-h-[48px]">
         <div className="flex flex-row gap-3 justify-center">
           <Link href={"/dashboard"} className="flex items-center gap-2">
             <Video className="w-6 h-6 text-indigo-600" />

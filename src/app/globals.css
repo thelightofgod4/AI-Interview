@@ -113,7 +113,7 @@ body {
   }
 
   /* Ensure minimum height for Safari */
-  .min-h-\[60px\] {
-    min-height: 60px !important;
+  .min-h-\[48px\] {
+    min-height: 48px !important;
   }
 }

@@ -181,7 +181,7 @@ function InterviewHome({ params, searchParams }: Props) {
     } catch (error) {
       console.error(error);
       toast.error("Error", {
-        description: "Failed to update the interview status.",
+        description: t("failedToUpdateStatus"),
         duration: 3000,
       });
     }

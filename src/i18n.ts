@@ -160,6 +160,7 @@ const resources = {
       "interviewStatusUpdated": "Interview status updated",
       "interviewNowActive": "The interview is now active.",
       "interviewNowInactive": "The interview is now inactive.",
+      "failedToUpdateStatus": "Failed to update the interview status.",
     }
   },
   tr: {
@@ -316,6 +317,7 @@ const resources = {
       "interviewStatusUpdated": "Görüşme durumu güncellendi",
       "interviewNowActive": "Görüşme artık aktif.",
       "interviewNowInactive": "Görüşme artık inaktif.",
+      "failedToUpdateStatus": "Görüşme durumu güncellenemedi.",
       "addNewInterviewer": "Yeni Görüşmeci",
       "premiumFeature": "Premium özellik - Ton, rol ve analizi özelleştirin",
       "comingSoon": "Yakında Gelecek",
